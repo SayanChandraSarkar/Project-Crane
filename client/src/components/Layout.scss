@@ -1,0 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}
+.css-h4y409-MuiList-root {
+  margin-top: -20px !important;
+}
+.listItem .css-10hburv-MuiTypography-root {
+  font-size: 1rem !important;
+  margin: 2px;
+}
+
+.output {
+  background-color: #ffff;
+  width: auto;
+  margin: 2px 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  box-shadow: 0px 0px 10px 2px #d4d3d3;
+}
+
+.logo {
+  padding: 12px 10px 0px 10px;
+}
+
+@media only screen and (max-width: 1204px) {
+  .navbar {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 1204px) {
+  .App {
+    display: flex;
+  }
+
+  .App .navbar {
+    width: auto;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .App .navbar li {
+    padding: 12px 20px;
+    list-style: none;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #444;
+    border-radius: 10px;
+  }
+  .navbar ul li.active {
+    background-color: #e0e0e0;
+  }
+  .App .output {
+    width: auto;
+    position: absolute;
+    top: 0;
+    left: 20%;
+    padding: 30px;
+    padding-top: 40px;
+  }
+}
