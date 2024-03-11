@@ -66,7 +66,9 @@ export const CraneFirst = () => {
   const [top5ModelNames, setTop5ModelNames] = useState([]);
   const [showModelOutput, setShowModelOutput] = useState(false);
   const [shockAbsorber, setShockAbsorber] = useState("");
-
+  const [modelPrices, setModelPrices] = useState({});
+  console.log(modelPrices);
+  // console.log(modelPrices);
   const [calculatedResults, setCalculatedResults] = useState({
     kineticEnergy: "",
     potentialEnergy: "",
@@ -187,7 +189,7 @@ export const CraneFirst = () => {
   //Handle Calculated Data
 
   const handleCalculate = () => {
-    const kineticEnergy = mValue * vValue ** 2 * 0.25;     //0.5 * (emassMin * 1000) * V**2
+    const kineticEnergy = mValue * vValue ** 2 * 0.25; //0.5 * (emassMin * 1000) * v**2
     const potentialEnergy = fValue * sValue;
     const totalEnergy = kineticEnergy + potentialEnergy;
     const energyPerHour = totalEnergy * cValue;
@@ -204,6 +206,7 @@ export const CraneFirst = () => {
       emassMin,
     });
 
+    fetchPricesForModels();
     setShowModelOutput(true);
   };
 
@@ -216,8 +219,6 @@ export const CraneFirst = () => {
 
       if (response.ok) {
         const data = await response.json();
-
-        console.log(data);
 
         // Filter the data based on the conditions
         const filteredData = data.filter((item) => {
@@ -236,6 +237,7 @@ export const CraneFirst = () => {
         console.log(top5ModelNames);
 
         setTop5ModelNames(top5ModelNames);
+        fetchPricesForModels(top5ModelNames);
       }
     } catch (error) {
       console.log(error);
@@ -277,9 +279,29 @@ export const CraneFirst = () => {
   useEffect(() => {
     if (showModelOutput) {
       getData();
+      // fetchPricesForModels(top5ModelNames);
     }
   }, [showModelOutput]);
 
+  const fetchPricesForModels = async (models) => {
+    try {
+      // Fetch prices for each model
+      const pricePromises = models.map(async (model) => {
+        const response = await fetch(`http://localhost:5000/prices/${model}`);
+        if (response.ok) {
+          const data = await response.json();
+          return { [model]: data.price };
+        }
+      });
+
+      // Wait for all price fetch requests to complete
+      const prices = await Promise.all(pricePromises);
+      const priceMap = Object.assign({}, ...prices);
+      setModelPrices(priceMap);
+    } catch (error) {
+      console.error("Error fetching prices:", error);
+    }
+  };
   return (
     <>
       <div className="Crane1 inputFields">
@@ -555,25 +577,22 @@ export const CraneFirst = () => {
                 </div>
               </div>
               <div className="model">
-                {/* <Textarea
-                  name="model"
-                  aria-label="minimum height"
-                  minRows={17}
-                  placeholder="Model"
-                  readOnly={true}
-                  value={top5ModelNames.join(",  ")}
-                  className="fromMobile"
-                  style={{ caretColor: "transparent" }}
-                /> */}
-                {top5ModelNames.map((model, index) => (
-                  <button
-                    key={index}
-                    className="model-button"
-                    onClick={() => navigate(`/price/${model}`)}
-                  >
-                    {model}
-                  </button>
-                ))}
+                {showModelOutput &&
+                  top5ModelNames.map((model, index) => (
+                    <div key={index} className="model-button-container">
+                      <div className="price">
+                        {modelPrices[model] !== undefined
+                          ? modelPrices[model].NEWPRICE
+                          : "Loading..."}
+                      </div>
+                      <button
+                        className="model-button"
+                        onClick={() => navigate(`/price/${model}`)}
+                      >
+                        {model}
+                      </button>
+                    </div>
+                  ))}
               </div>
             </div>
           </Box>

@@ -25,7 +25,7 @@ const PricePage = () => {
         );
         if (response.ok) {
           const data = await response.json();
-
+          console.log(data);
           // Assuming data is an array of prices
           setPrices(data.price);
         }
