@@ -16,6 +16,7 @@ import { CraneSecond } from "../pages/Crane-2";
 import { CraneThird } from "../pages/Crane-3";
 import PricePage from "../extra/ModelPricesPage";
 import { useNavigate } from "react-router-dom";
+import UserDetails from "../extra/Information";
 
 export const Layout = () => {
   const navigate = useNavigate();
@@ -120,27 +121,13 @@ export const Layout = () => {
           </Drawer>
           <div className="output">
             <Routes>
-              <Route exact path="/crane-2" element={<CraneSecond />} />
-              <Route exact path="/crane-3" element={<CraneThird />} />
-              <Route path="/price/:modelName" element={<PricePage />} />
-              {/* <Route path="*" element={<CraneFirst />} /> */}
               <Route path="/" element={<CraneFirst />} />
-            </Routes>
+              <Route path="/crane-2" element={<CraneSecond />} />
+              <Route path="/crane-3" element={<CraneThird />} />
 
-            {/* <Router>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/mode/price" element={<PricePage />} />
+              <Route path="/price/:modelName" element={<PricePage />} />
+              <Route path="/price/:modelName/info" element={<UserDetails />} />
             </Routes>
-        </Router> */}
-
-            {/* {selectedItem === "Wagon against 2 shock absorbers" && (
-              <CraneFirst />
-            )}
-            {selectedItem === "Wagon against Wagon" && <CraneSecond />}
-            {selectedItem === "Wagon against Wagon 2 shock absorber" && (
-              <CraneThird />
-            )} */}
           </div>
         </div>
       </div>
