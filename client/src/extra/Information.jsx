@@ -55,15 +55,15 @@ const UserDetails = () => {
   };
   return (
     <>
-      <h2>Hi</h2>
-      <div className="form">
-        <Box
+     
+      <div  className="form  ">
+        <Box className="  flex  flex-col  gap-4 p-4"
           component="form"
           noValidate
           autoComplete="off"
           onSubmit={handleSubmit}
         >
-          <TextField
+          <TextField 
             type="text"
             name="username"
             id="username"
@@ -72,7 +72,7 @@ const UserDetails = () => {
             // value={contact.username}
             label="Enter your name"
             variant="outlined"
-            className="input"
+            className="input "
             onChange={handleInput}
           />
 
@@ -115,10 +115,11 @@ const UserDetails = () => {
             onChange={handleInput}
           />
 
-          <div className="submitBtn">
-            <button type="submit">Submit</button>
-          </div>
+<button className="submitBtn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-[auto] " type="submit">Submit</button>
         </Box>
+     
+           
+          
       </div>
     </>
   );

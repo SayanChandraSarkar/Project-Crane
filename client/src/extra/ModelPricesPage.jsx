@@ -1,7 +1,7 @@
 // PricePage.js
 
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import * as React from 'react';
@@ -13,6 +13,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+
 import "./ModelPricesPage.scss";
 // import PropTypes from "prop-types";
 
@@ -20,6 +21,7 @@ const PricePage = () => {
   const { modelName } = useParams();
   const [prices, setPrices] = useState({});
 
+  const navigate = useNavigate();
   useEffect(() => {
     // Fetch prices for the modelName from your API
     const fetchPrices = async () => {
@@ -123,8 +125,10 @@ const PricePage = () => {
       </Table>
     </TableContainer>
       
-      <div className="btn">
-        <button >Next</button>
+    <div className="btn">
+        <button onClick={() => navigate(`/price/${modelName}/info`)}>
+          Next
+        </button>
       </div>
     </div>
   );
