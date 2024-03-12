@@ -463,6 +463,9 @@ export const CraneFirst = () => {
                     </FormHelperText>
                   </FormControl>
                 </div>
+                <div className="btn">
+                  <button onClick={handleCalculate}>Calculate</button>
+                </div>
                 <div className="resultOutput">
                   <FormControl variant="outlined" className="fromMobile">
                     <OutlinedInput
@@ -572,25 +575,24 @@ export const CraneFirst = () => {
                   </FormControl>
                 </div>
 
-                <div className="btn">
-                  <button onClick={handleCalculate}>Calculate</button>
-                </div>
+                
               </div>
-              <div className="model">
+              <div className="text-center m-auto mt-8  w-[100%] text-xl"  >
                 {showModelOutput &&
                   top5ModelNames.map((model, index) => (
                     <div key={index} className="model-button-container">
-                      <div className="price">
+                      <div onClick={() => navigate(`/price/${model}`)} className="w-[90%] pt-8 mx-auto bg-emerald-900   h-[10vh] text-white mb-4  rounded-2xl">
                         {modelPrices[model] !== undefined
-                          ? modelPrices[model].NEWPRICE
+                          ? `Rs ${modelPrices[model].NEWPRICE}`
                           : "Loading..."}
-                      </div>
+                      
                       <button
-                        className="model-button"
-                        onClick={() => navigate(`/price/${model}`)}
+                        className=" text-center ml-8  text-white font-bold"
+                       
                       >
                         {model}
                       </button>
+                      </div>
                     </div>
                   ))}
               </div>

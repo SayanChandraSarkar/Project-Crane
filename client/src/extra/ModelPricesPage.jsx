@@ -4,6 +4,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import * as React from 'react';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 import "./ModelPricesPage.scss";
 // import PropTypes from "prop-types";
@@ -37,69 +45,86 @@ const PricePage = () => {
     fetchPrices();
   }, [modelName]);
 
-  const handleDownloadPDF = () => {
-    const button = document.querySelector(".btn button");
-    button.style.display = "none"; // Hide the button temporarily
+  // const handleDownloadPDF = () => {
+  //   const button = document.querySelector(".btn button");
+  //   button.style.display = "none"; // Hide the button temporarily
 
-    const element = document.querySelector(".prices");
+  //   const element = document.querySelector(".prices");
 
-    html2canvas(element).then((canvas) => {
-      button.style.display = "block"; // Restore the button's display property
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF();
-      const imgWidth = pdf.internal.pageSize.getWidth();
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  //   html2canvas(element).then((canvas) => {
+  //     button.style.display = "block"; // Restore the button's display property
+  //     const imgData = canvas.toDataURL("image/png");
+  //     const pdf = new jsPDF();
+  //     const imgWidth = pdf.internal.pageSize.getWidth();
+  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-      pdf.save("quotation.pdf");
-    });
-  };
+  //     pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+  //     pdf.save("quotation.pdf");
+  //   });
+  // };
+  const {Model,NEWPRICE,}=prices;
+
+  const totalPrices =  (!isNaN(parseFloat(prices.NEWPRICE))
+  ? parseFloat(prices.NEWPRICE)
+  : 0) +
+  (!isNaN(parseFloat(prices["Front Flange"]))
+    ? parseFloat(prices["Front Flange"])
+    : 0) +
+  (!isNaN(parseFloat(prices["Rear Flange"]))
+    ? parseFloat(prices["Rear Flange"])
+    : 0) +
+  (!isNaN(parseFloat(prices["Foot Mounting"]))
+    ? parseFloat(prices["Foot Mounting"])
+    : 0)
+
+
+
+  const rows = [
+    { Model: Model, NEWPRICE: NEWPRICE ,Front:prices['Front Flange'],Rear:prices['Rear Flange'],Foot:prices['Foot Mounting'],total:totalPrices},
+  
+  ];
+
+     
 
   return (
     <div className="prices">
       <h2>Price Details</h2>
-      <ul>
-        <li>
-          Model:<span className="model-name"> {prices.Model}</span>
-        </li>
-        {/* <li>
-          Old Price: <span className="old-price">{prices.OLDPRICE}</span>
-        </li> */}
-        <li>
-          New Price: <span className="new-price">{prices.NEWPRICE}</span>
-        </li>
-        <li>
-          Front Flange:{" "}
-          <span className="new-price">{prices["Front Flange"]}</span>
-        </li>
-        <li>
-          Rear Flange:{" "}
-          <span className="new-price">{prices["Rear Flange"]}</span>
-        </li>
-        <li>
-          Foot Mounting:{" "}
-          <span className="new-price">{prices["Foot Mounting"]}</span>
-        </li>
-        <li className="total-price">
-          Total New Price:
-          <span className="new-price">
-            {(!isNaN(parseFloat(prices.NEWPRICE))
-              ? parseFloat(prices.NEWPRICE)
-              : 0) +
-              (!isNaN(parseFloat(prices["Front Flange"]))
-                ? parseFloat(prices["Front Flange"])
-                : 0) +
-              (!isNaN(parseFloat(prices["Rear Flange"]))
-                ? parseFloat(prices["Rear Flange"])
-                : 0) +
-              (!isNaN(parseFloat(prices["Foot Mounting"]))
-                ? parseFloat(prices["Foot Mounting"])
-                : 0)}
-          </span>
-        </li>
-      </ul>
+      <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 750 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Model</TableCell>
+            <TableCell align="right">NewPrice</TableCell>
+            <TableCell align="right">Front Flange</TableCell>
+            <TableCell align="right">Rear Flange</TableCell>
+            <TableCell align="right">Foot Mounting</TableCell>
+            <TableCell align="right">Total Amount</TableCell>
+           
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row,index) => (
+            <TableRow
+              key={index}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.Model}
+              </TableCell>
+              <TableCell align="right">{row.NEWPRICE}</TableCell>
+              <TableCell align="right">{row.Front}</TableCell>
+              <TableCell align="right">{row.Rear}</TableCell>
+              <TableCell align="right">{row.Foot}</TableCell>
+              <TableCell align="right">{row.total}</TableCell>
+            
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+      
       <div className="btn">
-        <button onClick={handleDownloadPDF}>Get Your Quotation</button>
+        <button >Next</button>
       </div>
     </div>
   );
