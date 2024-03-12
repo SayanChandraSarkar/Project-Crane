@@ -1,8 +1,11 @@
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
-
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const UserDetails = () => {
+  const { modelName } = useParams();
+  const navigate = useNavigate();
   const defaultContactFormData = {
     username: "",
     email: "",
@@ -24,15 +27,22 @@ const UserDetails = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(contact);
+
     try {
+      const shockAbsorber = localStorage.getItem("shockAbsorber");
+      // Retrieve model name from local storage
+      const model = localStorage.getItem("model");
+
+      console.log(shockAbsorber);
+      console.log(model);
       const formData = {
         ...contact,
-        // model: top5ModelNames.join(",  "),
-        // shockAbsorber: shockAbsorber,
+        shockAbsorber: shockAbsorber,
+        model: model,
         // section: content,
         // type: selectedType,
       };
+      console.log(formData);
       const response = await fetch("http://localhost:5000/api/form/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -40,12 +50,16 @@ const UserDetails = () => {
       });
       console.log(response);
       if (response.ok) {
-        setContact(defaultContactFormData);
         const data = await response.json();
-        console.log(data);
+        setContact(defaultContactFormData);
+        const userId = data.createdContact._id;
+        navigate(`/price/${modelName}/info/quotation/${userId}`);
         alert("Message sent successfully");
-
-        window.location.reload();
+        // Clear local storage keys after successful submission
+        localStorage.removeItem("shockAbsorber");
+        localStorage.removeItem("model");
+      } else {
+        throw new Error("Failed to send message"); // Throw an error to trigger the catch block
       }
     } catch (error) {
       alert("Message not sent Successfully");
@@ -55,15 +69,15 @@ const UserDetails = () => {
   };
   return (
     <>
-     
-      <div  className="form  ">
-        <Box className="  flex  flex-col  gap-4 p-4"
+      <div className="form  ">
+        <Box
+          className="  flex  flex-col  gap-4 p-4"
           component="form"
           noValidate
           autoComplete="off"
           onSubmit={handleSubmit}
         >
-          <TextField 
+          <TextField
             type="text"
             name="username"
             id="username"
@@ -115,11 +129,13 @@ const UserDetails = () => {
             onChange={handleInput}
           />
 
-<button className="submitBtn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-[auto] " type="submit">Submit</button>
+          <button
+            className="submitBtn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-[auto] "
+            type="submit"
+          >
+            Submit
+          </button>
         </Box>
-     
-           
-          
       </div>
     </>
   );

@@ -67,7 +67,7 @@ export const CraneFirst = () => {
   const [showModelOutput, setShowModelOutput] = useState(false);
   const [shockAbsorber, setShockAbsorber] = useState("");
   const [modelPrices, setModelPrices] = useState({});
-  console.log(modelPrices);
+  // console.log(modelPrices);
   // console.log(modelPrices);
   const [calculatedResults, setCalculatedResults] = useState({
     kineticEnergy: "",
@@ -110,42 +110,6 @@ export const CraneFirst = () => {
     content: PropTypes.string,
     setContent: PropTypes.func.isRequired,
   };
-
-  //Textarea Autosize
-  // const Textarea = styled(BaseTextareaAutosize)(
-  //   ({ theme }) => `
-  //   box-sizing: border-box;
-  //   width: 320px;
-  //   font-family: 'IBM Plex Sans', sans-serif;
-  //   font-size: 0.875rem;
-  //   font-weight: 400;
-  //   line-height: 1.5;
-  //   padding: 8px 12px;
-  //   border-radius: 8px;
-  //   color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
-  //   background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-  //   border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
-  //   box-shadow: 0px 2px 2px ${
-  //     theme.palette.mode === "dark" ? grey[900] : grey[50]
-  //   };
-
-  //   &:hover {
-  //     border-color: ${blue[400]};
-  //   }
-
-  //   &:focus {
-  //     border-color: ${blue[400]};
-  //     box-shadow: 0 0 0 3px ${
-  //       theme.palette.mode === "dark" ? blue[600] : blue[200]
-  //     };
-  //   }
-
-  //   // firefox
-  //   &:focus-visible {
-  //     outline: 0;
-  //   }
-  // `
-  // );
 
   const handleInput = (e) => {
     // console.log(e);
@@ -206,8 +170,10 @@ export const CraneFirst = () => {
       emassMin,
     });
 
-    fetchPricesForModels();
+    fetchPricesForModels(top5ModelNames);
     setShowModelOutput(true);
+
+    localStorage.setItem("shockAbsorber", shockAbsorber);
   };
 
   //Fetching Data
@@ -229,7 +195,7 @@ export const CraneFirst = () => {
           );
         });
 
-        console.log(filteredData);
+        // console.log(filteredData);
         // Extract the "Model" property from each object in the array
         const modelNames = filteredData.map((item) => item.Model);
         console.log(modelNames);
@@ -285,6 +251,7 @@ export const CraneFirst = () => {
 
   const fetchPricesForModels = async (models) => {
     try {
+      console.log(models);
       // Fetch prices for each model
       const pricePromises = models.map(async (model) => {
         const response = await fetch(`http://localhost:5000/prices/${model}`);
@@ -574,24 +541,22 @@ export const CraneFirst = () => {
                     </FormHelperText>
                   </FormControl>
                 </div>
-
-                
               </div>
-              <div className="text-center m-auto mt-8  w-[100%] text-xl"  >
+              <div className="text-center m-auto mt-8  w-[100%] text-xl">
                 {showModelOutput &&
                   top5ModelNames.map((model, index) => (
                     <div key={index} className="model-button-container">
-                      <div onClick={() => navigate(`/price/${model}`)} className="w-[90%] pt-8 mx-auto bg-emerald-900   h-[10vh] text-white mb-4  rounded-2xl">
+                      <div
+                        onClick={() => navigate(`/price/${model}`)}
+                        className="w-[90%] pt-[1.5rem] mx-auto bg-emerald-900   h-[10vh] text-white mb-4  rounded-2xl"
+                      >
                         {modelPrices[model] !== undefined
                           ? `Rs ${modelPrices[model].NEWPRICE}`
                           : "Loading..."}
-                      
-                      <button
-                        className=" text-center ml-8  text-white font-bold"
-                       
-                      >
-                        {model}
-                      </button>
+
+                        <button className=" text-center ml-8  text-white font-bold">
+                          {model}
+                        </button>
                       </div>
                     </div>
                   ))}

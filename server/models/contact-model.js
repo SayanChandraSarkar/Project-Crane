@@ -5,14 +5,12 @@ const contactSchema = new Schema({
   email: { type: String, required: true },
   phone: { type: String, required: true },
   company: { type: String, required: true },
-  model: { type: String, required: true },
   shockAbsorber: { type: Number, required: true },
-  section: { type: String, required: true },
-  type: { type: String, required: true },
+  model: { type: String, required: true },
+  // section: { type: String, required: true },
+  // type: { type: String, required: true },
 });
 
 const Crane = new model("Crane", contactSchema);
 
 module.exports = Crane;
-
-

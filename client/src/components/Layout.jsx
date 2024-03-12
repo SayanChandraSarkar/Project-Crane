@@ -127,7 +127,10 @@ export const Layout = () => {
               <Route path="/crane-3" element={<CraneThird />} />
               <Route path="/price/:modelName" element={<PricePage />} />
               <Route path="/price/:modelName/info" element={<UserDetails />} />
-              <Route path="/price/:modelName/info/quotation" element={<Quotation />} />
+              <Route
+                path="/price/:modelName/info/quotation/:userId"
+                element={<Quotation />}
+              />
             </Routes>
           </div>
         </div>
