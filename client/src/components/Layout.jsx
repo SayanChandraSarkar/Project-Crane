@@ -18,6 +18,7 @@ import PricePage from "../extra/ModelPricesPage";
 import { useNavigate } from "react-router-dom";
 import UserDetails from "../extra/Information";
 import Quotation from "../extra/Quotation";
+import Pdf from "./Pdf";
 
 export const Layout = () => {
   const navigate = useNavigate();
@@ -125,6 +126,7 @@ export const Layout = () => {
               <Route path="/" element={<CraneFirst />} />
               <Route path="/crane-2" element={<CraneSecond />} />
               <Route path="/crane-3" element={<CraneThird />} />
+              
               <Route path="/price/:modelName" element={<PricePage />} />
               <Route path="/price/:modelName/info" element={<UserDetails />} />
               <Route

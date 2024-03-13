@@ -88,6 +88,10 @@ const PricePage = () => {
   const handleNextButtonClick = () => {
     // Store shock absorber value in local storage
     localStorage.setItem("model", modelName);
+    localStorage.setItem('price',NEWPRICE);
+    localStorage.setItem('Front',prices["Front Flange"]);
+    localStorage.setItem('Rear',prices["Rear Flange"]);
+    localStorage.setItem('Foot',prices["Foot Mounting"]);
 
     // Navigate to the next page
     navigate(`/price/${modelName}/info`);

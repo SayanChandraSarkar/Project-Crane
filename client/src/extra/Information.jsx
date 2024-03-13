@@ -32,13 +32,23 @@ const UserDetails = () => {
       const shockAbsorber = localStorage.getItem("shockAbsorber");
       // Retrieve model name from local storage
       const model = localStorage.getItem("model");
-
+      const price = localStorage.getItem("price");
+      const front = localStorage.getItem("Front");
+      const rear = localStorage.getItem("Rear");
+      const foot = localStorage.getItem("Foot");
       console.log(shockAbsorber);
       console.log(model);
+      console.log(front);
+      console.log(rear);
+      console.log(foot);
       const formData = {
         ...contact,
         shockAbsorber: shockAbsorber,
         model: model,
+        price: price,
+        front: front,
+        rear: rear,
+        foot: foot,
         // section: content,
         // type: selectedType,
       };
@@ -58,6 +68,10 @@ const UserDetails = () => {
         // Clear local storage keys after successful submission
         localStorage.removeItem("shockAbsorber");
         localStorage.removeItem("model");
+        localStorage.removeItem("price");
+        localStorage.removeItem("Front");
+        localStorage.removeItem("Rear");
+        localStorage.removeItem("Foot");
       } else {
         throw new Error("Failed to send message"); // Throw an error to trigger the catch block
       }

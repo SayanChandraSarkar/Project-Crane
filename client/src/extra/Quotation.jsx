@@ -2,6 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import Pdf from "../components/Pdf";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 const Quotation = () => {
   const { userId } = useParams();
@@ -42,35 +50,48 @@ const Quotation = () => {
   // Create a string representing the formatted date
   const formattedDate = `${month} ${day}, ${year}`;
 
-  const handleDownloadPDF = () => {
-    const button = document.querySelector(".btn button");
-    button.style.display = "none"; // Hide the button temporarily
+  // const handleDownloadPDF = () => {
+  //   const button = document.querySelector(".btn button");
+  //   button.style.display = "none"; // Hide the button temporarily
 
-    const element = document.querySelector(".quotation");
-    const scrollHeight = element.scrollHeight;
-    const scrollWidth = element.scrollWidth; // Get the scrollable width as well
-    element.scrollTo(0, scrollHeight);
-    element.scrollTo(0, scrollWidth);
-    html2canvas(element, { width: scrollWidth, height: scrollHeight }).then(
-      (canvas) => {
-        button.style.display = "block"; // Restore the button's display property
-        const imgData = canvas.toDataURL("image/png");
+  //   const element = document.querySelector(".quotation");
+  //   const scrollHeight = element.scrollHeight;
+  //   const scrollWidth = element.scrollWidth; // Get the scrollable width as well
+  //   element.scrollTo(0, scrollHeight);
+  //   element.scrollTo(0, scrollWidth);
+  //   html2canvas(element, { width: scrollWidth, height: scrollHeight }).then(
+  //     (canvas) => {
+  //       button.style.display = "block"; // Restore the button's display property
+  //       const imgData = canvas.toDataURL("image/png");
 
-        const pdf = new jsPDF({
-          orientation: "p",
-          unit: "mm",
-          format: [scrollWidth, scrollHeight], // Set PDF size to match canvas size
-          putOnlyUsedFonts: true,
-        });
-        const imgWidth = pdf.internal.pageSize.getWidth();
-        let imgHeight = (canvas.height * imgWidth) / canvas.width;
-        imgHeight += 1.2;
+  //       const pdf = new jsPDF({
+  //         orientation: "p",
+  //         unit: "mm",
+  //         format: [scrollWidth, scrollHeight], // Set PDF size to match canvas size
+  //         putOnlyUsedFonts: true,
+  //       });
+  //       const imgWidth = pdf.internal.pageSize.getWidth();
+  //       let imgHeight = (canvas.height * imgWidth) / canvas.width;
+  //       imgHeight += 1.2;
 
-        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-        pdf.save("quotation.pdf");
-      }
-    );
-  };
+  //       pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+  //       pdf.save("quotation.pdf");
+  //     }
+  //   );
+  // };
+  const { model, shockAbsorber, price ,front,rear,foot } = userData;
+  const prices=price+front+rear+foot;
+  const rows = [
+    {
+      model: model,
+      Quantity: shockAbsorber,
+      Price: prices,
+      Amount: shockAbsorber * prices,
+    },
+  ];
+  const [Amount] = rows.map((row) => row.Amount);
+  const gst = Math.round(Amount * 0.18);
+  const total = Amount + gst;
   return (
     <>
       <div className="p-4 quotation">
@@ -83,9 +104,9 @@ const Quotation = () => {
               <h2 className="text-3xl font-medium">Quotation</h2>
             </div>
           </div>
-          <div className="w-[100%] flex flex-col gap-[8%] md:flex-row">
+          <div className="w-[100%] flex flex-col  gap-[8%] md:flex-row">
             <div>
-              <h2 className="font-medium">Quotation by</h2>
+              <h2 className="font-medium text-xl">Quotation by</h2>
               <p className="my-2">adoniTech</p>
               <p className="mb-8">
                 Sharda, 1st floor, Jeevan Chaya Housing Society, Opp. Civil
@@ -93,43 +114,110 @@ const Quotation = () => {
               </p>
             </div>
             <div className="">
-              <h2 className="font-medium">Quotation to</h2>
+              <h2 className="font-medium text-xl">Quotation to</h2>
               <p className="my-2">Company: {userData.company}</p>
               <p className="my-2">Name: {userData.username}</p>
               <p className="my-2">Email: {userData.email}</p>
-              <p className="mb-8">
-                Sharda, 1st floor, Jeevan Chaya Housing Society, Opp. Civil
-                Hospital, Satara 415001. India.
+              <p className="mb-8">Contact:{userData.phone}
               </p>
             </div>
-            <div className="md:w-[40%] flex flex-col gap-2">
-              <div className="flex gap-2 md:justify-between">
-                <h2 className="font-medium">Invoice No:</h2>
-                <p>003</p>
-              </div>
+            <div className="md:w-[50%] flex flex-col gap-2">
+             
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">Invoive Date:</h2>
                 <p>{formattedDate}</p>
               </div>
               <div className="flex gap-2 md:justify-between">
-                <h2 className="font-medium">Due Date:</h2>
-                <p>{formattedDate}</p>
+                <h2 className="font-medium">Model:</h2>
+                <p>{model}</p>
               </div>
-              {/* <div className="flex gap-2 md:justify-between">
-              <h2 className="font-medium">Country of supply:</h2>
-              <p>India</p>
-            </div>
-            <div className="flex gap-2 md:justify-between">
-              <h2 className="font-medium">Place of supply:</h2>
-              <p>Satara</p>
-            </div> */}
+              <div className="flex gap-2 md:justify-between">
+                <h2 className="font-medium">Front Flange:</h2>
+                <p>{front}</p>
+              </div>
+              <div className="flex gap-2 md:justify-between">
+                <h2 className="font-medium">Rear Flange:</h2>
+                <p>{rear}</p>
+              </div>
+              
+              <div className="flex gap-2 md:justify-between">
+                <h2 className="font-medium">Foot Mounting:</h2>
+                <p>{foot}</p>
+              </div>
+              <div className="flex gap-2 md:justify-between">
+                <h2 className="font-medium">price:</h2>
+                <p>{price}</p>
+              </div>
+              <div className="flex gap-2 md:justify-between">
+                <h2 className="font-medium">shockAbsorber:</h2>
+                <p>{shockAbsorber}</p>
+              </div>
+             
             </div>
           </div>
         </div>
+        {/* <table border="" className="border-2">
+          <tr>
+            <th>Model Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Amount</th>
+          </tr>
+          <tr>
+            <td>{userData.model}</td>
+            <td>{userData.shockAbsorber}</td>
+            <td>{userData.price}</td>
+            <td>{userData.shockAbsorber * userData.price}</td>
+          </tr>
+        </table> */}
+        <TableContainer className="mt-[4%] " component={Paper}>
+          <Table sx={{ minWidth: 50 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="right">Model</TableCell>
+                <TableCell align="right">Quantity</TableCell>
+                <TableCell align="right">Price</TableCell>
+                <TableCell align="right">Amount</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow
+                  key={row.model}
+                  sx={{ "&:last-child td, &:last-child th": { border: 1 } }}
+                >
+                  <TableCell align="right">{row.model}</TableCell>
+                  <TableCell align="right">{row.Quantity}</TableCell>
+                  <TableCell align="right">{`₹ ${row.Price}`}</TableCell>
+                  <TableCell align="right">{`₹ ${row.Amount}`}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <TableContainer>
+          <Table className="border-2">
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={2}>Amount</TableCell>
+                <TableCell align="right">{`₹ ${Amount}`}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell colSpan={2}>Gst 18%</TableCell>
+                <TableCell align="right">{`₹ ${gst}`}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell colSpan={2}>Total</TableCell>
+                <TableCell align="right">{`₹ ${total}`}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
 
         <div className="btn mt-8">
           <button
-            onClick={handleDownloadPDF}
+            onClick={() => {window.print()}}
             className="submitBtn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-[auto]"
           >
             Get Quotation

@@ -7,6 +7,10 @@ const contactSchema = new Schema({
   company: { type: String, required: true },
   shockAbsorber: { type: Number, required: true },
   model: { type: String, required: true },
+  price: { type: Number, required: true },
+  front: { type: Number, required: true},
+  rear: { type: Number, required: true},
+  foot: { type: Number, required: true},
   // section: { type: String, required: true },
   // type: { type: String, required: true },
 });
