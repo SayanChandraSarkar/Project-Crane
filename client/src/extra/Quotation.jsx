@@ -106,18 +106,19 @@ const Quotation = () => {
             </div>
           </div>
           <div className="quotation-by-section w-[100%] flex flex-col  gap-[8%] md:flex-row">
-            <div className="md:w-[33%]">
+            <div className="md:w-[33%] ">
               <h2 className="font-medium text-xl">Quotation by</h2>
               <p className="my-2">adoniTech</p>
+              <p className="mb-8 address">Sharda, 1st floor, Jeevan Chaya Housing Society, Opp. Civil Hospital, Satara 415001. India.</p>
             </div>
-            <div className="md:w-[33%]">
+            <div className="md:w-[33%] w-[65%]">
               <h2 className="font-medium text-xl">Quotation to</h2>
               <p className="my-2">Company: {userData.company}</p>
               <p className="my-2">Name: {userData.username}</p>
               <p className="my-2">Email: {userData.email}</p>
               <p className="mb-8">Contact:{userData.phone}</p>
             </div>
-            <div className="md:w-[33%] flex flex-col gap-2">
+            <div className="md:w-[33%] w-[70%] flex flex-col gap-2">
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">Invoive Date:</h2>
                 <p>{formattedDate}</p>
@@ -222,7 +223,12 @@ const Quotation = () => {
           .quotation-by-section {
             display: flex;
             flex-direction: row;
-            justify-content: space-between;
+           
+            
+
+          }
+          .address{
+            width:65%;
           }
           .submitBtn{
             display: none;
