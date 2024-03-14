@@ -87,6 +87,9 @@ const Quotation = () => {
       Quantity: shockAbsorber,
       Price: prices,
       Amount: shockAbsorber * prices,
+      front,
+      rear,
+      foot
     },
   ];
   const [Amount] = rows.map((row) => row.Amount);
@@ -98,14 +101,14 @@ const Quotation = () => {
         <div className="">
           <div className="h-[10vh] w-[100%] flex justify-between ">
             <div>
-              <img className="w-[80%]" src="/images/logo.png" />
+              <img className="w-[100%]" src="/images/logo.png" />
             </div>
             <div>
-              <h2 className="text-3xl font-medium">Quotation</h2>
+              <h2 className="text-xl font-medium">Quotation</h2>
             </div>
           </div>
           <div className="w-[100%] flex flex-col  gap-[8%] md:flex-row">
-            <div>
+            <div className="md:w-[33%]">
               <h2 className="font-medium text-xl">Quotation by</h2>
               <p className="my-2">adoniTech</p>
               <p className="mb-8">
@@ -113,7 +116,7 @@ const Quotation = () => {
                 Hospital, Satara 415001. India.
               </p>
             </div>
-            <div className="">
+            <div className="md:w-[33%]">
               <h2 className="font-medium text-xl">Quotation to</h2>
               <p className="my-2">Company: {userData.company}</p>
               <p className="my-2">Name: {userData.username}</p>
@@ -121,7 +124,7 @@ const Quotation = () => {
               <p className="mb-8">Contact:{userData.phone}
               </p>
             </div>
-            <div className="md:w-[50%] flex flex-col gap-2">
+            <div className="md:w-[33%] flex flex-col gap-2">
              
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">Invoive Date:</h2>
@@ -131,22 +134,10 @@ const Quotation = () => {
                 <h2 className="font-medium">Model:</h2>
                 <p>{model}</p>
               </div>
-              <div className="flex gap-2 md:justify-between">
-                <h2 className="font-medium">Front Flange:</h2>
-                <p>{front}</p>
-              </div>
-              <div className="flex gap-2 md:justify-between">
-                <h2 className="font-medium">Rear Flange:</h2>
-                <p>{rear}</p>
-              </div>
-              
-              <div className="flex gap-2 md:justify-between">
-                <h2 className="font-medium">Foot Mounting:</h2>
-                <p>{foot}</p>
-              </div>
+             
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">price:</h2>
-                <p>{price}</p>
+                <p>{`₹ ${price}`}</p>
               </div>
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">shockAbsorber:</h2>
@@ -171,12 +162,16 @@ const Quotation = () => {
           </tr>
         </table> */}
         <TableContainer className="mt-[4%] " component={Paper}>
-          <Table sx={{ minWidth: 50 }} aria-label="simple table">
+          <Table sx={{ minWidth: 750 }} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell align="right">Model</TableCell>
-                <TableCell align="right">Quantity</TableCell>
+                <TableCell align="right">Front Flange</TableCell>
+                <TableCell align="right">Rear Flange</TableCell>
+                <TableCell align="right">Foot Mounting</TableCell>
                 <TableCell align="right">Price</TableCell>
+                <TableCell align="right">Quantity</TableCell>
+                
                 <TableCell align="right">Amount</TableCell>
               </TableRow>
             </TableHead>
@@ -187,8 +182,12 @@ const Quotation = () => {
                   sx={{ "&:last-child td, &:last-child th": { border: 1 } }}
                 >
                   <TableCell align="right">{row.model}</TableCell>
-                  <TableCell align="right">{row.Quantity}</TableCell>
+                  <TableCell align="right">{`₹ ${row.front}`}</TableCell>
+                  <TableCell align="right">{`₹ ${row.rear}`}</TableCell>
+                  <TableCell align="right">{`₹ ${row.foot}`}</TableCell>
                   <TableCell align="right">{`₹ ${row.Price}`}</TableCell>
+                  <TableCell align="right">{row.Quantity}</TableCell>
+                 
                   <TableCell align="right">{`₹ ${row.Amount}`}</TableCell>
                 </TableRow>
               ))}
@@ -199,10 +198,10 @@ const Quotation = () => {
         <TableContainer>
           <Table className="border-2">
             <TableBody>
-              <TableRow>
+              {/* <TableRow>
                 <TableCell colSpan={2}>Amount</TableCell>
                 <TableCell align="right">{`₹ ${Amount}`}</TableCell>
-              </TableRow>
+              </TableRow> */}
               <TableRow>
                 <TableCell colSpan={2}>Gst 18%</TableCell>
                 <TableCell align="right">{`₹ ${gst}`}</TableCell>
