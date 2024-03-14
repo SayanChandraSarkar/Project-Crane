@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import Pdf from "../components/Pdf";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -79,8 +77,8 @@ const Quotation = () => {
   //     }
   //   );
   // };
-  const { model, shockAbsorber, price ,front,rear,foot } = userData;
-  const prices=price+front+rear+foot;
+  const { model, shockAbsorber, price, front, rear, foot } = userData;
+  const prices = price + front + rear + foot;
   const rows = [
     {
       model: model,
@@ -89,7 +87,7 @@ const Quotation = () => {
       Amount: shockAbsorber * prices,
       front,
       rear,
-      foot
+      foot,
     },
   ];
   const [Amount] = rows.map((row) => row.Amount);
@@ -107,25 +105,19 @@ const Quotation = () => {
               <h2 className="text-xl font-medium">Quotation</h2>
             </div>
           </div>
-          <div className="w-[100%] flex flex-col  gap-[8%] md:flex-row">
+          <div className="quotation-by-section w-[100%] flex flex-col  gap-[8%] md:flex-row">
             <div className="md:w-[33%]">
               <h2 className="font-medium text-xl">Quotation by</h2>
               <p className="my-2">adoniTech</p>
-              <p className="mb-8">
-                Sharda, 1st floor, Jeevan Chaya Housing Society, Opp. Civil
-                Hospital, Satara 415001. India.
-              </p>
             </div>
             <div className="md:w-[33%]">
               <h2 className="font-medium text-xl">Quotation to</h2>
               <p className="my-2">Company: {userData.company}</p>
               <p className="my-2">Name: {userData.username}</p>
               <p className="my-2">Email: {userData.email}</p>
-              <p className="mb-8">Contact:{userData.phone}
-              </p>
+              <p className="mb-8">Contact:{userData.phone}</p>
             </div>
             <div className="md:w-[33%] flex flex-col gap-2">
-             
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">Invoive Date:</h2>
                 <p>{formattedDate}</p>
@@ -134,7 +126,7 @@ const Quotation = () => {
                 <h2 className="font-medium">Model:</h2>
                 <p>{model}</p>
               </div>
-             
+
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">price:</h2>
                 <p>{`₹ ${price}`}</p>
@@ -143,7 +135,6 @@ const Quotation = () => {
                 <h2 className="font-medium">shockAbsorber:</h2>
                 <p>{shockAbsorber}</p>
               </div>
-             
             </div>
           </div>
         </div>
@@ -171,7 +162,7 @@ const Quotation = () => {
                 <TableCell align="right">Foot Mounting</TableCell>
                 <TableCell align="right">Price</TableCell>
                 <TableCell align="right">Quantity</TableCell>
-                
+
                 <TableCell align="right">Amount</TableCell>
               </TableRow>
             </TableHead>
@@ -187,7 +178,7 @@ const Quotation = () => {
                   <TableCell align="right">{`₹ ${row.foot}`}</TableCell>
                   <TableCell align="right">{`₹ ${row.Price}`}</TableCell>
                   <TableCell align="right">{row.Quantity}</TableCell>
-                 
+
                   <TableCell align="right">{`₹ ${row.Amount}`}</TableCell>
                 </TableRow>
               ))}
@@ -216,13 +207,28 @@ const Quotation = () => {
 
         <div className="btn mt-8">
           <button
-            onClick={() => {window.print()}}
+            onClick={() => {
+              window.print();
+            }}
             className="submitBtn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-[auto]"
           >
             Get Quotation
           </button>
         </div>
       </div>
+
+      <style>{`
+        @media print {
+          .quotation-by-section {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+          }
+          .submitBtn{
+            display: none;
+          }
+        }
+      `}</style>
     </>
   );
 };

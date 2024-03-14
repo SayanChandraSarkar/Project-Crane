@@ -548,7 +548,7 @@ export const CraneFirst = () => {
                     <div key={index} className="model-button-container">
                       <div
                         onClick={() => navigate(`/price/${model}`)}
-                        className="w-[90%] pt-[1.5rem] mx-auto bg-emerald-900   h-[10vh] text-white mb-4  rounded-2xl"
+                        className="w-[90%] pt-[2rem] mx-auto bg-emerald-900   h-[10vh] text-white mb-4  rounded-2xl"
                       >
                         {modelPrices[model] !== undefined
                           ? `Rs ${modelPrices[model].NEWPRICE}`

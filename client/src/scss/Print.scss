@@ -1,0 +1,10 @@
+@media print {
+  .quotation-by-section {
+    display: flex;
+    flex-direction: row;
+  }
+  .menu-bar,
+  .drawer {
+    display: none !important;
+  }
+}

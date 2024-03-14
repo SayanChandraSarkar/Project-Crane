@@ -1,14 +1,7 @@
-import React from 'react'
-
 const Pdf = () => {
-    const handleprint = () => {
-        window.print();
-    }
-    
-    
   return (
     <>
-         <div className="p-4 quotation">
+      <div className="p-4 quotation">
         <div className="">
           <div className="h-[10vh] w-[100%] flex justify-between ">
             <div>
@@ -18,7 +11,7 @@ const Pdf = () => {
               <h2 className="text-3xl font-medium">Quotation</h2>
             </div>
           </div>
-          <div className="w-[100%] flex  gap-[8%] md:flex-row">
+          <div className="quotation-by-section w-[100%] flex  gap-[8%] md:flex-row">
             <div>
               <h2 className="font-medium text-xl">Quotation by</h2>
               <p className="my-2">adoniTech</p>
@@ -51,22 +44,19 @@ const Pdf = () => {
                 <p>0978</p>
               </div>
               <div className="flex gap-2 md:justify-between">
-              <h2 className="font-medium">Model:</h2>
-              <p>something</p>
-            </div>
-            <div className="flex gap-2 md:justify-between">
-              <h2 className="font-medium">shockAbsorber:</h2>
-              <p>2</p>
-            </div>
+                <h2 className="font-medium">Model:</h2>
+                <p>something</p>
+              </div>
+              <div className="flex gap-2 md:justify-between">
+                <h2 className="font-medium">shockAbsorber:</h2>
+                <p>2</p>
+              </div>
             </div>
           </div>
         </div>
-        <button onClick={handleprint}>Print</button>
-       
       </div>
-    
     </>
-  )
-}
+  );
+};
 
-export default Pdf
+export default Pdf;

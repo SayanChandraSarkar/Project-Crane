@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,6 +7,31 @@
     <title>Vite + React</title>
   </head>
   <body>
+    <style>
+      @media print {
+        @page {
+          margin: 0; /* Remove default page margins */
+          size: auto; /* Auto size based on content */
+        }
+
+        body {
+          margin: 0; /* Remove body margins */
+        }
+
+        /* You can also hide specific parts of the header and footer */
+        @page {
+          margin: 0;
+        }
+
+        @page :header {
+          display: none; /* Hide header */
+        }
+
+        @page :footer {
+          display: none; /* Hide footer */
+        }
+      }
+    </style>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

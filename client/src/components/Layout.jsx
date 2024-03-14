@@ -18,8 +18,7 @@ import PricePage from "../extra/ModelPricesPage";
 import { useNavigate } from "react-router-dom";
 import UserDetails from "../extra/Information";
 import Quotation from "../extra/Quotation";
-import Pdf from "./Pdf";
-
+import "../scss/Print.scss";
 export const Layout = () => {
   const navigate = useNavigate();
 
@@ -111,6 +110,7 @@ export const Layout = () => {
                 padding: "16px 16px 10px 16px",
               }}
               onClick={toggleDrawer(true)}
+              className="menu-bar"
             >
               <Icon icon="heroicons-solid:menu-alt-2" />
             </Button>
@@ -118,6 +118,9 @@ export const Layout = () => {
           <Drawer
             open={openDrawer && windowWidth < 1240}
             onClose={toggleDrawer(false)}
+            className={`drawer ${
+              window.matchMedia("print").matches ? "hidden-for-print" : ""
+            }`}
           >
             {DrawerList}
           </Drawer>
@@ -126,7 +129,7 @@ export const Layout = () => {
               <Route path="/" element={<CraneFirst />} />
               <Route path="/crane-2" element={<CraneSecond />} />
               <Route path="/crane-3" element={<CraneThird />} />
-              
+
               <Route path="/price/:modelName" element={<PricePage />} />
               <Route path="/price/:modelName/info" element={<UserDetails />} />
               <Route
@@ -137,6 +140,27 @@ export const Layout = () => {
           </div>
         </div>
       </div>
+      <style>{`
+      @media print {
+          body {
+            margin: 0;
+          }
+          .menu-bar,
+          .drawer {
+              display: none !important;}
+        
+        .drawer.hidden-for-print {
+          display: none !important;
+        }
+        .navbar{
+          display: none !important
+        }
+
+        .output{
+          box-shadow:none;
+        }
+      }
+      `}</style>
     </>
   );
 };
