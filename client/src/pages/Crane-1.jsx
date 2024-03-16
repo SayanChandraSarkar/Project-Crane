@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addData } from "../features/dataSlice";
 import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -11,6 +13,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import PropTypes from "prop-types";
 
 import "../scss/Crane-1.scss";
+
 
 const option1 = [
   "0.015",
@@ -65,7 +68,7 @@ export const CraneFirst = () => {
   const [selectedType, setSelectedType] = useState("");
   const [top5ModelNames, setTop5ModelNames] = useState([]);
   const [showModelOutput, setShowModelOutput] = useState(false);
-  const [shockAbsorber, setShockAbsorber] = useState("");
+  const [shockAbsorber, setShockAbsorber] = useState(2);
   const [modelPrices, setModelPrices] = useState({});
   // console.log(modelPrices);
   // console.log(modelPrices);
@@ -76,6 +79,7 @@ export const CraneFirst = () => {
     energyPerHour: "",
     emassMin: "",
   });
+  const  dispatch = useDispatch();
 
   const [content, setContent] = useState("Initial Content");
   const defaultContactFormData = {
@@ -154,6 +158,7 @@ export const CraneFirst = () => {
 
   const handleCalculate = () => {
     const kineticEnergy = mValue * vValue ** 2 * 0.25; //0.5 * (emassMin * 1000) * v**2
+ 
     const potentialEnergy = fValue * sValue;
     const totalEnergy = kineticEnergy + potentialEnergy;
     const energyPerHour = totalEnergy * cValue;
@@ -173,8 +178,11 @@ export const CraneFirst = () => {
     fetchPricesForModels(top5ModelNames);
     setShowModelOutput(true);
 
-    localStorage.setItem("shockAbsorber", shockAbsorber);
+   
   };
+  dispatch(addData({shockAbsorber:shockAbsorber,kineticEnergy:calculatedResults.kineticEnergy,potentialEnergy:calculatedResults.potentialEnergy,totalEnergy:calculatedResults.totalEnergy,energyPerHour:calculatedResults.energyPerHour,Vd:calculatedResults.Vd,emassMin:calculatedResults.emassMin,dollar:false}));
+ 
+  
 
   //Fetching Data
   const getData = async () => {

@@ -3,7 +3,9 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const UserDetails = () => {
+  const shockAbsorber=useSelector(state=>state.data.shockAbsorber);
   const { modelName } = useParams();
   const navigate = useNavigate();
   const defaultContactFormData = {
@@ -29,7 +31,7 @@ const UserDetails = () => {
     e.preventDefault();
 
     try {
-      const shockAbsorber = localStorage.getItem("shockAbsorber");
+      
       // Retrieve model name from local storage
       const model = localStorage.getItem("model");
       const price = localStorage.getItem("price");
