@@ -33,7 +33,7 @@ const option1 = [
 const option2 = ["1", "2", "3", "4"];
 
 const Type = ["ED", "EI", "SB"];
-const Currency = ["Dollar", "INR"];
+const Currency = ["USD", "INR"];
 // const blue = {
 //   100: "#DAECFF",
 //   200: "#b6daff",
@@ -285,6 +285,11 @@ export const CraneFirst = () => {
       console.error("Error fetching prices:", error);
     }
   };
+  const handleModelClick = (model) => {
+    dispatch(addData({currency:selectedCurrency}));
+    navigate(`/price/${model}`);
+  };
+  
   return (
     <>
       <div className="Crane1 inputFields">
@@ -591,12 +596,13 @@ export const CraneFirst = () => {
                   top5ModelNames.map((model, index) => (
                     <div key={index} className="model-button-container">
                       <div
-                        onClick={() => navigate(`/price/${model}`)}
+                        onClick={() => handleModelClick(model)}
                         className="w-[90%] pt-[2rem] mx-auto bg-emerald-900   h-[10vh] text-white mb-4  rounded-2xl"
                       >
                         {modelPrices[model] !== undefined
-                          ? `Rs ${modelPrices[model].NEWPRICE}`
+                          ? selectedCurrency === "INR" ? `Rs ${modelPrices[model].NEWPRICE}` : `$ ${modelPrices[model].NEWPRICE / 80}`
                           : "Loading..."}
+                        
 
                         <button className=" text-center ml-8  text-white font-bold">
                           {model}

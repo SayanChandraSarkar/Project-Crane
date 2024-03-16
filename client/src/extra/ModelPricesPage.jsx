@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { addData } from "../features/dataSlice";
+
 
 const PricePage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const currency = useSelector((state) => state.data.currency);
+  
 
   const [selectedParts, setSelectedParts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -24,6 +30,7 @@ const PricePage = () => {
           console.log(data);
           // Assuming data is an array of prices
           setPrices(data.price);
+          dispatch(addData({data:data.price}))
         }
       } catch (error) {
         console.error("Error fetching prices:", error);
@@ -90,7 +97,7 @@ const PricePage = () => {
                   className="form-checkbox h-5 w-5 text-green-600 mr-2"
                 />
                 <span className="text-gray-800">
-                  {part} - ₹{prices[part]}
+                  {part} - {currency === "INR" ? `₹ ${prices[part]}` : ` $ ${prices[part] / 80}`}
                 </span>
               </label>
             </li>
@@ -100,20 +107,20 @@ const PricePage = () => {
       <div className="border border-gray-200 p-8 ">
         <div className="originalPrice flex items-center justify-between mb-4">
           <div className="font-semibold">Original Price</div>
-          <div className="text-green-600 font-semibold">₹{prices.NEWPRICE}</div>
+          <div className="text-green-600 font-semibold">{currency==="INR" ? `${prices.NEWPRICE}`:`$ ${prices.NEWPRICE / 80}`}</div>
         </div>
         <ul className="mb-4">
           {selectedParts.map((part, index) => (
             <li key={index} className="flex items-center justify-between mb-2">
               <span className="text-blue-600 mr-2">{part.name}</span>
-              <span className="text-gray-800">₹{part.price}</span>
+              <span className="text-gray-800">{currency==="INR" ? `${part.price}`:`$ ${part.price / 80}`}</span>
             </li>
           ))}
         </ul>
         <hr />
         <div className=" flex items-center justify-between mt-4">
           <span className="font-semibold  mr-2">Total Price:</span>
-          <span className="text-green-600 font-semibold">₹{totalPrice}</span>
+          <span className="text-green-600 font-semibold">{currency==="INR" ? `${totalPrice}`:`$ ${totalPrice / 80}`}</span>
         </div>
       </div>
 

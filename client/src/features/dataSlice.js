@@ -8,7 +8,9 @@ const initialState = {
     energyPerHour:null,
     Vd:null,
     emassMin:null,
-    dollar:false
+    currency:'INR',
+    data:[],
+    spare:{ }
 
 }
 const dataSlice = createSlice({
@@ -25,7 +27,9 @@ const dataSlice = createSlice({
         state.energyPerHour = action.payload.energyPerHour;
         state.Vd = action.payload.Vd;
         state.emassMin = action.payload.emassMin;
-        state.dollar = action.payload.dollar;
+        state.currency = action.payload.currency;
+        state.data = action.payload.data;
+        state.spare = action.payload.spare;
 
     }
   },
