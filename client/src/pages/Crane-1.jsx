@@ -14,7 +14,6 @@ import PropTypes from "prop-types";
 
 import "../scss/Crane-1.scss";
 
-
 const option1 = [
   "0.015",
   "0.020",
@@ -34,6 +33,7 @@ const option1 = [
 const option2 = ["1", "2", "3", "4"];
 
 const Type = ["ED", "EI", "SB"];
+const Currency = ["Dollar", "INR"];
 // const blue = {
 //   100: "#DAECFF",
 //   200: "#b6daff",
@@ -70,6 +70,7 @@ export const CraneFirst = () => {
   const [showModelOutput, setShowModelOutput] = useState(false);
   const [shockAbsorber, setShockAbsorber] = useState(2);
   const [modelPrices, setModelPrices] = useState({});
+  const [selectedCurrency, setSelectedCurrency] = useState("INR");
   // console.log(modelPrices);
   // console.log(modelPrices);
   const [calculatedResults, setCalculatedResults] = useState({
@@ -79,7 +80,7 @@ export const CraneFirst = () => {
     energyPerHour: "",
     emassMin: "",
   });
-  const  dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [content, setContent] = useState("Initial Content");
   const defaultContactFormData = {
@@ -158,7 +159,7 @@ export const CraneFirst = () => {
 
   const handleCalculate = () => {
     const kineticEnergy = mValue * vValue ** 2 * 0.25; //0.5 * (emassMin * 1000) * v**2
- 
+
     const potentialEnergy = fValue * sValue;
     const totalEnergy = kineticEnergy + potentialEnergy;
     const energyPerHour = totalEnergy * cValue;
@@ -177,12 +178,19 @@ export const CraneFirst = () => {
 
     fetchPricesForModels(top5ModelNames);
     setShowModelOutput(true);
-
-   
   };
-  dispatch(addData({shockAbsorber:shockAbsorber,kineticEnergy:calculatedResults.kineticEnergy,potentialEnergy:calculatedResults.potentialEnergy,totalEnergy:calculatedResults.totalEnergy,energyPerHour:calculatedResults.energyPerHour,Vd:calculatedResults.Vd,emassMin:calculatedResults.emassMin,dollar:false}));
- 
-  
+  dispatch(
+    addData({
+      shockAbsorber: shockAbsorber,
+      kineticEnergy: calculatedResults.kineticEnergy,
+      potentialEnergy: calculatedResults.potentialEnergy,
+      totalEnergy: calculatedResults.totalEnergy,
+      energyPerHour: calculatedResults.energyPerHour,
+      Vd: calculatedResults.Vd,
+      emassMin: calculatedResults.emassMin,
+      dollar: false,
+    })
+  );
 
   //Fetching Data
   const getData = async () => {
@@ -435,6 +443,34 @@ export const CraneFirst = () => {
                       sx={{ fontSize: "1rem" }}
                     >
                       Type
+                    </FormHelperText>
+                  </FormControl>
+
+                  <FormControl
+                    variant="outlined"
+                    className="fromMobile"
+                    autoComplete="off"
+                  >
+                    <Autocomplete
+                      id="controllable-states-demo"
+                      className="autocomplete"
+                      value={selectedCurrency} // Set default currency
+                      onChange={(event, newValue) =>
+                        setSelectedCurrency(newValue)
+                      }
+                      options={Currency}
+                      name="shockAbsorber"
+                      // value={contact.shockAbsorber}
+                      // sx={{ width: 480, marginLeft: "8px", marginRight: "8px" }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Choose your currency" />
+                      )}
+                    />
+                    <FormHelperText
+                      id="outlined-weight-helper-text"
+                      sx={{ fontSize: "1rem" }}
+                    >
+                      Currency
                     </FormHelperText>
                   </FormControl>
                 </div>

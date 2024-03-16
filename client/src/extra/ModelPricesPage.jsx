@@ -1,24 +1,14 @@
-// PricePage.js
-
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-
-import "./ModelPricesPage.scss";
-// import PropTypes from "prop-types";
 
 const PricePage = () => {
-  const { modelName } = useParams();
-  const [prices, setPrices] = useState({});
-
   const navigate = useNavigate();
 
+  const [selectedParts, setSelectedParts] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const { modelName } = useParams();
+  const [prices, setPrices] = useState({});
+  // Fetch spare parts data
   useEffect(() => {
     const fetchPrices = async () => {
       try {
@@ -43,104 +33,99 @@ const PricePage = () => {
     fetchPrices();
   }, [modelName]);
 
-  // const handleDownloadPDF = () => {
-  //   const button = document.querySelector(".btn button");
-  //   button.style.display = "none"; // Hide the button temporarily
+  // Calculate total price whenever selectedParts changes
+  useEffect(() => {
+    let total = prices.NEWPRICE || 0;
+    selectedParts.forEach((part) => {
+      total += part.price || 0;
+    });
+    setTotalPrice(total);
+  }, [selectedParts, prices]);
 
-  //   const element = document.querySelector(".prices");
+  const handlePartSelection = (part) => {
+    if (selectedParts.some((selectedPart) => selectedPart.name === part.name)) {
+      setSelectedParts(selectedParts.filter((item) => item.name !== part.name));
+    } else {
+      setSelectedParts([...selectedParts, part]);
+    }
+  };
+  const filteredParts = Object.keys(prices).filter(
+    (part) =>
+      part === "Foot Mounting" ||
+      part === "Front Flange" ||
+      part === "Rear Flange"
+  );
 
-  //   html2canvas(element).then((canvas) => {
-  //     button.style.display = "block"; // Restore the button's display property
-  //     const imgData = canvas.toDataURL("image/png");
-  //     const pdf = new jsPDF();
-  //     const imgWidth = pdf.internal.pageSize.getWidth();
-  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-  //     pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-  //     pdf.save("quotation.pdf");
-  //   });
-  // };
-  const { Model, NEWPRICE } = prices;
-
-  const totalPrices =
-    (!isNaN(parseFloat(prices.NEWPRICE)) ? parseFloat(prices.NEWPRICE) : 0) +
-    (!isNaN(parseFloat(prices["Front Flange"]))
-      ? parseFloat(prices["Front Flange"])
-      : 0) +
-    (!isNaN(parseFloat(prices["Rear Flange"]))
-      ? parseFloat(prices["Rear Flange"])
-      : 0) +
-    (!isNaN(parseFloat(prices["Foot Mounting"]))
-      ? parseFloat(prices["Foot Mounting"])
-      : 0);
-
-  const rows = [
-    {
-      Model: Model,
-      NEWPRICE: NEWPRICE,
-      Front: prices["Front Flange"],
-      Rear: prices["Rear Flange"],
-      Foot: prices["Foot Mounting"],
-      total: totalPrices,
-    },
-  ];
+  console.log(filteredParts);
 
   const handleNextButtonClick = () => {
-    // Store shock absorber value in local storage
-    localStorage.setItem("model", modelName);
-    localStorage.setItem('price',NEWPRICE);
-    localStorage.setItem('Front',prices["Front Flange"]);
-    localStorage.setItem('Rear',prices["Rear Flange"]);
-    localStorage.setItem('Foot',prices["Foot Mounting"]);
+    // // Store shock absorber value in local storage
+    // localStorage.setItem("model", modelName);
+    // localStorage.setItem("price", NEWPRICE);
+    // localStorage.setItem("Front", prices["Front Flange"]);
+    // localStorage.setItem("Rear", prices["Rear Flange"]);
+    // localStorage.setItem("Foot", prices["Foot Mounting"]);
 
     // Navigate to the next page
     navigate(`/price/${modelName}/info`);
   };
-
   return (
-    <div className="prices">
-      <h2>Price Details</h2>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 750 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Model</TableCell>
-              <TableCell align="right">NewPrice</TableCell>
-              <TableCell align="right">Front Flange</TableCell>
-              <TableCell align="right">Rear Flange</TableCell>
-              <TableCell align="right">Foot Mounting</TableCell>
-              <TableCell align="right">Total Amount</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow
-                key={index}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.Model}
-                </TableCell>
-                <TableCell align="right">{row.NEWPRICE}</TableCell>
-                <TableCell align="right">{row.Front}</TableCell>
-                <TableCell align="right">{row.Rear}</TableCell>
-                <TableCell align="right">{row.Foot}</TableCell>
-                <TableCell align="right">{row.total}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <div className="max-w-screen-lg mx-auto px-8 py-12">
+      <h1 className="text-2xl font-bold mb-4">Choose Spare Parts</h1>
+      <div className="mb-20">
+        {/* <h2 className="text-xl font-semibold mb-2">Spare Parts</h2> */}
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 ml-4">
+          {filteredParts.map((part, index) => (
+            <li key={index} className="flex items-center">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  // value={part}
+                  checked={selectedParts.some(
+                    (selectedPart) => selectedPart.name === part
+                  )}
+                  onChange={() =>
+                    handlePartSelection({ name: part, price: prices[part] })
+                  }
+                  className="form-checkbox h-5 w-5 text-green-600 mr-2"
+                />
+                <span className="text-gray-800">
+                  {part} - ₹{prices[part]}
+                </span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="border border-gray-200 p-8 ">
+        <div className="originalPrice flex items-center justify-between mb-4">
+          <div className="font-semibold">Original Price</div>
+          <div className="text-green-600 font-semibold">₹{prices.NEWPRICE}</div>
+        </div>
+        <ul className="mb-4">
+          {selectedParts.map((part, index) => (
+            <li key={index} className="flex items-center justify-between mb-2">
+              <span className="text-blue-600 mr-2">{part.name}</span>
+              <span className="text-gray-800">₹{part.price}</span>
+            </li>
+          ))}
+        </ul>
+        <hr />
+        <div className=" flex items-center justify-between mt-4">
+          <span className="font-semibold  mr-2">Total Price:</span>
+          <span className="text-green-600 font-semibold">₹{totalPrice}</span>
+        </div>
+      </div>
 
-      <div className="btn">
-        <button onClick={handleNextButtonClick}>Next</button>
+      <div className="flex justify-center mt-10">
+        <button
+          onClick={handleNextButtonClick}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded"
+        >
+          Proceed to Next
+        </button>
       </div>
     </div>
   );
 };
-
 export default PricePage;
-
-// PricePage.propTypes = {
-//   modelName: PropTypes.string,
-// };

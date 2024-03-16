@@ -18,6 +18,7 @@ import PricePage from "../extra/ModelPricesPage";
 import { useNavigate } from "react-router-dom";
 import UserDetails from "../extra/Information";
 import Quotation from "../extra/Quotation";
+import ModelPricesPage from "../extra/ModelPricesPage";
 import "../scss/Print.scss";
 export const Layout = () => {
   const navigate = useNavigate();
@@ -136,6 +137,7 @@ export const Layout = () => {
                 path="/price/:modelName/info/quotation/:userId"
                 element={<Quotation />}
               />
+              <Route path="/modelprice" element={<ModelPricesPage />} />
             </Routes>
           </div>
         </div>
