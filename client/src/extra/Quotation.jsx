@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Table from "@mui/material/Table";
@@ -8,11 +8,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+// import { useSelector } from "react-redux";
 
 const Quotation = () => {
   const { userId } = useParams();
   const [userData, setUserData] = useState(null);
 
+  // console.log(kineticEnergy);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,51 +50,42 @@ const Quotation = () => {
   // Create a string representing the formatted date
   const formattedDate = `${month} ${day}, ${year}`;
 
-  // const handleDownloadPDF = () => {
-  //   const button = document.querySelector(".btn button");
-  //   button.style.display = "none"; // Hide the button temporarily
-
-  //   const element = document.querySelector(".quotation");
-  //   const scrollHeight = element.scrollHeight;
-  //   const scrollWidth = element.scrollWidth; // Get the scrollable width as well
-  //   element.scrollTo(0, scrollHeight);
-  //   element.scrollTo(0, scrollWidth);
-  //   html2canvas(element, { width: scrollWidth, height: scrollHeight }).then(
-  //     (canvas) => {
-  //       button.style.display = "block"; // Restore the button's display property
-  //       const imgData = canvas.toDataURL("image/png");
-
-  //       const pdf = new jsPDF({
-  //         orientation: "p",
-  //         unit: "mm",
-  //         format: [scrollWidth, scrollHeight], // Set PDF size to match canvas size
-  //         putOnlyUsedFonts: true,
-  //       });
-  //       const imgWidth = pdf.internal.pageSize.getWidth();
-  //       let imgHeight = (canvas.height * imgWidth) / canvas.width;
-  //       imgHeight += 1.2;
-
-  //       pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-  //       pdf.save("quotation.pdf");
-  //     }
-  //   );
-  // };
-  const { model, shockAbsorber, price, front, rear, foot } = userData;
-  const prices = price + front + rear + foot;
+  const {
+    model,
+    shockAbsorber,
+    price,
+    series,
+    spare,
+    currency,
+    // originalPrice,
+  } = userData;
+  const prices = price;
   const rows = [
     {
       model: model,
       Quantity: shockAbsorber,
       Price: prices,
+      Series: series,
       Amount: shockAbsorber * prices,
-      front,
-      rear,
-      foot,
+      Spare: spare,
+      // OriginalPrice: originalPrice,
     },
   ];
+
+  console.log(shockAbsorber);
+  console.log(prices);
+  console.log(model);
+  console.log(series);
+  console.log(spare);
+
   const [Amount] = rows.map((row) => row.Amount);
   const gst = Math.round(Amount * 0.18);
-  const total = Amount + gst;
+  const freight = Math.round(Amount * 0.02);
+  const total = Amount + gst + freight;
+  const [spareQnt] = rows.map((row) => row.Spare.quantity);
+  // const originalPrice = console.log();
+  console.log(Amount);
+  console.log(spareQnt);
   return (
     <>
       <div className="p-4 quotation">
@@ -109,7 +102,13 @@ const Quotation = () => {
             <div className="md:w-[33%] ">
               <h2 className="font-medium text-xl">Quotation by</h2>
               <p className="my-2">adoniTech</p>
-              <p className="mb-8 address">Sharda, 1st floor, Jeevan Chaya Housing Society, Opp. Civil Hospital, Satara 415001. India.</p>
+              <p className="mb-2 address">
+                SLU - W - 39, Addl; MIDC, Kodoli, Satara - 415004. MH. 
+              </p>
+              <span className="mb-8 address">
+                <p className="">GSTN:</p>
+                <p className="">27AHAPA3555B1Z1</p>
+              </span>
             </div>
             <div className="md:w-[33%] w-[65%]">
               <h2 className="font-medium text-xl">Quotation to</h2>
@@ -130,7 +129,7 @@ const Quotation = () => {
 
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">price:</h2>
-                <p>{`₹ ${price}`}</p>
+                <p> {currency === "INR" ? `₹ ${price}` : `$ ${price / 80}`}</p>
               </div>
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">shockAbsorber:</h2>
@@ -153,35 +152,48 @@ const Quotation = () => {
             <td>{userData.shockAbsorber * userData.price}</td>
           </tr>
         </table> */}
-        <TableContainer className="mt-[4%] " component={Paper}>
-          <Table sx={{ minWidth: 750 }} aria-label="simple table">
+        <TableContainer className="mt-[10%] " component={Paper}>
+          <Table sx={{ minWidth: 400 }} aria-label="simple table">
             <TableHead>
-              <TableRow>
-                <TableCell align="right">Model</TableCell>
-                <TableCell align="right">Front Flange</TableCell>
-                <TableCell align="right">Rear Flange</TableCell>
-                <TableCell align="right">Foot Mounting</TableCell>
-                <TableCell align="right">Price</TableCell>
+              <TableRow
+                sx={{
+                  "&:last-child td, &:last-child th": {
+                    border: "1px solid rgba(0, 0, 0, 0.2)",
+                  },
+                }}
+              >
+                <TableCell align="right">Sl</TableCell>
+                <TableCell align="right">Item</TableCell>
                 <TableCell align="right">Quantity</TableCell>
-
-                <TableCell align="right">Amount</TableCell>
+                <TableCell align="right">Price</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow
-                  key={row.model}
-                  sx={{ "&:last-child td, &:last-child th": { border: 1 } }}
-                >
-                  <TableCell align="right">{row.model}</TableCell>
-                  <TableCell align="right">{`₹ ${row.front}`}</TableCell>
-                  <TableCell align="right">{`₹ ${row.rear}`}</TableCell>
-                  <TableCell align="right">{`₹ ${row.foot}`}</TableCell>
-                  <TableCell align="right">{`₹ ${row.Price}`}</TableCell>
-                  <TableCell align="right">{row.Quantity}</TableCell>
-
-                  <TableCell align="right">{`₹ ${row.Amount}`}</TableCell>
-                </TableRow>
+            <TableBody
+              sx={{
+                "&:last-child td, &:last-child th": {
+                  border: "1px solid rgba(0, 0, 0, 0.2)",
+                },
+              }}
+            >
+              {rows.map((row, index) => (
+                <Fragment key={row.model}>
+                  <TableRow>
+                    <TableCell align="right">{index + 1}</TableCell>
+                    <TableCell align="right">{row.Series}</TableCell>
+                    <TableCell align="right">{row.Quantity}</TableCell>
+                    <TableCell align="right">{`₹ ${row.Price}`}</TableCell>
+                  </TableRow>
+                  {row.Spare.map((spareItem, spareIndex) => (
+                    <TableRow key={spareItem._id.$oid}>
+                      <TableCell align="right">
+                        {index + 1 + spareIndex + 1}
+                      </TableCell>
+                      <TableCell align="right">{spareItem.name}</TableCell>
+                      <TableCell align="right">{spareItem.quantity}</TableCell>
+                      <TableCell align="right">{`₹ ${spareItem.price}`}</TableCell>
+                    </TableRow>
+                  ))}
+                </Fragment>
               ))}
             </TableBody>
           </Table>
@@ -190,17 +202,26 @@ const Quotation = () => {
         <TableContainer>
           <Table className="border-2">
             <TableBody>
-              {/* <TableRow>
+              <TableRow>
                 <TableCell colSpan={2}>Amount</TableCell>
                 <TableCell align="right">{`₹ ${Amount}`}</TableCell>
-              </TableRow> */}
+              </TableRow>
               <TableRow>
                 <TableCell colSpan={2}>Gst 18%</TableCell>
                 <TableCell align="right">{`₹ ${gst}`}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell colSpan={2}>Total</TableCell>
-                <TableCell align="right">{`₹ ${total}`}</TableCell>
+                <TableCell colSpan={2}>Freight 2%</TableCell>
+                <TableCell align="right">{`₹ ${freight}`}</TableCell>
+              </TableRow>
+              <TableRow className="border-t-4   border-gray-300">
+                <TableCell colSpan={2} className="!font-medium ">
+                  Total
+                </TableCell>
+                <TableCell
+                  align="right"
+                  className="!text-green-600 !font-semibold"
+                >{`₹ ${total}`}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

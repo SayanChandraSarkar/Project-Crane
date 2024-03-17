@@ -1,13 +1,20 @@
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+
 const UserDetails = () => {
-  const shockAbsorber=useSelector(state=>state.data.shockAbsorber);
   const { modelName } = useParams();
   const navigate = useNavigate();
+  const totalPrice = useSelector((state) => state.data.totalPrice);
+  const spare = useSelector((state) => state.data.spare);
+  const shockAbsorber = useSelector((state) => state.data.shockAbsorber);
+  const series = useSelector((state) => state.data.data.series);
+  const originalPrice = useSelector((state) => state.data.data.NEWPRICE);
+  const currency = useSelector((state) => state.data.currency);
+  console.log(originalPrice);
   const defaultContactFormData = {
     username: "",
     email: "",
@@ -15,7 +22,13 @@ const UserDetails = () => {
     company: "",
   };
   const [contact, setContact] = useState(defaultContactFormData);
+  const [currentModelName, setCurrentModelName] = useState("");
 
+  useEffect(() => {
+    setCurrentModelName(modelName);
+  }, []);
+
+  console.log(spare);
   const handleInput = (e) => {
     // console.log(e);
 
@@ -27,34 +40,24 @@ const UserDetails = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, modelName) => {
     e.preventDefault();
-
+    console.log(modelName);
     try {
-      
       // Retrieve model name from local storage
-      const model = localStorage.getItem("model");
-      const price = localStorage.getItem("price");
-      const front = localStorage.getItem("Front");
-      const rear = localStorage.getItem("Rear");
-      const foot = localStorage.getItem("Foot");
-      console.log(shockAbsorber);
-      console.log(model);
-      console.log(front);
-      console.log(rear);
-      console.log(foot);
       const formData = {
         ...contact,
         shockAbsorber: shockAbsorber,
-        model: model,
-        price: price,
-        front: front,
-        rear: rear,
-        foot: foot,
+        model: currentModelName,
+        price: totalPrice,
+        spare: spare,
+        series: series,
+        originalPrice: originalPrice,
+        currency: currency,
         // section: content,
         // type: selectedType,
       };
-      console.log(formData);
+
       const response = await fetch("http://localhost:5000/api/form/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,12 +71,6 @@ const UserDetails = () => {
         navigate(`/price/${modelName}/info/quotation/${userId}`);
         alert("Message sent successfully");
         // Clear local storage keys after successful submission
-        localStorage.removeItem("shockAbsorber");
-        localStorage.removeItem("model");
-        localStorage.removeItem("price");
-        localStorage.removeItem("Front");
-        localStorage.removeItem("Rear");
-        localStorage.removeItem("Foot");
       } else {
         throw new Error("Failed to send message"); // Throw an error to trigger the catch block
       }
@@ -83,6 +80,7 @@ const UserDetails = () => {
       console.log(error);
     }
   };
+
   return (
     <>
       <div className="form  ">
@@ -91,7 +89,7 @@ const UserDetails = () => {
           component="form"
           noValidate
           autoComplete="off"
-          onSubmit={handleSubmit}
+          onSubmit={(e) => handleSubmit(e, modelName)}
         >
           <TextField
             type="text"

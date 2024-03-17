@@ -1,38 +1,38 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-    // Define initial state here
-    shockAbsorber:2,
-    kineticEnergy:null,
-    potentialEnergy:null,
-    totalEnergy:null,
-    energyPerHour:null,
-    Vd:null,
-    emassMin:null,
-    currency:'INR',
-    data:[],
-    spare:{ }
-
-}
+  // Define initial state here
+  shockAbsorber: 2,
+  kineticEnergy: null,
+  potentialEnergy: null,
+  totalEnergy: null,
+  energyPerHour: null,
+  Vd: null,
+  emassMin: null,
+  currency: "INR",
+  data: [],
+  spare: [],
+  totalPrice: null,
+};
 const dataSlice = createSlice({
-  name: 'data',
+  name: "data",
   initialState,
   reducers: {
     // Define action creators here
     addData(state, action) {
       // Add data to state
-        state.shockAbsorber = action.payload.shockAbsorber;
-        state.kineticEnergy = action.payload.kineticEnergy;
-        state.potentialEnergy = action.payload.potentialEnergy;
-        state.totalEnergy = action.payload.totalEnergy;
-        state.energyPerHour = action.payload.energyPerHour;
-        state.Vd = action.payload.Vd;
-        state.emassMin = action.payload.emassMin;
-        state.currency = action.payload.currency;
-        state.data = action.payload.data;
-        state.spare = action.payload.spare;
-
-    }
+      state.shockAbsorber = action.payload.shockAbsorber;
+      state.kineticEnergy = action.payload.kineticEnergy;
+      state.potentialEnergy = action.payload.potentialEnergy;
+      state.totalEnergy = action.payload.totalEnergy;
+      state.energyPerHour = action.payload.energyPerHour;
+      state.Vd = action.payload.Vd;
+      state.emassMin = action.payload.emassMin;
+      state.currency = action.payload.currency;
+      state.data = action.payload.data;
+      state.spare = action.payload.spare;
+      state.totalPrice = action.payload.totalPrice;
+    },
   },
-})
-export const { addData } = dataSlice.actions
-export default dataSlice.reducer
+});
+export const { addData } = dataSlice.actions;
+export default dataSlice.reducer;

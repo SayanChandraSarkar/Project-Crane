@@ -83,13 +83,7 @@ export const CraneFirst = () => {
   const dispatch = useDispatch();
 
   const [content, setContent] = useState("Initial Content");
-  const defaultContactFormData = {
-    username: "",
-    email: "",
-    phone: "",
-    company: "",
-  };
-  const [contact, setContact] = useState(defaultContactFormData);
+
   //Dynamic heading
   const DynamicHeading = ({
     className,
@@ -116,16 +110,6 @@ export const CraneFirst = () => {
     setContent: PropTypes.func.isRequired,
   };
 
-  const handleInput = (e) => {
-    // console.log(e);
-
-    let name = e.target.name;
-    let value = e.target.value;
-    setContact({
-      ...contact,
-      [name]: value,
-    });
-  };
   // Event handlers for form controls
   const handleMChange = (event) => {
     setMValue(event.target.value);
@@ -179,18 +163,17 @@ export const CraneFirst = () => {
     fetchPricesForModels(top5ModelNames);
     setShowModelOutput(true);
   };
-  dispatch(
-    addData({
-      shockAbsorber: shockAbsorber,
-      kineticEnergy: calculatedResults.kineticEnergy,
-      potentialEnergy: calculatedResults.potentialEnergy,
-      totalEnergy: calculatedResults.totalEnergy,
-      energyPerHour: calculatedResults.energyPerHour,
-      Vd: calculatedResults.Vd,
-      emassMin: calculatedResults.emassMin,
-      dollar: false,
-    })
-  );
+  // dispatch(
+  //   addData({
+  //     shockAbsorber: shockAbsorber,
+  //     kineticEnergy: calculatedResults.kineticEnergy,
+  //     potentialEnergy: calculatedResults.potentialEnergy,
+  //     totalEnergy: calculatedResults.totalEnergy,
+  //     energyPerHour: calculatedResults.energyPerHour,
+  //     Vd: calculatedResults.Vd,
+  //     emassMin: calculatedResults.emassMin,
+  //   })
+  // );
 
   //Fetching Data
   const getData = async () => {
@@ -226,38 +209,6 @@ export const CraneFirst = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log(contact);
-    try {
-      const formData = {
-        ...contact,
-        model: top5ModelNames.join(",  "),
-        shockAbsorber: shockAbsorber,
-        section: content,
-        type: selectedType,
-      };
-      const response = await fetch("http://localhost:5000/api/form/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      console.log(response);
-      if (response.ok) {
-        setContact(defaultContactFormData);
-        const data = await response.json();
-        console.log(data);
-        alert("Message sent successfully");
-
-        window.location.reload();
-      }
-    } catch (error) {
-      alert("Message not sent Successfully");
-
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     if (showModelOutput) {
       getData();
@@ -286,10 +237,21 @@ export const CraneFirst = () => {
     }
   };
   const handleModelClick = (model) => {
-    dispatch(addData({currency:selectedCurrency}));
+    dispatch(
+      addData({
+        currency: selectedCurrency,
+        shockAbsorber: shockAbsorber,
+        kineticEnergy: calculatedResults.kineticEnergy,
+        potentialEnergy: calculatedResults.potentialEnergy,
+        totalEnergy: calculatedResults.totalEnergy,
+        energyPerHour: calculatedResults.energyPerHour,
+        Vd: calculatedResults.Vd,
+        emassMin: calculatedResults.emassMin,
+      })
+    );
     navigate(`/price/${model}`);
   };
-  
+
   return (
     <>
       <div className="Crane1 inputFields">
@@ -600,9 +562,10 @@ export const CraneFirst = () => {
                         className="w-[90%] pt-[2rem] mx-auto bg-emerald-900   h-[10vh] text-white mb-4  rounded-2xl"
                       >
                         {modelPrices[model] !== undefined
-                          ? selectedCurrency === "INR" ? `Rs ${modelPrices[model].NEWPRICE}` : `$ ${modelPrices[model].NEWPRICE / 80}`
+                          ? selectedCurrency === "INR"
+                            ? `Rs ${modelPrices[model].NEWPRICE}`
+                            : `$ ${modelPrices[model].NEWPRICE / 80}`
                           : "Loading..."}
-                        
 
                         <button className=" text-center ml-8  text-white font-bold">
                           {model}
@@ -616,73 +579,6 @@ export const CraneFirst = () => {
         </div>
 
         {/* {model && <ModelPricePage modelName={model} />} */}
-
-        {/* Form submission */}
-
-        <div className="form">
-          <Box
-            component="form"
-            noValidate
-            autoComplete="off"
-            onSubmit={handleSubmit}
-          >
-            <TextField
-              type="text"
-              name="username"
-              id="username"
-              required
-              autoComplete="off"
-              // value={contact.username}
-              label="Enter your name"
-              variant="outlined"
-              className="input"
-              onChange={handleInput}
-            />
-
-            <TextField
-              type="email"
-              name="email"
-              id="email"
-              required
-              autoComplete="off"
-              // value={contact.email}
-              label="Enter your Email"
-              variant="outlined"
-              className="input"
-              onChange={handleInput}
-            />
-
-            <TextField
-              type="number"
-              name="phone"
-              id="phone"
-              required
-              autoComplete="off"
-              // value={contact.phone}
-              label="Enter your Phone Number"
-              variant="outlined"
-              className="input"
-              onChange={handleInput}
-            />
-
-            <TextField
-              type="text"
-              name="company"
-              id="company"
-              required
-              autoComplete="off"
-              // value={contact.company}
-              label="Enter your Co Name"
-              variant="outlined"
-              className="input"
-              onChange={handleInput}
-            />
-
-            <div className="submitBtn">
-              <button type="submit">Submit</button>
-            </div>
-          </Box>
-        </div>
       </div>
     </>
   );
