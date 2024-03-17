@@ -11,6 +11,8 @@ import Paper from "@mui/material/Paper";
 // import { useSelector } from "react-redux";
 
 const Quotation = () => {
+ 
+  // const modelprice = useSelector((state) => state.data.price);
   const { userId } = useParams();
   const [userData, setUserData] = useState(null);
 
@@ -53,32 +55,36 @@ const Quotation = () => {
   const {
     model,
     shockAbsorber,
-    price,
+    // price,
     series,
     spare,
     currency,
-    // originalPrice,
+    originalPrice,
   } = userData;
-  const prices = price;
+   const originalPrices = originalPrice;
   const rows = [
     {
       model: model,
       Quantity: shockAbsorber,
-      Price: prices,
+      Price: originalPrice ,
       Series: series,
-      Amount: shockAbsorber * prices,
+      // Amount: shockAbsorber * originalPrice,
       Spare: spare,
       // OriginalPrice: originalPrice,
     },
   ];
 
   console.log(shockAbsorber);
-  console.log(prices);
+ console.log(originalPrice);
   console.log(model);
   console.log(series);
   console.log(spare);
 
-  const [Amount] = rows.map((row) => row.Amount);
+  // const [Amount] = rows.map((row) => row.Amount);
+  
+  const spareAmount = rows.map((row) => row.Spare.map((spare) => spare.price * spare.quantity));
+ console.log(spareAmount);
+ const Amount=0;
   const gst = Math.round(Amount * 0.18);
   const freight = Math.round(Amount * 0.02);
   const total = Amount + gst + freight;
@@ -129,7 +135,7 @@ const Quotation = () => {
 
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">price:</h2>
-                <p> {currency === "INR" ? `₹ ${price}` : `$ ${price / 80}`}</p>
+                <p> {currency === "INR" ? `₹ ${originalPrice}` : `$ ${originalPrice / 80}`}</p>
               </div>
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">shockAbsorber:</h2>
@@ -181,7 +187,7 @@ const Quotation = () => {
                     <TableCell align="right">{index + 1}</TableCell>
                     <TableCell align="right">{row.Series}</TableCell>
                     <TableCell align="right">{row.Quantity}</TableCell>
-                    <TableCell align="right">{`₹ ${row.Price}`}</TableCell>
+                    <TableCell align="right">{`₹ ${row.Price * row.Quantity}`}</TableCell>
                   </TableRow>
                   {row.Spare.map((spareItem, spareIndex) => (
                     <TableRow key={spareItem._id.$oid}>
@@ -190,7 +196,7 @@ const Quotation = () => {
                       </TableCell>
                       <TableCell align="right">{spareItem.name}</TableCell>
                       <TableCell align="right">{spareItem.quantity}</TableCell>
-                      <TableCell align="right">{`₹ ${spareItem.price}`}</TableCell>
+                      <TableCell align="right">{`₹ ${spareItem.price * spareItem.quantity}`}</TableCell>
                     </TableRow>
                   ))}
                 </Fragment>
