@@ -19,6 +19,8 @@ const PricePage = () => {
   const { modelName } = useParams();
   const [prices, setPrices] = useState({});
   const [quantityDisplay, setQuantityDisplay] = useState({});
+  console.log(modelName.slice(0,2))
+  const modeldata = modelName.slice(0, 2);
 
   // Fetch spare parts data
   useEffect(() => {
@@ -65,6 +67,7 @@ const PricePage = () => {
     }, {});
     setQuantityDisplay(initialQuantityDisplay);
   }, [prices]);
+  const edassoc=["Bellows","Piston Rod Sensor","Ureathane Cap"]
 
   useEffect(() => {
     let total = prices.NEWPRICE || 0;
@@ -159,6 +162,74 @@ const PricePage = () => {
             </li>
           ))}
         </ul>
+      </div>
+      <div>
+      <h1 className="text-2xl font-bold mb-4 ml-2">Choose Accessories</h1>
+      {
+        (()=>{
+          if(modeldata === "ED"){
+            return(
+              <>
+             { edassoc.map((part, index) => (
+                <li key={index} className="flex items-center justify-between ">
+                  <div className="mr-2 w-[30%]">{part}</div>
+                  <div className="flex items-center">
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(
+                          part,
+                          Math.max(0, quantityDisplay[part] - 1)
+                        )
+                      }
+                      className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-2 mr-2 rounded"
+                    >
+                      -
+                    </button>
+                    <span>{quantityDisplay[part]}</span>
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(part, quantityDisplay[part] + 1)
+                      }
+                      className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-2 ml-2 rounded"
+                    >
+                      +
+                    </button>
+                  </div>
+                  {/* <span className="text-gray-800">
+                    {currency === "INR"
+                      ? `₹ ${prices[part] * quantityDisplay[part]}`
+                      : `$ ${(prices[part] * quantityDisplay[part]) / 80}`}
+                  </span> */}
+                </li>
+              )
+              )}
+               
+              </>
+             
+            )
+          }
+          else if(modeldata === "EI"){
+            return(
+              <>
+              <div className="flex gap-2 mb-4 ">
+              <input className="w-[5%]" type="checkbox" />
+                <label>Bellows</label>
+              </div>
+              </>
+            )
+          }
+          else{
+            return(
+              <>
+              <input className="mb-4" placeholder="customer request only"/>
+              </>
+            )
+          }
+        })
+
+        
+     () }
+
       </div>
       <div className="border border-gray-200 p-4 ">
         <div className="originalPrice flex items-center justify-between mb-4">
