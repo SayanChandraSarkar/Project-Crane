@@ -80,6 +80,11 @@ const PricePage = () => {
       [part]: newQuantity,
     }));
   };
+  const imagesection = {
+    "Foot Mounting": '/images/mount (1).jpg',
+    "Front Flange": '/images/front.jpg',
+    "Rear Flange": '/images/rear.jpg'
+  }
 
   const filteredParts = Object.keys(prices).filter(
     (part) =>
@@ -118,10 +123,12 @@ const PricePage = () => {
       <h1 className="text-2xl font-bold mb-4 ml-2">Choose Spare Parts</h1>
       <div className="mb-20">
         {/* <h2 className="text-xl font-semibold mb-2">Spare Parts</h2> */}
-        <ul className="grid grid-cols-1 md:grid-cols-2 gap-y-6  gap-x-4 ">
+        <ul className="grid grid-cols-1 md:grid-cols-1 gap-y-6  gap-x-4 ">
           {filteredParts.map((part, index) => (
-            <li key={index} className="flex items-center flex justify-between">
-              <div className="mr-2">{part}</div>
+
+            <li key={index} className="flex items-center justify-between ">
+              <img className="w-[10%]" src={imagesection[part]}/>
+              <div className="mr-2 w-[30%]">{part}</div>
               <div className="flex items-center">
                 <button
                   onClick={() =>
