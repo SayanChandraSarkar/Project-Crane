@@ -8,11 +8,18 @@ const PricePage = () => {
   const dispatch = useDispatch();
   const currency = useSelector((state) => state.data.currency);
   const shockAbsorber = useSelector((state) => state.data.shockAbsorber);
+  const kineticEnergy = useSelector((state) => state.data.kineticEnergy);
+  const potentialEnergy = useSelector((state) => state.data.potentialEnergy);
+  const totalEnergy = useSelector((state) => state.data.totalEnergy);
+  const energyPerHour = useSelector((state) => state.data.energyPerHour);
+  const Vd = useSelector((state) => state.data.Vd);
+  const emassMin = useSelector((state) => state.data.emassMin);
 
-  const [selectedParts, setSelectedParts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const { modelName } = useParams();
   const [prices, setPrices] = useState({});
+  const [quantityDisplay, setQuantityDisplay] = useState({});
+
   // Fetch spare parts data
   useEffect(() => {
     const fetchPrices = async () => {
@@ -34,6 +41,12 @@ const PricePage = () => {
               data: data.price,
               currency: currency,
               shockAbsorber: shockAbsorber,
+              kineticEnergy: kineticEnergy,
+              potentialEnergy: potentialEnergy,
+              totalEnergy: totalEnergy,
+              energyPerHour: energyPerHour,
+              Vd: Vd,
+              emassMin: emassMin,
             })
           );
         }
@@ -45,36 +58,27 @@ const PricePage = () => {
     fetchPrices();
   }, [modelName]);
 
-  // Calculate total price whenever selectedParts changes
+  useEffect(() => {
+    const initialQuantityDisplay = Object.keys(prices).reduce((acc, part) => {
+      acc[part] = 0;
+      return acc;
+    }, {});
+    setQuantityDisplay(initialQuantityDisplay);
+  }, [prices]);
+
   useEffect(() => {
     let total = prices.NEWPRICE || 0;
-    selectedParts.forEach((part) => {
-      total += part.price * part.quantity || 0;
+    Object.keys(quantityDisplay).forEach((part) => {
+      total += prices[part] * quantityDisplay[part] || 0;
     });
     setTotalPrice(total);
-  }, [selectedParts, prices]);
+  }, [quantityDisplay, prices]);
 
-  console.log(selectedParts);
-  const handlePartSelection = (part) => {
-    const existingPartIndex = selectedParts.findIndex(
-      (selectedPart) => selectedPart.name === part.name
-    );
-    if (existingPartIndex !== -1) {
-      const updatedSelectedParts = [...selectedParts];
-      updatedSelectedParts[existingPartIndex].quantity++;
-      setSelectedParts(updatedSelectedParts);
-    } else {
-      setSelectedParts([
-        ...selectedParts,
-        { ...part, quantity: 1 }, // Initialize quantity to 1
-      ]);
-    }
-  };
-
-  const handleQuantityChange = (index, quantity) => {
-    const updatedSelectedParts = [...selectedParts];
-    updatedSelectedParts[index].quantity = quantity;
-    setSelectedParts(updatedSelectedParts);
+  const handleQuantityChange = (part, newQuantity) => {
+    setQuantityDisplay((prevQuantityDisplay) => ({
+      ...prevQuantityDisplay,
+      [part]: newQuantity,
+    }));
   };
 
   const filteredParts = Object.keys(prices).filter(
@@ -85,13 +89,25 @@ const PricePage = () => {
   );
 
   const handleNextButtonClick = () => {
+    const selectedPartsData = Object.keys(quantityDisplay).map((part) => ({
+      name: part,
+      quantity: quantityDisplay[part],
+      price: prices[part] * quantityDisplay[part],
+    }));
+    console.log(selectedPartsData);
     dispatch(
       addData({
         totalPrice: totalPrice,
-        spare: selectedParts,
+        spare: selectedPartsData.filter(({ quantity }) => quantity > 0),
         shockAbsorber: shockAbsorber,
         data: prices,
         currency: currency,
+        kineticEnergy: kineticEnergy,
+        potentialEnergy: potentialEnergy,
+        totalEnergy: totalEnergy,
+        energyPerHour: energyPerHour,
+        Vd: Vd,
+        emassMin: emassMin,
       })
     );
     // Navigate to the next page
@@ -102,28 +118,37 @@ const PricePage = () => {
       <h1 className="text-2xl font-bold mb-4 ml-2">Choose Spare Parts</h1>
       <div className="mb-20">
         {/* <h2 className="text-xl font-semibold mb-2">Spare Parts</h2> */}
-        <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 ml-4">
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-y-6  gap-x-4 ">
           {filteredParts.map((part, index) => (
-            <li key={index} className="flex items-center">
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  // value={part}
-                  checked={selectedParts.some(
-                    (selectedPart) => selectedPart.name === part
-                  )}
-                  onChange={() =>
-                    handlePartSelection({ name: part, price: prices[part] })
+            <li key={index} className="flex items-center flex justify-between">
+              <div className="mr-2">{part}</div>
+              <div className="flex items-center">
+                <button
+                  onClick={() =>
+                    handleQuantityChange(
+                      part,
+                      Math.max(0, quantityDisplay[part] - 1)
+                    )
                   }
-                  className="form-checkbox h-5 w-5 text-green-600 mr-2"
-                />
-                <span className="text-gray-800">
-                  {part} -{" "}
-                  {currency === "INR"
-                    ? `₹ ${prices[part]}`
-                    : ` $ ${prices[part] / 80}`}
-                </span>
-              </label>
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-2 mr-2 rounded"
+                >
+                  -
+                </button>
+                <span>{quantityDisplay[part]}</span>
+                <button
+                  onClick={() =>
+                    handleQuantityChange(part, quantityDisplay[part] + 1)
+                  }
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-2 ml-2 rounded"
+                >
+                  +
+                </button>
+              </div>
+              <span className="text-gray-800">
+                {currency === "INR"
+                  ? `₹ ${prices[part] * quantityDisplay[part]}`
+                  : `$ ${(prices[part] * quantityDisplay[part]) / 80}`}
+              </span>
             </li>
           ))}
         </ul>
@@ -138,33 +163,22 @@ const PricePage = () => {
           </div>
         </div>
         <ul className="mb-4">
-          {selectedParts.map((part, index) => (
-            <li key={index} className="flex items-center justify-between mb-2">
-              <span className="text-blue-600 mr-2">{part.name}</span>
-
-              {part.quantity && ( // Check if quantity exists
-                <select
-                  value={part.quantity}
-                  onChange={(e) =>
-                    handleQuantityChange(index, parseInt(e.target.value))
-                  }
-                  className="border border-gray-400 rounded px-2 py-1 ml-2 text-sm"
+          {Object.keys(quantityDisplay).map(
+            (part, index) =>
+              quantityDisplay[part] > 0 && (
+                <li
+                  key={index}
+                  className="flex items-center justify-between mb-2"
                 >
-                  {[...Array(10).keys()].map((num) => (
-                    <option key={num} value={num + 1}>
-                      {num + 1}
-                    </option>
-                  ))}
-                </select>
-              )}
-
-              <span className="text-gray-800">
-                {currency === "INR"
-                  ? `₹ ${part.price * part.quantity}`
-                  : `$ ${(part.price * part.quantity) / 80}`}
-              </span>
-            </li>
-          ))}
+                  <span className="text-blue-600 mr-2">{part}</span>
+                  <span className="text-gray-800">
+                    {currency === "INR"
+                      ? `₹ ${prices[part] * quantityDisplay[part]}`
+                      : `$ ${(prices[part] * quantityDisplay[part]) / 80}`}
+                  </span>
+                </li>
+              )
+          )}
         </ul>
         <hr />
         <div className=" flex items-center justify-between mt-4">

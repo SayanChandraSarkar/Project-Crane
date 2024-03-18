@@ -68,7 +68,7 @@ const UserDetails = () => {
         const data = await response.json();
         setContact(defaultContactFormData);
         const userId = data.createdContact._id;
-        navigate(`/price/${modelName}/info/quotation/${userId}`);
+        navigate(`/price/${modelName}/info/${userId}/technical`);
         alert("Message sent successfully");
         // Clear local storage keys after successful submission
       } else {

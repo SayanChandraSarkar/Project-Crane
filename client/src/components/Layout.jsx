@@ -18,8 +18,9 @@ import PricePage from "../extra/ModelPricesPage";
 import { useNavigate } from "react-router-dom";
 import UserDetails from "../extra/Information";
 import Quotation from "../extra/Quotation";
-import ModelPricesPage from "../extra/ModelPricesPage";
+import { Technical } from "../extra/Technical";
 import "../scss/Print.scss";
+import { RootPage } from "../extra/RootPage";
 export const Layout = () => {
   const navigate = useNavigate();
 
@@ -134,10 +135,19 @@ export const Layout = () => {
               <Route path="/price/:modelName" element={<PricePage />} />
               <Route path="/price/:modelName/info" element={<UserDetails />} />
               <Route
-                path="/price/:modelName/info/quotation/:userId"
+                path="/price/:modelName/info/:userId/technical/quotation"
                 element={<Quotation />}
               />
-              <Route path="/modelprice" element={<ModelPricesPage />} />
+              <Route
+                path="/price/:modelName/info/:userId/technical"
+                // path="/technical"
+                element={<Technical />}
+              />
+              <Route
+                path="/root"
+                // path="/technical"
+                element={<RootPage />}
+              />
             </Routes>
           </div>
         </div>

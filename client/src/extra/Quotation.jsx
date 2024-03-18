@@ -11,7 +11,6 @@ import Paper from "@mui/material/Paper";
 // import { useSelector } from "react-redux";
 
 const Quotation = () => {
- 
   // const modelprice = useSelector((state) => state.data.price);
   const { userId } = useParams();
   const [userData, setUserData] = useState(null);
@@ -61,12 +60,12 @@ const Quotation = () => {
     currency,
     originalPrice,
   } = userData;
-   const originalPrices = originalPrice;
+  const originalPrices = originalPrice;
   const rows = [
     {
       model: model,
       Quantity: shockAbsorber,
-      Price: originalPrice ,
+      Price: originalPrices,
       Series: series,
       // Amount: shockAbsorber * originalPrice,
       Spare: spare,
@@ -75,23 +74,48 @@ const Quotation = () => {
   ];
 
   console.log(shockAbsorber);
- console.log(originalPrice);
+  console.log(originalPrice);
   console.log(model);
   console.log(series);
   console.log(spare);
 
   // const [Amount] = rows.map((row) => row.Amount);
-  
-  const spareAmount = rows.map((row) => row.Spare.map((spare) => spare.price * spare.quantity));
- console.log(spareAmount);
- const Amount=0;
-  const gst = Math.round(Amount * 0.18);
+
+  // const spareAmount = rows.map((row) =>
+  //   row.Spare.map((spare) => spare.price * spare.quantity)
+  // );
+  // console.log(spareAmount);
+  const totalSpareAmount = rows.reduce(
+    (total, row) =>
+      total +
+      row.Spare.reduce((subtotal, spareItem) => {
+        const itemTotal = spareItem.price * spareItem.quantity;
+        console.log(subtotal);
+        console.log(itemTotal);
+        return subtotal + itemTotal;
+      }, 0),
+    0
+  );
+
+  const totalPrice = rows.reduce((total, row) => {
+    const itemTotal = row.Price * row.Quantity;
+    return total + itemTotal;
+  }, 0);
+
+  const Amount = totalSpareAmount + totalPrice;
+
   const freight = Math.round(Amount * 0.02);
+  const amountFreight = Amount + freight;
+  const gst = Math.round(amountFreight * 0.18);
   const total = Amount + gst + freight;
-  const [spareQnt] = rows.map((row) => row.Spare.quantity);
-  // const originalPrice = console.log();
+  const totalUsd = total - gst - freight;
+  console.log(total);
+  console.log(totalUsd);
   console.log(Amount);
-  console.log(spareQnt);
+
+  const packaging = Math.round(Amount * 0.02);
+  const totalPack = Amount + packaging;
+  console.log(gst);
   return (
     <>
       <div className="p-4 quotation">
@@ -111,8 +135,8 @@ const Quotation = () => {
               <p className="mb-2 address">
                 SLU - W - 39, Addl; MIDC, Kodoli, Satara - 415004. MH. 
               </p>
-              <span className="mb-8 address">
-                <p className="">GSTN:</p>
+              <span className="mb-8 flex">
+                <p className="mr-2">GSTN:</p>
                 <p className="">27AHAPA3555B1Z1</p>
               </span>
             </div>
@@ -135,7 +159,12 @@ const Quotation = () => {
 
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">price:</h2>
-                <p> {currency === "INR" ? `₹ ${originalPrice}` : `$ ${originalPrice / 80}`}</p>
+                <p>
+                  {" "}
+                  {currency === "INR"
+                    ? `₹ ${originalPrice}`
+                    : `$ ${originalPrice / 80}`}
+                </p>
               </div>
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">shockAbsorber:</h2>
@@ -181,26 +210,45 @@ const Quotation = () => {
                 },
               }}
             >
-              {rows.map((row, index) => (
-                <Fragment key={row.model}>
-                  <TableRow>
-                    <TableCell align="right">{index + 1}</TableCell>
-                    <TableCell align="right">{row.Series}</TableCell>
-                    <TableCell align="right">{row.Quantity}</TableCell>
-                    <TableCell align="right">{`₹ ${row.Price * row.Quantity}`}</TableCell>
-                  </TableRow>
-                  {row.Spare.map((spareItem, spareIndex) => (
-                    <TableRow key={spareItem._id.$oid}>
+              {rows.map((row, index) => {
+                // Calculate the total price for the current row
+                const totalPriceForRow = row.Price * row.Quantity;
+
+                return (
+                  <Fragment key={row.model}>
+                    <TableRow>
+                      <TableCell align="right">{index + 1}</TableCell>
+                      <TableCell align="right">{row.Series}</TableCell>
+                      <TableCell align="right">{row.Quantity}</TableCell>
                       <TableCell align="right">
-                        {index + 1 + spareIndex + 1}
+                        {currency === "INR"
+                          ? `₹ ${totalPriceForRow}`
+                          : `$ ${totalPriceForRow / 80}`}
                       </TableCell>
-                      <TableCell align="right">{spareItem.name}</TableCell>
-                      <TableCell align="right">{spareItem.quantity}</TableCell>
-                      <TableCell align="right">{`₹ ${spareItem.price * spareItem.quantity}`}</TableCell>
                     </TableRow>
-                  ))}
-                </Fragment>
-              ))}
+                    {row.Spare.map((spareItem, spareIndex) => {
+                      const totalSparePrice =
+                        spareItem.price * spareItem.quantity;
+                      return (
+                        <TableRow key={spareItem._id.$oid}>
+                          <TableCell align="right">
+                            {index + 1 + spareIndex + 1}
+                          </TableCell>
+                          <TableCell align="right">{spareItem.name}</TableCell>
+                          <TableCell align="right">
+                            {spareItem.quantity}
+                          </TableCell>
+                          <TableCell align="right">
+                            {currency === "INR"
+                              ? `₹ ${totalSparePrice}`
+                              : `$ ${totalSparePrice / 80}`}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </Fragment>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
@@ -210,24 +258,59 @@ const Quotation = () => {
             <TableBody>
               <TableRow>
                 <TableCell colSpan={2}>Amount</TableCell>
-                <TableCell align="right">{`₹ ${Amount}`}</TableCell>
+                <TableCell align="right">
+                  {currency === "INR" ? `₹ ${Amount}` : `$ ${Amount / 80}`}
+                </TableCell>
               </TableRow>
-              <TableRow>
-                <TableCell colSpan={2}>Gst 18%</TableCell>
-                <TableCell align="right">{`₹ ${gst}`}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={2}>Freight 2%</TableCell>
-                <TableCell align="right">{`₹ ${freight}`}</TableCell>
-              </TableRow>
+              {currency !== "USD" && (
+                <TableRow>
+                  <TableCell colSpan={2}>Freight 2%</TableCell>
+                  <TableCell align="right">
+                    {currency === "INR" ? `₹ ${freight}` : `$ ${freight / 80}`}
+                  </TableCell>
+                </TableRow>
+              )}
+
+              {currency !== "USD" && (
+                <TableRow>
+                  <TableCell colSpan={2}>Gst 18%</TableCell>
+                  <TableCell align="right">{`₹ ${gst}`}</TableCell>
+                </TableRow>
+              )}
+
+              {currency == "USD" && (
+                <TableRow>
+                  <TableCell colSpan={2}>Packaging 2%</TableCell>
+                  <TableCell align="right">
+                    {currency === "INR"
+                      ? `₹ ${packaging}`
+                      : `$ ${packaging / 80}`}
+                  </TableCell>
+                </TableRow>
+              )}
+
               <TableRow className="border-t-4   border-gray-300">
                 <TableCell colSpan={2} className="!font-medium ">
                   Total
                 </TableCell>
-                <TableCell
-                  align="right"
-                  className="!text-green-600 !font-semibold"
-                >{`₹ ${total}`}</TableCell>
+
+                {currency === "INR" ? (
+                  <TableCell
+                    align="right"
+                    className="!text-green-600 !font-semibold"
+                  >
+                    {`₹ ${total}`}
+                  </TableCell>
+                ) : (
+                  <TableCell
+                    align="right"
+                    className="!text-green-600 !font-semibold"
+                  >
+                    {currency === "INR"
+                      ? `₹ ${totalPack}`
+                      : `$ ${totalPack / 80}`}
+                  </TableCell>
+                )}
               </TableRow>
             </TableBody>
           </Table>
