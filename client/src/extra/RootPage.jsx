@@ -14,7 +14,7 @@ export const RootPage = () => {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row justify-center items-center p-4 ">
+      <div className="flex flex-col md:flex-row justify-center items-center p-4 h-[100%] md:h-[83vh]">
         <div
           className="flex  items-center flex-col gap-8 "
           onClick={handlefirstcrane}

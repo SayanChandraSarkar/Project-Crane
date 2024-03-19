@@ -17,7 +17,7 @@
 .output {
   background-color: #ffff;
   width: auto;
-  margin: 2px 15px;
+  // margin: 2px 15px;
   border-radius: 6px;
   margin-bottom: 20px;
   box-shadow: 0px 0px 10px 2px #d4d3d3;
@@ -61,9 +61,9 @@
   }
   .App .output {
     width: 100%;
-    position: absolute;
-    top: 0;
-    left: 20%;
+    // position: absolute;
+    // top: 0;
+    // left: 20%;
     padding: 30px;
     padding-top: 40px;
   }
