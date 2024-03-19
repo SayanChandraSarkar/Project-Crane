@@ -68,7 +68,7 @@ export const CraneFirst = () => {
   const [selectedType, setSelectedType] = useState("");
   const [top5ModelNames, setTop5ModelNames] = useState([]);
   const [showModelOutput, setShowModelOutput] = useState(false);
-  const [shockAbsorber, setShockAbsorber] = useState(2);
+  const [shockAbsorber, setShockAbsorber] = useState("2");
   const [modelPrices, setModelPrices] = useState({});
   const [selectedCurrency, setSelectedCurrency] = useState("INR");
   // console.log(modelPrices);
@@ -143,7 +143,6 @@ export const CraneFirst = () => {
 
   const handleCalculate = () => {
     const kineticEnergy = mValue * vValue ** 2 * 0.25; //0.5 * (emassMin * 1000) * v**2
-
     const potentialEnergy = fValue * sValue;
     const totalEnergy = kineticEnergy + potentialEnergy;
     const energyPerHour = totalEnergy * cValue;
@@ -163,17 +162,6 @@ export const CraneFirst = () => {
     fetchPricesForModels(top5ModelNames);
     setShowModelOutput(true);
   };
-  // dispatch(
-  //   addData({
-  //     shockAbsorber: shockAbsorber,
-  //     kineticEnergy: calculatedResults.kineticEnergy,
-  //     potentialEnergy: calculatedResults.potentialEnergy,
-  //     totalEnergy: calculatedResults.totalEnergy,
-  //     energyPerHour: calculatedResults.energyPerHour,
-  //     Vd: calculatedResults.Vd,
-  //     emassMin: calculatedResults.emassMin,
-  //   })
-  // );
 
   //Fetching Data
   const getData = async () => {
@@ -371,11 +359,12 @@ export const CraneFirst = () => {
                     <Autocomplete
                       id="controllable-states-demo"
                       className="autocomplete"
+                      value={shockAbsorber}
                       onChange={handleAbsorberChange}
                       options={option2}
+                      getOptionLabel={(option) => option.toString()}
+                      isOptionEqualToValue={(option, value) => option === value}
                       name="shockAbsorber"
-                      // value={contact.shockAbsorber}
-                      // sx={{ width: 480, marginLeft: "8px", marginRight: "8px" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Shock Absorbers" />
                       )}
@@ -398,9 +387,7 @@ export const CraneFirst = () => {
                       className="autocomplete"
                       onChange={handleTypeChange}
                       options={Type}
-                      name="shockAbsorber"
-                      // value={contact.shockAbsorber}
-                      // sx={{ width: 480, marginLeft: "8px", marginRight: "8px" }}
+                      name="Type"
                       renderInput={(params) => (
                         <TextField {...params} label="Choose your type" />
                       )}
@@ -426,9 +413,7 @@ export const CraneFirst = () => {
                         setSelectedCurrency(newValue)
                       }
                       options={Currency}
-                      name="shockAbsorber"
-                      // value={contact.shockAbsorber}
-                      // sx={{ width: 480, marginLeft: "8px", marginRight: "8px" }}
+                      name="selectedCurrency"
                       renderInput={(params) => (
                         <TextField {...params} label="Choose your currency" />
                       )}
@@ -559,7 +544,7 @@ export const CraneFirst = () => {
                     <div key={index} className="model-button-container">
                       <div
                         onClick={() => handleModelClick(model)}
-                        className="w-[90%] pt-[2rem] mx-auto bg-emerald-900   h-[10vh] text-white mb-4  rounded-2xl"
+                        className="w-[90%] flex items-center justify-center mx-auto bg-emerald-900 h-[10vh] text-white mb-4  rounded-2xl"
                       >
                         {modelPrices[model] !== undefined
                           ? selectedCurrency === "INR"

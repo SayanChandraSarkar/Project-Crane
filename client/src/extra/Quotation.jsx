@@ -59,6 +59,7 @@ const Quotation = () => {
     spare,
     currency,
     originalPrice,
+    AdditionalAccessories,
   } = userData;
   const originalPrices = originalPrice;
   const rows = [
@@ -70,6 +71,8 @@ const Quotation = () => {
       // Amount: shockAbsorber * originalPrice,
       Spare: spare,
       // OriginalPrice: originalPrice,
+
+      AdditionalAccessories: AdditionalAccessories,
     },
   ];
 
@@ -77,7 +80,7 @@ const Quotation = () => {
   console.log(originalPrice);
   console.log(model);
   console.log(series);
-  console.log(spare);
+  console.log(AdditionalAccessories);
 
   // const [Amount] = rows.map((row) => row.Amount);
 
@@ -210,7 +213,7 @@ const Quotation = () => {
                 },
               }}
             >
-              {rows.map((row, index) => {
+              {/* {rows.map((row, index) => {
                 // Calculate the total price for the current row
                 const totalPriceForRow = row.Price * row.Quantity;
 
@@ -246,6 +249,110 @@ const Quotation = () => {
                         </TableRow>
                       );
                     })}
+
+                    {row.AdditionalAccessories.map(
+                      (accessory, accessoryIndex, spareIndex) => {
+                        const totalAccessoryPrice =
+                          accessory.price * accessory.quantity;
+
+                        return (
+                          <TableRow key={accessory.name}>
+                            <TableCell align="right">
+                              {index + 1 + spareIndex + 1 + accessoryIndex + 1}
+                            </TableCell>
+                            <TableCell align="right">
+                              {accessory.name}
+                            </TableCell>
+                            <TableCell align="right">
+                              {accessory.quantity}
+                            </TableCell>
+                            <TableCell align="right">
+                              {currency === "INR"
+                                ? `₹ ${totalAccessoryPrice}`
+                                : `$ ${totalAccessoryPrice / 80}`}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+                    )}
+                  </Fragment>
+                );
+              })} */}
+
+              {rows.map((row, index) => {
+                // Calculate the total price for the current row
+                const totalPriceForRow = row.Price * row.Quantity;
+
+                // Check if the first row is 'ED', 'EI', or 'SB'
+                const isFirstRowSpecial = ["ED", "EI", "SB"].includes(
+                  row.Series
+                );
+
+                let serialNumber = index + 1; // Initialize serial number for the current row
+
+                return (
+                  <Fragment key={row.model}>
+                    <TableRow>
+                      <TableCell align="right">{serialNumber}</TableCell>
+                      <TableCell align="right">{row.Series}</TableCell>
+                      <TableCell align="right">{row.Quantity}</TableCell>
+                      <TableCell align="right">
+                        {currency === "INR"
+                          ? `₹ ${totalPriceForRow}`
+                          : `$ ${totalPriceForRow / 80}`}
+                      </TableCell>
+                    </TableRow>
+                    {isFirstRowSpecial && row.Spare.length > 0 && (
+                      <>
+                        {row.Spare.map((spareItem) => {
+                          const totalSparePrice =
+                            spareItem.price * spareItem.quantity;
+                          serialNumber++;
+
+                          return (
+                            <TableRow key={serialNumber}>
+                              <TableCell align="right">
+                                {serialNumber}
+                              </TableCell>
+                              <TableCell align="right">
+                                {spareItem.name}
+                              </TableCell>
+                              <TableCell align="right">
+                                {spareItem.quantity}
+                              </TableCell>
+                              <TableCell align="right">
+                                {currency === "INR"
+                                  ? `₹ ${totalSparePrice}`
+                                  : `$ ${totalSparePrice / 80}`}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </>
+                    )}
+                    {isFirstRowSpecial &&
+                      row.AdditionalAccessories.length > 0 && (
+                        <>
+                          {row.AdditionalAccessories.map((accessory) => {
+                            serialNumber++;
+
+                            return (
+                              <TableRow key={serialNumber}>
+                                <TableCell align="right">
+                                  {serialNumber}
+                                </TableCell>
+                                <TableCell align="right">
+                                  {accessory.name}
+                                </TableCell>
+                                <TableCell align="right">
+                                  {accessory.quantity}
+                                </TableCell>
+                                <TableCell align="right">N/A</TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        </>
+                      )}
                   </Fragment>
                 );
               })}

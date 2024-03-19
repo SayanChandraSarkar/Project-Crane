@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import Button from "@mui/material/Button";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import { Icon } from "@iconify/react";
+// import Box from "@mui/material/Box";
+
+// import List from "@mui/material/List";
+// import ListItem from "@mui/material/ListItem";
+// import ListItemButton from "@mui/material/ListItemButton";
+// import ListItemText from "@mui/material/ListItemText";
+
 import "./Layout.scss";
 
 //Import files
@@ -15,79 +14,79 @@ import { CraneFirst } from "../pages/Crane-1";
 import { CraneSecond } from "../pages/Crane-2";
 import { CraneThird } from "../pages/Crane-3";
 import PricePage from "../extra/ModelPricesPage";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import UserDetails from "../extra/Information";
 import Quotation from "../extra/Quotation";
 import { Technical } from "../extra/Technical";
 import "../scss/Print.scss";
 import { RootPage } from "../extra/RootPage";
 export const Layout = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(
-    "Wagon against 2 shock absorbers"
-  );
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-      if (window.innerWidth <= 1240) {
-        setOpenDrawer(false);
-      }
-    };
+  // const [openDrawer, setOpenDrawer] = useState(false);
+  // const [selectedItem, setSelectedItem] = useState(
+  //   "Wagon against 2 shock absorbers"
+  // );
+  // const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     setWindowWidth(window.innerWidth);
+  //     if (window.innerWidth <= 1240) {
+  //       setOpenDrawer(false);
+  //     }
+  //   };
 
-    window.addEventListener("resize", handleResize);
+  //   window.addEventListener("resize", handleResize);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, []);
 
-  const toggleDrawer = (open) => () => {
-    setOpenDrawer(open);
-  };
+  // const toggleDrawer = (open) => () => {
+  //   setOpenDrawer(open);
+  // };
 
-  const handleItemClick = (url) => {
-    setSelectedItem(url);
-    setOpenDrawer(false);
-    navigate(url);
-    // navigate('/hello');
-  };
+  // const handleItemClick = (url) => {
+  //   setSelectedItem(url);
+  //   setOpenDrawer(false);
+  //   navigate(url);
+  //   // navigate('/hello');
+  // };
 
-  const menuItems = ["Crane First", "Crane Second", "Crane Third"];
+  // const menuItems = ["Crane First", "Crane Second", "Crane Third"];
 
-  //Drawer List
-  const DrawerList = (
-    <Box sx={{ width: 260 }} role="presentation" onClick={toggleDrawer(false)}>
-      <div className="logo">
-        <img src="/images/logo.png" alt="Logo" />
-      </div>
-      <List>
-        {[
-          { path: "/", label: "Wagon against 2 shock absorbers" },
-          { path: "/crane-2", label: "Wagon against Wagon" },
-          { path: "/crane-3", label: "Wagon against Wagon 2 shock absorber" },
-        ].map((t) => (
-          <ListItem
-            key={t.path}
-            disablePadding
-            className="listItem"
-            onClick={() => handleItemClick(t.path)}
-          >
-            <ListItemButton>
-              <ListItemText primary={t.label} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+  // //Drawer List
+  // const DrawerList = (
+  //   <Box sx={{ width: 260 }} role="presentation" onClick={toggleDrawer(false)}>
+  //     <div className="logo">
+  //       <img src="/images/logo.png" alt="Logo" />
+  //     </div>
+  //     <List>
+  //       {[
+  //         { path: "/", label: "Wagon against 2 shock absorbers" },
+  //         { path: "/crane-2", label: "Wagon against Wagon" },
+  //         { path: "/crane-3", label: "Wagon against Wagon 2 shock absorber" },
+  //       ].map((t) => (
+  //         <ListItem
+  //           key={t.path}
+  //           disablePadding
+  //           className="listItem"
+  //           onClick={() => handleItemClick(t.path)}
+  //         >
+  //           <ListItemButton>
+  //             <ListItemText primary={t.label} />
+  //           </ListItemButton>
+  //         </ListItem>
+  //       ))}
+  //     </List>
+  //   </Box>
+  // );
 
   return (
     <>
       <div className="App">
-        <div className="navbar">
+        {/* <div className="navbar">
           <div className="logo">
             <img src="/images/logo.png" alt="Logo" />
           </div>
@@ -102,9 +101,9 @@ export const Layout = () => {
               </li>
             ))}
           </ul>
-        </div>
+        </div> */}
         <div>
-          {windowWidth <= 1240 && (
+          {/* {windowWidth <= 1240 && (
             <Button
               sx={{
                 fontSize: "2.2rem",
@@ -125,10 +124,15 @@ export const Layout = () => {
             }`}
           >
             {DrawerList}
-          </Drawer>
-          <div className="output">
+          </Drawer> */}
+          <div className="output mt-6">
             <Routes>
-              <Route path="/" element={<CraneFirst />} />
+              <Route
+                path="/"
+                // path="/technical"`
+                element={<RootPage />}
+              />
+              <Route path="/crane-1" element={<CraneFirst />} />
               <Route path="/crane-2" element={<CraneSecond />} />
               <Route path="/crane-3" element={<CraneThird />} />
 
@@ -142,11 +146,6 @@ export const Layout = () => {
                 path="/price/:modelName/info/:userId/technical"
                 // path="/technical"
                 element={<Technical />}
-              />
-              <Route
-                path="/root"
-                // path="/technical"
-                element={<RootPage />}
               />
             </Routes>
           </div>

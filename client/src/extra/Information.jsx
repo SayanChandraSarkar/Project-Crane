@@ -14,6 +14,9 @@ const UserDetails = () => {
   const series = useSelector((state) => state.data.data.series);
   const originalPrice = useSelector((state) => state.data.data.NEWPRICE);
   const currency = useSelector((state) => state.data.currency);
+  const addAdditionalPriceData = useSelector(
+    (state) => state.data.addAdditionalPriceData
+  );
   console.log(originalPrice);
   const defaultContactFormData = {
     username: "",
@@ -54,6 +57,7 @@ const UserDetails = () => {
         series: series,
         originalPrice: originalPrice,
         currency: currency,
+        AdditionalAccessories: addAdditionalPriceData,
         // section: content,
         // type: selectedType,
       };

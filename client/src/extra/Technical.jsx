@@ -23,31 +23,31 @@ export const Technical = () => {
           </div>
         </div>
 
-        <div className="quotation-by-section w-[100%] flex flex-col  gap-[8%] md:flex-row">
+        <div className="quotation-by-section w-[80%] flex flex-col  gap-[8%] md:flex-row m-auto">
           <div className="">
-            <span className="mb-8 flex">
+            <span className="mb-8 flex justify-between ">
               <p className="mr-2 font-bold">Kinetic Energy:</p>
               <p className="">{kineticEnergy}</p>
             </span>
-            <span className="mb-8 flex">
+            <span className="mb-8 flex justify-between">
               <p className="mr-2 font-bold">Potential Energy:</p>
               <p className="">{potentialEnergy}</p>
             </span>
 
-            <span className="mb-8 flex">
+            <span className="mb-8 flex justify-between">
               <p className="mr-2 font-bold">Total Energy:</p>
               <p className="">{totalEnergy}</p>
             </span>
 
-            <span className="mb-8 flex">
+            <span className="mb-8 flex justify-between">
               <p className="mr-2 font-bold">Energy Per Hour:</p>
               <p className="">{energyPerHour}</p>
             </span>
-            <span className="mb-8 flex">
+            <span className="mb-8 flex justify-between">
               <p className="mr-2 font-bold">Vd:</p>
               <p className="">{Vd}</p>
             </span>
-            <span className="mb-8 flex">
+            <span className="mb-8 flex justify-between">
               <p className="mr-2 font-bold">EmassMin:</p>
               <p className="">{emassMin}</p>
             </span>
@@ -72,13 +72,22 @@ export const Technical = () => {
                   `/price/${modelName}/info/${userId}/technical/quotation`
                 );
               }}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-[auto]"
+              className="next bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-[auto]"
             >
               Next
             </button>
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media print {
+         
+          .submitBtn, .next {
+            display: none;
+          }
+        }
+      `}</style>
     </>
   );
 };

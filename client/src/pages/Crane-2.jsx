@@ -6,8 +6,9 @@ import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-// import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
-// import { styled } from "@mui/system";
+
+import { useDispatch } from "react-redux";
+import { addData } from "../features/dataSlice";
 import PropTypes from "prop-types";
 
 import "../scss/Crane-2.scss";
@@ -56,8 +57,12 @@ const option2 = ["1", "2", "3", "4"];
 
 const Type = ["ED", "EI", "SB"];
 
+const Currency = ["USD", "INR"];
+
 export const CraneSecond = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [mValue, setMValue] = useState("");
   const [v1Value, setV1Value] = useState("");
   const [cValue, setCValue] = useState("");
@@ -65,10 +70,12 @@ export const CraneSecond = () => {
   const [sValue, setSValue] = useState("");
   const [v2Value, setV2Value] = useState("");
   const [m2Value, setM2Value] = useState("");
-  const [shockAbsorber, setShockAbsorber] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [top5ModelNames, setTop5ModelNames] = useState([]);
   const [showModelOutput, setShowModelOutput] = useState(false);
+  const [shockAbsorber, setShockAbsorber] = useState("2");
+  const [modelPrices, setModelPrices] = useState({});
+  const [selectedCurrency, setSelectedCurrency] = useState("INR");
 
   const [calculatedResults, setCalculatedResults] = useState({
     kineticEnergy: "",
@@ -79,13 +86,7 @@ export const CraneSecond = () => {
   });
 
   const [content, setContent] = useState("Initial Content");
-  const defaultContactFormData = {
-    username: "",
-    email: "",
-    phone: "",
-    company: "",
-  };
-  const [contact, setContact] = useState(defaultContactFormData);
+
   //Dynamic heading
   const DynamicHeading = ({
     className,
@@ -110,53 +111,6 @@ export const CraneSecond = () => {
     initialContent: PropTypes.string.isRequired,
     content: PropTypes.string,
     setContent: PropTypes.func.isRequired,
-  };
-
-  //Textarea Autosize
-  // const Textarea = styled(BaseTextareaAutosize)(
-  //   ({ theme }) => `
-  //   box-sizing: border-box;
-  //   width: 320px;
-  //   font-family: 'IBM Plex Sans', sans-serif;
-  //   font-size: 0.875rem;
-  //   font-weight: 400;
-  //   line-height: 1.5;
-  //   padding: 8px 12px;
-  //   border-radius: 8px;
-  //   color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
-  //   background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-  //   border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
-  //   box-shadow: 0px 2px 2px ${
-  //     theme.palette.mode === "dark" ? grey[900] : grey[50]
-  //   };
-
-  //   &:hover {
-  //     border-color: ${blue[400]};
-  //   }
-
-  //   &:focus {
-  //     border-color: ${blue[400]};
-  //     box-shadow: 0 0 0 3px ${
-  //       theme.palette.mode === "dark" ? blue[600] : blue[200]
-  //     };
-  //   }
-
-  //   // firefox
-  //   &:focus-visible {
-  //     outline: 0;
-  //   }
-  // `
-  // );
-
-  const handleInput = (e) => {
-    // console.log(e);
-
-    let name = e.target.name;
-    let value = e.target.value;
-    setContact({
-      ...contact,
-      [name]: value,
-    });
   };
 
   // Event handlers for form controls
@@ -197,10 +151,11 @@ export const CraneSecond = () => {
   //Handle Calculated Data
 
   const handleCalculate = () => {
-    const kineticEnergy =
+    const kineticEnergy = Math.round(
       ((mValue * m2Value) / (Number(mValue) + Number(m2Value))) *
-      (Number(v1Value) + Number(v2Value)) ** 2 *
-      0.5;
+        (Number(v1Value) + Number(v2Value)) ** 2 *
+        0.5
+    );
     const potentialEnergy = fValue * sValue;
     const totalEnergy = kineticEnergy + potentialEnergy;
     const energyPerHour = totalEnergy * cValue;
@@ -217,6 +172,7 @@ export const CraneSecond = () => {
       emassMin,
     });
 
+    fetchPricesForModels(top5ModelNames);
     setShowModelOutput(true);
   };
 
@@ -249,40 +205,9 @@ export const CraneSecond = () => {
         console.log(top5ModelNames);
 
         setTop5ModelNames(top5ModelNames);
+        fetchPricesForModels(top5ModelNames);
       }
     } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log(contact);
-    try {
-      const formData = {
-        ...contact,
-        model: top5ModelNames.join(",  "),
-        shockAbsorber: shockAbsorber,
-        section: content,
-        type: selectedType,
-      };
-      const response = await fetch("http://localhost:5000/api/form/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      console.log(response);
-      if (response.ok) {
-        setContact(defaultContactFormData);
-        const data = await response.json();
-        console.log(data);
-        alert("Message sent successfully");
-
-        window.location.reload();
-      }
-    } catch (error) {
-      alert("Message not sent Successfully");
-
       console.log(error);
     }
   };
@@ -292,6 +217,43 @@ export const CraneSecond = () => {
       getData();
     }
   }, [showModelOutput]);
+
+  const fetchPricesForModels = async (models) => {
+    try {
+      console.log(models);
+      // Fetch prices for each model
+      const pricePromises = models.map(async (model) => {
+        const response = await fetch(`http://localhost:5000/prices/${model}`);
+        if (response.ok) {
+          const data = await response.json();
+          return { [model]: data.price };
+        }
+      });
+
+      // Wait for all price fetch requests to complete
+      const prices = await Promise.all(pricePromises);
+      const priceMap = Object.assign({}, ...prices);
+      setModelPrices(priceMap);
+    } catch (error) {
+      console.error("Error fetching prices:", error);
+    }
+  };
+
+  const handleModelClick = (model) => {
+    dispatch(
+      addData({
+        currency: selectedCurrency,
+        shockAbsorber: shockAbsorber,
+        kineticEnergy: calculatedResults.kineticEnergy,
+        potentialEnergy: calculatedResults.potentialEnergy,
+        totalEnergy: calculatedResults.totalEnergy,
+        energyPerHour: calculatedResults.energyPerHour,
+        Vd: calculatedResults.Vd,
+        emassMin: calculatedResults.emassMin,
+      })
+    );
+    navigate(`/price/${model}`);
+  };
 
   return (
     <>
@@ -449,9 +411,8 @@ export const CraneSecond = () => {
                       className="autocomplete"
                       onChange={handleAbsorberChange}
                       options={option2}
+                      value={shockAbsorber}
                       name="shockAbsorber"
-                      // value={contact.shockAbsorber}
-                      // sx={{ width: 480, marginLeft: "8px", marginRight: "8px" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Shock Absorbers" />
                       )}
@@ -488,6 +449,35 @@ export const CraneSecond = () => {
                       Type
                     </FormHelperText>
                   </FormControl>
+
+                  <FormControl
+                    variant="outlined"
+                    className="fromMobile"
+                    autoComplete="off"
+                  >
+                    <Autocomplete
+                      id="controllable-states-demo"
+                      className="autocomplete"
+                      value={selectedCurrency} // Set default currency
+                      onChange={(event, newValue) =>
+                        setSelectedCurrency(newValue)
+                      }
+                      options={Currency}
+                      name="selectedCurrency"
+                      renderInput={(params) => (
+                        <TextField {...params} label="Choose your currency" />
+                      )}
+                    />
+                    <FormHelperText
+                      id="outlined-weight-helper-text"
+                      sx={{ fontSize: "1rem" }}
+                    >
+                      Currency
+                    </FormHelperText>
+                  </FormControl>
+                </div>
+                <div className="btn">
+                  <button onClick={handleCalculate}>Calculate</button>
                 </div>
                 <div className="resultOutput">
                   <FormControl variant="outlined" className="fromMobile">
@@ -597,101 +587,28 @@ export const CraneSecond = () => {
                     </FormHelperText>
                   </FormControl>
                 </div>
-
-                <div className="btn">
-                  <button onClick={handleCalculate}>Calculate</button>
-                </div>
               </div>
-              <div className="model">
-                {/* <Textarea
-                  name="model"
-                  aria-label="minimum height"
-                  minRows={17}
-                  placeholder="Model"
-                  readOnly={true}
-                  // value={top5ModelNames.join(",  ")}'
-                  className="fromMobile"
-                  style={{ caretColor: "transparent" }}
-                  // onChange={handleTextareaChange}
-                /> */}
+              <div className="text-center m-auto mt-8  w-[100%] text-xl">
+                {showModelOutput &&
+                  top5ModelNames.map((model, index) => (
+                    <div key={index} className="model-button-container">
+                      <div
+                        onClick={() => handleModelClick(model)}
+                        className="w-[90%] flex items-center justify-center mx-auto bg-emerald-900   h-[10vh] text-white mb-4  rounded-2xl"
+                      >
+                        {modelPrices[model] !== undefined
+                          ? selectedCurrency === "INR"
+                            ? `Rs ${modelPrices[model].NEWPRICE}`
+                            : `$ ${modelPrices[model].NEWPRICE / 80}`
+                          : "Loading..."}
 
-                {top5ModelNames.map((model, index) => (
-                  <button
-                    key={index}
-                    className="model-button"
-                    onClick={() => navigate(`/price/${model}`)}
-                  >
-                    {model}
-                  </button>
-                ))}
+                        <button className=" text-center ml-8  text-white font-bold">
+                          {model}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
               </div>
-            </div>
-          </Box>
-        </div>
-
-        {/* Form submission */}
-
-        <div className="form">
-          <Box
-            component="form"
-            noValidate
-            autoComplete="off"
-            onSubmit={handleSubmit}
-          >
-            <TextField
-              type="text"
-              name="username"
-              id="username"
-              required
-              autoComplete="off"
-              // value={contact.username}
-              label="Enter your name"
-              variant="outlined"
-              className="input"
-              onChange={handleInput}
-            />
-
-            <TextField
-              type="email"
-              name="email"
-              id="email"
-              required
-              autoComplete="off"
-              // value={contact.email}
-              label="Enter your Email"
-              variant="outlined"
-              className="input"
-              onChange={handleInput}
-            />
-
-            <TextField
-              type="number"
-              name="phone"
-              id="phone"
-              required
-              autoComplete="off"
-              // value={contact.phone}
-              label="Enter your Phone Number"
-              variant="outlined"
-              className="input"
-              onChange={handleInput}
-            />
-
-            <TextField
-              type="text"
-              name="company"
-              id="company"
-              required
-              autoComplete="off"
-              // value={contact.company}
-              label="Enter your Co Name"
-              variant="outlined"
-              className="input"
-              onChange={handleInput}
-            />
-
-            <div className="submitBtn">
-              <button type="submit">Submit</button>
             </div>
           </Box>
         </div>

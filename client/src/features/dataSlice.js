@@ -12,6 +12,7 @@ const initialState = {
   data: [],
   spare: [],
   totalPrice: null,
+  addAdditionalPriceData: [],
 };
 const dataSlice = createSlice({
   name: "data",
@@ -31,6 +32,7 @@ const dataSlice = createSlice({
       state.data = action.payload.data;
       state.spare = action.payload.spare;
       state.totalPrice = action.payload.totalPrice;
+      state.addAdditionalPriceData = action.payload.addAdditionalPriceData;
     },
   },
 });

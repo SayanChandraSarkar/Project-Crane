@@ -20,6 +20,13 @@ const contactSchema = new Schema({
   originalPrice: { type: String, required: true },
   currency: { type: String, required: true },
 
+  AdditionalAccessories: [
+    {
+      name: { type: String, required: true },
+      quantity: { type: Number, required: true },
+    },
+  ],
+
   // front: { type: Number, required: true},
   // rear: { type: Number, required: true},
   // foot: { type: Number, required: true},
