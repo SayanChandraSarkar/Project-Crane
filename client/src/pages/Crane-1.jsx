@@ -34,27 +34,7 @@ const option2 = ["1", "2", "3", "4"];
 
 const Type = ["ED", "EI", "SB"];
 const Currency = ["USD", "INR"];
-// const blue = {
-//   100: "#DAECFF",
-//   200: "#b6daff",
-//   400: "#3399FF",
-//   500: "#007FFF",
-//   600: "#0072E5",
-//   900: "#003A75",
-// };
 
-// const grey = {
-//   50: "#F3F6F9",
-//   100: "#E5EAF2",
-//   200: "#DAE2ED",
-//   300: "#C7D0DD",
-//   400: "#B0B8C4",
-//   500: "#9DA8B7",
-//   600: "#6B7A90",
-//   700: "#434D5B",
-//   800: "#303740",
-//   900: "#1C2025",
-// };
 import { useNavigate } from "react-router-dom";
 export const CraneFirst = () => {
   const navigate = useNavigate();
@@ -166,9 +146,12 @@ export const CraneFirst = () => {
   //Fetching Data
   const getData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/data/data", {
-        method: "GET",
-      });
+      const response = await fetch(
+        "https://calculation.cranebuffer.com/api/data/data",
+        {
+          method: "GET",
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -209,7 +192,9 @@ export const CraneFirst = () => {
       console.log(models);
       // Fetch prices for each model
       const pricePromises = models.map(async (model) => {
-        const response = await fetch(`http://localhost:5000/prices/${model}`);
+        const response = await fetch(
+          `https://calculation.cranebuffer.com/api/prices/${model}`
+        );
         if (response.ok) {
           const data = await response.json();
           return { [model]: data.price };
@@ -242,18 +227,19 @@ export const CraneFirst = () => {
 
   return (
     <>
-      <div className="Crane1 inputFields  ">
-        <DynamicHeading 
+      <div className="Crane1 inputFields">
+        <DynamicHeading
           className="forMobile text-center text-2xl font-bold m-4 "
           initialContent="Wagon against 2 shock absorbers"
           content={content}
           setContent={setContent}
         />
-        <div className="mobileIndex md:m-2">
+        <div className="mobileIndex">
           <Box sx={{ display: "flex", flexWrap: "wrap" }}>
             <div className="firstLine ">
               <FormControl variant="outlined" className="fromMobile ">
-                <OutlinedInput className="md:mx-4"
+                <OutlinedInput
+                  className=""
                   id="outlined-adornment-weight"
                   onChange={handleMChange}
                   autoComplete="off"
@@ -262,7 +248,8 @@ export const CraneFirst = () => {
                   }
                   aria-describedby="outlined-weight-helper-text"
                 />
-                <FormHelperText className=""
+                <FormHelperText
+                  className=""
                   id="outlined-weight-helper-text"
                   sx={{ fontSize: "1.1rem" }}
                 >
@@ -271,7 +258,8 @@ export const CraneFirst = () => {
               </FormControl>
 
               <FormControl variant="outlined" className="fromMobile">
-                <OutlinedInput className="md:mx-4"
+                <OutlinedInput
+                  className=""
                   id="outlined-adornment-weight"
                   onChange={handleVChange}
                   autoComplete="off"
@@ -289,7 +277,8 @@ export const CraneFirst = () => {
               </FormControl>
 
               <FormControl variant="outlined" className="fromMobile">
-                <OutlinedInput className="md:mx-4"
+                <OutlinedInput
+                  className=""
                   id="outlined-adornment-weight"
                   onChange={handleCChange}
                   autoComplete="off"
@@ -307,7 +296,8 @@ export const CraneFirst = () => {
               </FormControl>
 
               <FormControl variant="outlined" className="fromMobile">
-                <OutlinedInput className="md:mx-4"
+                <OutlinedInput
+                  className=""
                   id="outlined-adornment-weight"
                   onChange={handleFChange}
                   autoComplete="off"
@@ -327,19 +317,17 @@ export const CraneFirst = () => {
 
             <div className="secondLine">
               <div>
-                <div>
+                <div className="lineBox">
                   <FormControl
                     variant="outlined"
                     className="fromMobile"
                     autoComplete="off"
                   >
-                    <Autocomplete 
-                   
+                    <Autocomplete
                       onChange={handleSChange}
                       id="controllable-states-demo"
                       options={option1}
-                      // sx={{ width: 250, marginLeft: "8px", marginRight: "8px" }}
-                      className="autoComplete md:mx-4 md:w-[100%]"
+                      className="autoComplete"
                       renderInput={(params) => (
                         <TextField {...params} label="Select Value" />
                       )}
@@ -359,7 +347,7 @@ export const CraneFirst = () => {
                   >
                     <Autocomplete
                       id="controllable-states-demo"
-                      className="autocomplete md:mx-8 md:w-[100%]"
+                      className="autocomplete"
                       value={shockAbsorber}
                       onChange={handleAbsorberChange}
                       options={option2}
@@ -385,7 +373,7 @@ export const CraneFirst = () => {
                   >
                     <Autocomplete
                       id="controllable-states-demo"
-                      className="autocomplete md:mx-16 md:w-[100%]"
+                      className="autocomplete "
                       onChange={handleTypeChange}
                       options={Type}
                       name="Type"
@@ -408,7 +396,7 @@ export const CraneFirst = () => {
                   >
                     <Autocomplete
                       id="controllable-states-demo "
-                      className="autocomplete md:mx-20 md:w-[100%]"
+                      className="autocomplete"
                       value={selectedCurrency} // Set default currency
                       onChange={(event, newValue) =>
                         setSelectedCurrency(newValue)
@@ -419,7 +407,8 @@ export const CraneFirst = () => {
                         <TextField {...params} label="Choose your currency" />
                       )}
                     />
-                    <FormHelperText className=""
+                    <FormHelperText
+                      className=""
                       id="outlined-weight-helper-text"
                       sx={{ fontSize: "1rem" }}
                     >
@@ -427,13 +416,13 @@ export const CraneFirst = () => {
                     </FormHelperText>
                   </FormControl>
                 </div>
-                <div className="btn md:w-[10%] md:bg-blue-500 text-white md:rounded-xl md:p-2 md:m-auto text-center md:mb-4">
+                <div className="btn md:w-[10%] md:bg-blue-500 text-white md:rounded-lg md:p-3 md:m-auto text-center md:mb-4 md:mt-6">
                   <button onClick={handleCalculate}>Calculate</button>
                 </div>
                 <div className="resultOutput">
                   <FormControl variant="outlined" className="fromMobile">
                     <OutlinedInput
-                    className="md:mx-4"
+                      className="md:mx-4"
                       id="outlined-adornment-weight"
                       value={calculatedResults.kineticEnergy}
                       readOnly={true}
@@ -452,7 +441,7 @@ export const CraneFirst = () => {
 
                   <FormControl variant="outlined" className="fromMobile">
                     <OutlinedInput
-                    className="md:mx-4"
+                      className="md:mx-4"
                       id="outlined-adornment-weight"
                       value={calculatedResults.potentialEnergy}
                       readOnly={true}
@@ -471,7 +460,7 @@ export const CraneFirst = () => {
 
                   <FormControl variant="outlined" className="fromMobile">
                     <OutlinedInput
-                    className="md:mx-4"
+                      className="md:mx-4"
                       id="outlined-adornment-weight"
                       value={calculatedResults.totalEnergy}
                       readOnly={true}
@@ -489,7 +478,7 @@ export const CraneFirst = () => {
                   </FormControl>
                   <FormControl variant="outlined" className="fromMobile">
                     <OutlinedInput
-                    className="md:mx-4"
+                      className="md:mx-4"
                       id="outlined-adornment-weight"
                       value={calculatedResults.energyPerHour}
                       readOnly={true}
@@ -508,7 +497,7 @@ export const CraneFirst = () => {
 
                   <FormControl variant="outlined" className="fromMobile">
                     <OutlinedInput
-                    className="md:mx-4"
+                      className="md:mx-4"
                       id="outlined-adornment-weight"
                       value={calculatedResults.Vd}
                       readOnly={true}

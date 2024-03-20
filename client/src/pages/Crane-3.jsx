@@ -6,8 +6,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-// import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
-// import { styled } from "@mui/system";
+
 import PropTypes from "prop-types";
 
 import "../scss/Crane-3.scss";
@@ -32,27 +31,11 @@ const option = [
 const option2 = ["1", "2", "3", "4"];
 
 const Type = ["ED", "EI", "SB"];
-// const blue = {
-//   100: "#DAECFF",
-//   200: "#b6daff",
-//   400: "#3399FF",
-//   500: "#007FFF",
-//   600: "#0072E5",
-//   900: "#003A75",
-// };
+const Currency = ["USD", "INR"];
 
-// const grey = {
-//   50: "#F3F6F9",
-//   100: "#E5EAF2",
-//   200: "#DAE2ED",
-//   300: "#C7D0DD",
-//   400: "#B0B8C4",
-//   500: "#9DA8B7",
-//   600: "#6B7A90",
-//   700: "#434D5B",
-//   800: "#303740",
-//   900: "#1C2025",
-// };
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addData } from "../features/dataSlice";
 
 export const CraneThird = () => {
   const [mValue, setMValue] = useState("");
@@ -65,8 +48,9 @@ export const CraneThird = () => {
   const [selectedType, setSelectedType] = useState("");
   const [top5ModelNames, setTop5ModelNames] = useState([]);
   const [showModelOutput, setShowModelOutput] = useState(false);
-  const [shockAbsorber, setShockAbsorber] = useState("");
-
+  const [shockAbsorber, setShockAbsorber] = useState("2");
+  const [modelPrices, setModelPrices] = useState({});
+  const [selectedCurrency, setSelectedCurrency] = useState("INR");
   const [calculatedResults, setCalculatedResults] = useState({
     kineticEnergy: "",
     potentialEnergy: "",
@@ -76,14 +60,8 @@ export const CraneThird = () => {
   });
 
   const [content, setContent] = useState("Initial Content");
-  const defaultContactFormData = {
-    username: "",
-    email: "",
-    phone: "",
-    company: "",
-  };
-  const [contact, setContact] = useState(defaultContactFormData);
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   //Dynamic heading
   const DynamicHeading = ({
     className,
@@ -108,53 +86,6 @@ export const CraneThird = () => {
     initialContent: PropTypes.string.isRequired,
     content: PropTypes.string,
     setContent: PropTypes.func.isRequired,
-  };
-
-  //Textarea Autosize
-  // const Textarea = styled(BaseTextareaAutosize)(
-  //   ({ theme }) => `
-  //   box-sizing: border-box;
-  //   width: 320px;
-  //   font-family: 'IBM Plex Sans', sans-serif;
-  //   font-size: 0.875rem;
-  //   font-weight: 400;
-  //   line-height: 1.5;
-  //   padding: 8px 12px;
-  //   border-radius: 8px;
-  //   color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
-  //   background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-  //   border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
-  //   box-shadow: 0px 2px 2px ${
-  //     theme.palette.mode === "dark" ? grey[900] : grey[50]
-  //   };
-
-  //   &:hover {
-  //     border-color: ${blue[400]};
-  //   }
-
-  //   &:focus {
-  //     border-color: ${blue[400]};
-  //     box-shadow: 0 0 0 3px ${
-  //       theme.palette.mode === "dark" ? blue[600] : blue[200]
-  //     };
-  //   }
-
-  //   // firefox
-  //   &:focus-visible {
-  //     outline: 0;
-  //   }
-  // `
-  // );
-
-  const handleInput = (e) => {
-    // console.log(e);
-
-    let name = e.target.name;
-    let value = e.target.value;
-    setContact({
-      ...contact,
-      [name]: value,
-    });
   };
 
   // Event handlers for form controls
@@ -214,15 +145,19 @@ export const CraneThird = () => {
       Vd,
       emassMin,
     });
+    fetchPricesForModels(top5ModelNames);
     setShowModelOutput(true);
   };
 
   //Fetching Data
   const getData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/data/data", {
-        method: "GET",
-      });
+      const response = await fetch(
+        "https://calculation.cranebuffer.com/api/data/data",
+        {
+          method: "GET",
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -246,41 +181,33 @@ export const CraneThird = () => {
         console.log(top5ModelNames);
 
         setTop5ModelNames(top5ModelNames);
+        fetchPricesForModels(top5ModelNames);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log(contact);
+  const fetchPricesForModels = async (models) => {
     try {
-      const formData = {
-        ...contact,
-        model: top5ModelNames.join(",  "),
-        shockAbsorber: shockAbsorber,
-        section: content,
-        type: selectedType,
-      };
-      const response = await fetch("http://localhost:5000/api/form/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+      console.log(models);
+      // Fetch prices for each model
+      const pricePromises = models.map(async (model) => {
+        const response = await fetch(
+          `https://calculation.cranebuffer.com/api/prices/${model}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          return { [model]: data.price };
+        }
       });
-      console.log(response);
-      if (response.ok) {
-        setContact(defaultContactFormData);
-        const data = await response.json();
-        console.log(data);
-        alert("Message sent successfully");
 
-        window.location.reload();
-      }
+      // Wait for all price fetch requests to complete
+      const prices = await Promise.all(pricePromises);
+      const priceMap = Object.assign({}, ...prices);
+      setModelPrices(priceMap);
     } catch (error) {
-      alert("Message not sent Successfully");
-
-      console.log(error);
+      console.error("Error fetching prices:", error);
     }
   };
 
@@ -290,11 +217,27 @@ export const CraneThird = () => {
     }
   }, [showModelOutput]);
 
+  const handleModelClick = (model) => {
+    dispatch(
+      addData({
+        currency: selectedCurrency,
+        shockAbsorber: shockAbsorber,
+        kineticEnergy: calculatedResults.kineticEnergy,
+        potentialEnergy: calculatedResults.potentialEnergy,
+        totalEnergy: calculatedResults.totalEnergy,
+        energyPerHour: calculatedResults.energyPerHour,
+        Vd: calculatedResults.Vd,
+        emassMin: calculatedResults.emassMin,
+      })
+    );
+    navigate(`/price/${model}`);
+  };
+
   return (
     <>
       <div className="Crane2 inputFields">
         <DynamicHeading
-          className="forMobile"
+          className="forMobile text-center text-xl font-bold m-4"
           initialContent="Wagon against Wagon 2 shock absorber"
           content={content}
           setContent={setContent}
@@ -377,7 +320,7 @@ export const CraneThird = () => {
 
             <div className="secondLine">
               <div>
-                <div>
+                <div className="lineBox">
                   <FormControl
                     variant="outlined"
                     className="fromMobile"
@@ -446,10 +389,11 @@ export const CraneThird = () => {
                       id="controllable-states-demo"
                       className="autocomplete"
                       onChange={handleAbsorberChange}
+                      value={shockAbsorber}
                       options={option2}
                       name="shockAbsorber"
-                      // value={contact.shockAbsorber}
-                      // sx={{ width: 480, marginLeft: "8px", marginRight: "8px" }}
+                      getOptionLabel={(option) => option.toString()}
+                      isOptionEqualToValue={(option, value) => option === value}
                       renderInput={(params) => (
                         <TextField {...params} label="Shock Absorbers" />
                       )}
@@ -473,8 +417,6 @@ export const CraneThird = () => {
                       onChange={handleTypeChange}
                       options={Type}
                       name="shockAbsorber"
-                      // value={contact.shockAbsorber}
-                      // sx={{ width: 480, marginLeft: "8px", marginRight: "8px" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Choose your type" />
                       )}
@@ -486,6 +428,35 @@ export const CraneThird = () => {
                       Type
                     </FormHelperText>
                   </FormControl>
+
+                  <FormControl
+                    variant="outlined"
+                    className="fromMobile"
+                    autoComplete="off"
+                  >
+                    <Autocomplete
+                      id="controllable-states-demo"
+                      className="autocomplete"
+                      value={selectedCurrency} // Set default currency
+                      onChange={(event, newValue) =>
+                        setSelectedCurrency(newValue)
+                      }
+                      options={Currency}
+                      name="selectedCurrency"
+                      renderInput={(params) => (
+                        <TextField {...params} label="Choose your currency" />
+                      )}
+                    />
+                    <FormHelperText
+                      id="outlined-weight-helper-text"
+                      sx={{ fontSize: "1rem" }}
+                    >
+                      Currency
+                    </FormHelperText>
+                  </FormControl>
+                </div>
+                <div className="btn md:w-[10%] md:bg-blue-500 text-white md:rounded-lg md:p-3 md:m-auto text-center md:mb-4 md:mt-6">
+                  <button onClick={handleCalculate}>Calculate</button>
                 </div>
                 <div className="resultOutput">
                   <FormControl variant="outlined" className="fromMobile">
@@ -595,97 +566,28 @@ export const CraneThird = () => {
                     </FormHelperText>
                   </FormControl>
                 </div>
-
-                <div className="btn">
-                  <button onClick={handleCalculate}>Calculate</button>
-                </div>
               </div>
-              <div className="model">
-                {/* <Textarea
-                  name="model"
-                  aria-label="minimum height"
-                  minRows={17}
-                  placeholder="Model"
-                  readOnly={true}
-                  // value={top5ModelNames.join(",  ")}'
-                  className="fromMobile"
-                  style={{ caretColor: "transparent" }}
-                  // onChange={handleTextareaChange}
-                /> */}
+              <div className="text-center m-auto mt-8  w-[100%] text-xl">
+                {showModelOutput &&
+                  top5ModelNames.map((model, index) => (
+                    <div key={index} className="model-button-container">
+                      <div
+                        onClick={() => handleModelClick(model)}
+                        className="w-[90%] flex items-center justify-center mx-auto bg-emerald-900 h-[10vh] text-white mb-4  rounded-2xl"
+                      >
+                        {modelPrices[model] !== undefined
+                          ? selectedCurrency === "INR"
+                            ? `Rs ${modelPrices[model].NEWPRICE}`
+                            : `$ ${modelPrices[model].NEWPRICE / 80}`
+                          : "Loading..."}
 
-                {top5ModelNames.map((model, index) => (
-                  <button key={index} className="model-button">
-                    {model}
-                  </button>
-                ))}
+                        <button className=" text-center ml-8  text-white font-bold">
+                          {model}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
               </div>
-            </div>
-          </Box>
-        </div>
-
-        {/* Form submission */}
-
-        <div className="form">
-          <Box
-            component="form"
-            noValidate
-            autoComplete="off"
-            onSubmit={handleSubmit}
-          >
-            <TextField
-              type="text"
-              name="username"
-              id="username"
-              required
-              autoComplete="off"
-              // value={contact.username}
-              label="Enter your name"
-              variant="outlined"
-              className="input"
-              onChange={handleInput}
-            />
-
-            <TextField
-              type="email"
-              name="email"
-              id="email"
-              required
-              autoComplete="off"
-              // value={contact.email}
-              label="Enter your Email"
-              variant="outlined"
-              className="input"
-              onChange={handleInput}
-            />
-
-            <TextField
-              type="number"
-              name="phone"
-              id="phone"
-              required
-              autoComplete="off"
-              // value={contact.phone}
-              label="Enter your Phone Number"
-              variant="outlined"
-              className="input"
-              onChange={handleInput}
-            />
-
-            <TextField
-              type="text"
-              name="company"
-              id="company"
-              required
-              autoComplete="off"
-              // value={contact.company}
-              label="Enter your Co Name"
-              variant="outlined"
-              className="input"
-              onChange={handleInput}
-            />
-
-            <div className="submitBtn">
-              <button type="submit">Submit</button>
             </div>
           </Box>
         </div>

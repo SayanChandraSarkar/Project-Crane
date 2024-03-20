@@ -23,33 +23,33 @@ export const Technical = () => {
           </div>
         </div>
 
-        <div className="quotation-by-section w-[80%] flex flex-col  gap-[8%] md:flex-row m-auto">
+        <div className="quotation-by-section w-[90%] flex flex-col  gap-[8%] md:flex-row m-auto">
           <div className="">
             <span className="mb-8 flex justify-between ">
               <p className="mr-2 font-bold">Kinetic Energy:</p>
-              <p className="">{kineticEnergy}</p>
+              <p className="">{kineticEnergy} Nm</p>
             </span>
             <span className="mb-8 flex justify-between">
               <p className="mr-2 font-bold">Potential Energy:</p>
-              <p className="">{potentialEnergy}</p>
+              <p className="">{potentialEnergy} Nm</p>
             </span>
 
             <span className="mb-8 flex justify-between">
               <p className="mr-2 font-bold">Total Energy:</p>
-              <p className="">{totalEnergy}</p>
+              <p className="">{totalEnergy} Nm</p>
             </span>
 
             <span className="mb-8 flex justify-between">
               <p className="mr-2 font-bold">Energy Per Hour:</p>
-              <p className="">{energyPerHour}</p>
+              <p className="">{energyPerHour} Nm/hr</p>
             </span>
             <span className="mb-8 flex justify-between">
               <p className="mr-2 font-bold">Vd:</p>
-              <p className="">{Vd}</p>
+              <p className="">{Vd} m/s</p>
             </span>
             <span className="mb-8 flex justify-between">
               <p className="mr-2 font-bold">EmassMin:</p>
-              <p className="">{emassMin}</p>
+              <p className="">{emassMin} kg</p>
             </span>
           </div>
         </div>

@@ -179,9 +179,12 @@ export const CraneSecond = () => {
   //Fetching Data
   const getData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/data/data", {
-        method: "GET",
-      });
+      const response = await fetch(
+        "https://calculation.cranebuffer.com/api/data/data",
+        {
+          method: "GET",
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -223,7 +226,9 @@ export const CraneSecond = () => {
       console.log(models);
       // Fetch prices for each model
       const pricePromises = models.map(async (model) => {
-        const response = await fetch(`http://localhost:5000/prices/${model}`);
+        const response = await fetch(
+          `https://calculation.cranebuffer.com/api/prices/${model}`
+        );
         if (response.ok) {
           const data = await response.json();
           return { [model]: data.price };
@@ -259,7 +264,7 @@ export const CraneSecond = () => {
     <>
       <div className="Crane2 inputFields">
         <DynamicHeading
-          className="forMobile"
+          className="forMobile forMobile text-center text-2xl font-bold m-4"
           initialContent="Wagon against Wagon"
           content={content}
           setContent={setContent}
@@ -342,7 +347,7 @@ export const CraneSecond = () => {
 
             <div className="secondLine">
               <div>
-                <div>
+                <div className="lineBox">
                   <FormControl
                     variant="outlined"
                     className="fromMobile"
@@ -476,7 +481,7 @@ export const CraneSecond = () => {
                     </FormHelperText>
                   </FormControl>
                 </div>
-                <div className="btn">
+                <div className="btn md:w-[10%] md:bg-blue-500 text-white md:rounded-lg md:p-3 md:m-auto text-center md:mb-4 md:mt-6">
                   <button onClick={handleCalculate}>Calculate</button>
                 </div>
                 <div className="resultOutput">

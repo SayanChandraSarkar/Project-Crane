@@ -14,30 +14,46 @@ export const RootPage = () => {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row justify-center items-center p-4 h-[100%] md:h-[83vh]">
+      <div className="flex flex-col md:flex-row justify-center items-center p-4 h-[100%] md:h-[84vh] gap-8 md:gap-14">
         <div
-          className="flex  items-center flex-col gap-8 "
+          className="flex  items-center flex-col gap-2 "
           onClick={handlefirstcrane}
         >
-          <img className="w-[50%] " src="/images/crane1.jpg" alt="crane1" />
+          <img
+            className="w-full h-40 "
+            src="/images/crane1.jpg"
+            alt="Wagon against 2 shock absorbers"
+          />
 
-          <h2 className="text-xl font-medium">crane1</h2>
+          <h2 className="text-sm font-medium">
+            Wagon against 2 shock absorbers
+          </h2>
         </div>
         <div
-          className="flex  items-center flex-col gap-8 mt-2"
+          className="flex  items-center flex-col gap-2 mt-2"
           onClick={handlesecondcrane}
         >
-          <img className="w-[50%]" src="/images/crane2.jpg" alt="crane2" />
+          <img
+            className="w-full h-40 object-cover"
+            src="/images/crane2.jpg"
+            alt="Wagon against wagon"
+          />
 
-          <h2 className="text-xl font-medium">crane2</h2>
+          <h2 className="text-sm font-medium">Wagon against wagon</h2>
         </div>
         <div
-          className="flex  items-center flex-col gap-8 mt-4"
+          className="flex  items-center flex-col gap-2 mt-4"
           onClick={handlethirdcrane}
         >
-          <img className="w-[50%]" src="/images/crane3.png" alt="crane3" />
+          <img
+            className="w-full h-40 object-cover"
+            src="/images/crane3.jpg"
+            alt="Wagon against wagon 2 shock absorbers"
+          />
 
-          <h2 className="text-xl font-medium">crane3</h2>
+          <h2 className="text-sm font-medium">
+            Wagon against wagon 2 shock absorbers
+          </h2>
         </div>
       </div>
     </>

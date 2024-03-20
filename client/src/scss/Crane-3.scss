@@ -1,64 +1,132 @@
-.Crane3 {
-  .forMobile {
-    font-size: 1.1rem;
-    text-align: center;
-    padding: 20px 15px 15px 15px;
-  }
-  .mobileIndex {
-    width: 100%;
-    .firstLine {
+@media only screen and (max-width: 1204px) {
+  .Crane3 {
+    .forMobile {
+      font-size: 1rem;
+      text-align: center;
+      padding: 20px 15px 15px 15px;
+    }
+    .mobileIndex {
       width: 100%;
-      .fromMobile {
-        width: 100% !important;
-        padding: 15px 15px 0px 15px;
+      .firstLine {
+        width: 100%;
+        .fromMobile {
+          width: 100% !important;
+          padding: 15px 15px 0px 15px;
+        }
+      }
+      .secondLine {
+        width: 100%;
+        .fromMobile {
+          width: 100% !important;
+          padding: 15px 15px 0px 15px;
+        }
+
+        .btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 73px;
+
+          button {
+            border: none;
+            padding: 18px 20px;
+            width: calc(100% - 30px);
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-family: 500;
+            background-color: #3399ff;
+            color: #ffff;
+            transition: 0.4s;
+            cursor: pointer;
+          }
+        }
+
+        .model {
+          padding: 15px 15px 0px 15px;
+          margin-top: 10px;
+
+          Textarea::placeholder {
+            font-size: 1.1rem;
+          }
+        }
       }
     }
-    .secondLine {
-      width: 100%;
-      .fromMobile {
-        width: 100% !important;
-        padding: 15px 15px 0px 15px;
+
+    //Form
+
+    .form {
+      padding: 16px;
+
+      form {
+        width: 100%;
+        margin-top: 20px;
       }
 
-      .btn {
+      .input {
+        width: 100%;
+        margin-bottom: 15px;
+      }
+
+      .submitBtn {
+        margin-top: 5px;
         display: flex;
         align-items: center;
         justify-content: center;
         height: 73px;
-
-        button {
-          border: none;
-          padding: 18px 20px;
-          width: calc(100% - 30px);
-          border-radius: 5px;
-          font-size: 1.1rem;
-          font-family: 500;
-          background-color: #3399ff;
-          color: #ffff;
-          transition: 0.4s;
-          cursor: pointer;
-        }
       }
 
-      .model {
-        padding: 15px 15px 0px 15px;
-        margin-top: 10px;
-
-        Textarea::placeholder {
-          font-size: 1.1rem;
-        }
+      .submitBtn button {
+        border: none;
+        padding: 18px 20px;
+        width: 100%;
+        border-radius: 5px;
+        font-size: 1.1rem;
+        font-family: 500;
+        background-color: #3399ff;
+        color: #ffff;
+        transition: 0.4s;
+        cursor: pointer;
       }
     }
   }
+}
 
-  //Form
-
-  .form {
-    padding: 16px;
-
-    form {
+@media only screen and (min-width: 1204px) {
+  .Crane2 {
+    .forMobile {
+      font-size: 1.1rem;
+      text-align: center;
+      padding: 20px 15px 15px 15px;
+    }
+    .mobileIndex {
       width: 100%;
-      margin-top: 20px;
+      .firstLine {
+        width: 100%;
+        .fromMobile {
+          width: 25%;
+          padding: 15px 15px 0px 15px;
+        }
+      }
+      .secondLine {
+        width: 100%;
+        .lineBox {
+          width: 100%;
+          .fromMobile {
+            width: 25%;
+            padding: 15px 15px 0px 15px;
+          }
+        }
+
+        .resultOutput {
+          display: flex;
+          flex-wrap: wrap;
+
+          .fromMobile {
+            width: 33.33%;
+            padding: 15px 15px 0px 15px;
+          }
+        }
+      }
     }
 
     .input {

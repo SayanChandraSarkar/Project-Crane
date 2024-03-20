@@ -20,7 +20,7 @@ const Quotation = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/data/quotation/${userId}`
+          `https://calculation.cranebuffer.com/api/data/quotation/${userId}`
         ); // Fetch user data using the user ID
         if (!response.ok) {
           throw new Error("Failed to fetch user data");

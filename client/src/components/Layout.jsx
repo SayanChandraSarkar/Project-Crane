@@ -14,7 +14,6 @@ import { CraneFirst } from "../pages/Crane-1";
 import { CraneSecond } from "../pages/Crane-2";
 import { CraneThird } from "../pages/Crane-3";
 import PricePage from "../extra/ModelPricesPage";
-// import { useNavigate } from "react-router-dom";
 import UserDetails from "../extra/Information";
 import Quotation from "../extra/Quotation";
 import { Technical } from "../extra/Technical";
@@ -102,7 +101,7 @@ export const Layout = () => {
             ))}
           </ul>
         </div> */}
-        <div>
+        <div className="w-full">
           {/* {windowWidth <= 1240 && (
             <Button
               sx={{
