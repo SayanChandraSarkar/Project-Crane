@@ -18,7 +18,9 @@ const PricePage = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const { modelName } = useParams();
   const [prices, setPrices] = useState({});
-  const [quantityDisplay, setQuantityDisplay] = useState({});
+  // const [quantityDisplay, setQuantityDisplay] = useState({});
+  const [selectedSparePart, setSelectedSparePart] = useState(null);
+  const [selectedAccessories, setSelectedAccessories] = useState([]);
 
   console.log(modelName.slice(0, 2));
   const modeldata = modelName.slice(0, 2);
@@ -32,7 +34,8 @@ const PricePage = () => {
           return;
         }
         const response = await fetch(
-          `https://calculation.cranebuffer.com/api/prices/${modelName}`
+          `http://localhost:5000/prices/${modelName}`,
+          { method: "GET" }
         );
         if (response.ok) {
           const data = await response.json();
@@ -61,34 +64,40 @@ const PricePage = () => {
     fetchPrices();
   }, [modelName]);
 
-  useEffect(() => {
-    const initialQuantityDisplay = Object.keys(prices).reduce((acc, part) => {
-      acc[part] = 0;
-      return acc;
-    }, {});
+  // useEffect(() => {
+  //   const initialQuantityDisplay = Object.keys(prices).reduce((acc, part) => {
+  //     acc[part] = 0;
+  //     return acc;
+  //   }, {});
 
-    // Initialize quantities for parts in edassoc to 0
-    edassoc.forEach((part) => {
-      if (!(part in initialQuantityDisplay)) {
-        initialQuantityDisplay[part] = 0;
-      }
-    });
-    setQuantityDisplay(initialQuantityDisplay);
-  }, [prices]);
+  //   // Initialize quantities for parts in edassoc to 0
+  //   edassoc.forEach((part) => {
+  //     if (!(part in initialQuantityDisplay)) {
+  //       initialQuantityDisplay[part] = 0;
+  //     }
+  //   });
+  //   setQuantityDisplay(initialQuantityDisplay);
+  // }, [prices]);
 
-  useEffect(() => {
-    let total = prices.NEWPRICE || 0;
-    Object.keys(quantityDisplay).forEach((part) => {
-      total += prices[part] * quantityDisplay[part] || 0;
-    });
-    setTotalPrice(total);
-  }, [quantityDisplay, prices]);
+  // useEffect(() => {
+  //   let total = prices.NEWPRICE || 0;
+  //   Object.keys(quantityDisplay).forEach((part) => {
+  //     total += prices[part] * quantityDisplay[part] || 0;
+  //   });
+  //   setTotalPrice(total);
+  // }, [quantityDisplay, prices]);
 
-  const handleQuantityChange = (part, newQuantity) => {
-    setQuantityDisplay((prevQuantityDisplay) => ({
-      ...prevQuantityDisplay,
-      [part]: newQuantity,
-    }));
+  // const handleQuantityChange = (part, newQuantity) => {
+  //   setQuantityDisplay((prevQuantityDisplay) => ({
+  //     ...prevQuantityDisplay,
+  //     [part]: newQuantity,
+  //   }));
+  // };
+
+  const handleRadioChange = (part) => {
+    setSelectedSparePart(part);
+    setTotalPrice(prices.NEWPRICE || 0);
+    setTotalPrice((prevTotalPrice) => prevTotalPrice + (prices[part] || 0));
   };
 
   const imagesection = {
@@ -97,51 +106,59 @@ const PricePage = () => {
     "Rear Flange": "/images/rear.jpg",
   };
 
-  // const filteredParts = Object.keys(prices).filter(
-  //   (part) =>
-  //     part === "Foot Mounting" ||
-  //     part === "Front Flange" ||
-  //     part === "Rear Flange"
-  // );
-
   const filteredParts = Object.keys(prices).filter(
     (part) =>
-      part &&
-      ((part === "Foot Mounting" &&
-        quantityDisplay["Front Flange"] === 0 &&
-        quantityDisplay["Rear Flange"] === 0) ||
-        (part === "Front Flange" &&
-          quantityDisplay["Foot Mounting"] === 0 &&
-          quantityDisplay["Rear Flange"] === 0) ||
-        (part === "Rear Flange" &&
-          quantityDisplay["Foot Mounting"] === 0 &&
-          quantityDisplay["Front Flange"] === 0))
+      part === "Foot Mounting" ||
+      part === "Front Flange" ||
+      part === "Rear Flange"
   );
+
+  // const filteredParts = Object.keys(prices).filter(
+  //   (part) =>
+  //     part &&
+  //     ((part === "Foot Mounting" &&
+  //       quantityDisplay["Front Flange"] === 0 &&
+  //       quantityDisplay["Rear Flange"] === 0) ||
+  //       (part === "Front Flange" &&
+  //         quantityDisplay["Foot Mounting"] === 0 &&
+  //         quantityDisplay["Rear Flange"] === 0) ||
+  //       (part === "Rear Flange" &&
+  //         quantityDisplay["Foot Mounting"] === 0 &&
+  //         quantityDisplay["Front Flange"] === 0))
+  // );
 
   const edassoc = ["Bellows", "Piston Rod Sensor", "Ureathane Cap"];
 
-  const handleNextButtonClick = () => {
-    const selectedPartsData = Object.keys(quantityDisplay)
-      .filter((part) =>
-        ["Foot Mounting", "Front Flange", "Rear Flange"].includes(part)
-      )
-      .map((part) => ({
-        name: part,
-        quantity: quantityDisplay[part],
-        price: prices[part] * quantityDisplay[part],
-      }));
+  const handleAccessoryChange = (part, isChecked) => {
+    setSelectedAccessories((prevSelectedAccessories) => {
+      if (isChecked) {
+        return [...prevSelectedAccessories, part];
+      } else {
+        return prevSelectedAccessories.filter(
+          (selectedPart) => selectedPart !== part
+        );
+      }
+    });
+  };
 
-    const additionalPriceData = Object.keys(quantityDisplay)
-      .filter((part) => quantityDisplay[part] > 0 && prices[part] === undefined)
-      .map((part) => ({
-        name: part,
-        quantity: quantityDisplay[part],
-      }));
+  const handleNextButtonClick = () => {
+    const selectedPartsData = selectedSparePart
+      ? [
+          {
+            name: selectedSparePart,
+            price: prices[selectedSparePart],
+          },
+        ]
+      : [];
+
+    const additionalPriceData = selectedAccessories.map((part) => ({
+      name: part,
+    }));
 
     dispatch(
       addData({
         totalPrice: totalPrice,
-        spare: selectedPartsData.filter(({ quantity }) => quantity > 0),
+        spare: selectedPartsData,
         shockAbsorber: shockAbsorber,
         data: prices,
         currency: currency,
@@ -162,37 +179,21 @@ const PricePage = () => {
       <h1 className="text-2xl font-bold mb-4 ml-2">Choose Spare Parts</h1>
       <div className="mb-20">
         {/* <h2 className="text-xl font-semibold mb-2">Spare Parts</h2> */}
-        <ul className="grid grid-cols-1 md:grid-cols-1 gap-y-6  gap-x-4 ">
+        <ul className="grid grid-cols-1 md:grid-cols-1 gap-y-6 gap-x-4 ">
           {filteredParts.map((part, index) => (
             <li key={index} className="flex items-center justify-between ">
-              <img className="w-[10%]" src={imagesection[part]} />
+              <img className="w-[10%]" src={imagesection[part]} alt={part} />
               <div className="mr-2 w-[30%]">{part}</div>
-              <div className="flex items-center">
-                <button
-                  onClick={() =>
-                    handleQuantityChange(
-                      part,
-                      Math.max(0, quantityDisplay[part] - 1)
-                    )
-                  }
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-2 mr-2 rounded"
-                >
-                  -
-                </button>
-                <span>{quantityDisplay[part]}</span>
-                <button
-                  onClick={() =>
-                    handleQuantityChange(part, quantityDisplay[part] + 1)
-                  }
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-2 ml-2 rounded"
-                >
-                  +
-                </button>
-              </div>
+              <input
+                type="radio"
+                name="spareParts"
+                onClick={() => handleRadioChange(part)}
+                className="form-radio h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+              />
               <span className="text-gray-800">
                 {currency === "INR"
-                  ? `₹ ${prices[part] * quantityDisplay[part]}`
-                  : `$ ${(prices[part] * quantityDisplay[part]) / 80}`}
+                  ? `₹ ${prices[part]}`
+                  : `$ ${prices[part] / 80}`}
               </span>
             </li>
           ))}
@@ -211,26 +212,17 @@ const PricePage = () => {
                   >
                     <div className="mr-2 w-[50%]">{part}</div>
                     <div className="flex items-center">
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(
+                      <input
+                        type="checkbox"
+                        onChange={() =>
+                          handleAccessoryChange(
                             part,
-                            Math.max(0, quantityDisplay[part] - 1)
+                            !selectedAccessories.includes(part)
                           )
                         }
-                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-2 mr-2 rounded"
-                      >
-                        -
-                      </button>
-                      <span>{quantityDisplay[part]}</span>
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(part, quantityDisplay[part] + 1)
-                        }
-                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-2 ml-2 rounded"
-                      >
-                        +
-                      </button>
+                        checked={selectedAccessories.includes(part)}
+                        className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                      />
                     </div>
                   </li>
                 ))}
@@ -238,12 +230,31 @@ const PricePage = () => {
             );
           } else if (modeldata === "EI") {
             return (
-              <>
-                <div className="flex gap-2 mb-4 ">
-                  <input className="w-[5%]" type="checkbox" />
-                  <label>Bellows</label>
+              <li className="flex items-center justify-between mb-4 ml-2 ">
+                <div className="mr-2 w-[50%]">Bellows</div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    onChange={() => {
+                      // Toggle the selection of the accessory
+                      if (selectedAccessories.includes("Bellows")) {
+                        setSelectedAccessories(
+                          selectedAccessories.filter(
+                            (item) => item !== "Bellows"
+                          )
+                        );
+                      } else {
+                        setSelectedAccessories([
+                          ...selectedAccessories,
+                          "Bellows",
+                        ]);
+                      }
+                    }}
+                    checked={selectedAccessories.includes("Bellows")}
+                    className="mr-2"
+                  />
                 </div>
-              </>
+              </li>
             );
           } else {
             return (
@@ -265,33 +276,30 @@ const PricePage = () => {
           </div>
         </div>
 
-        <ul className="mb-4">
-          {Object.keys(quantityDisplay).map(
-            (part, index) =>
-              quantityDisplay[part] > 0 && (
-                <li
-                  key={index}
-                  className="flex items-center justify-between mb-2"
-                >
-                  <span className="text-blue-600 mr-2">{part}</span>
-                  <span className="text-gray-800">
-                    x {quantityDisplay[part]}
-                  </span>
-                  {prices[part] !== undefined ? (
-                    <>
-                      <span className="text-gray-800">
-                        {currency === "INR"
-                          ? `₹ ${prices[part] * quantityDisplay[part]}`
-                          : `$ ${(prices[part] * quantityDisplay[part]) / 80}`}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-gray-800">N/A</span>
-                  )}
-                </li>
-              )
-          )}
-        </ul>
+        {selectedSparePart && (
+          <li className="flex items-center justify-between mb-2 ">
+            <span className="text-blue-600 mr-2">{selectedSparePart}</span>
+            <span className="text-gray-800">
+              {currency === "INR"
+                ? `₹ ${prices[selectedSparePart]}`
+                : `$ ${prices[selectedSparePart] / 80}`}
+            </span>
+          </li>
+        )}
+
+        {selectedAccessories.map((part, index) => (
+          <li key={index} className="flex items-center justify-between mb-2 ">
+            <span className="text-blue-600 mr-2">{part}</span>
+            <span className="text-gray-800">
+              {prices[part] !== undefined
+                ? currency === "INR"
+                  ? `₹ ${prices[part]}`
+                  : `$ ${prices[part] / 80}`
+                : "N/A"}
+            </span>
+          </li>
+        ))}
+
         <hr />
         <div className=" flex items-center justify-between mt-4">
           <span className="font-semibold  mr-2">Total Price:</span>

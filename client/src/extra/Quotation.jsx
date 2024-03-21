@@ -20,7 +20,7 @@ const Quotation = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://calculation.cranebuffer.com/api/data/quotation/${userId}`
+          `http://localhost:5000/api/data/quotation/${userId}`
         ); // Fetch user data using the user ID
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
@@ -76,12 +76,6 @@ const Quotation = () => {
     },
   ];
 
-  console.log(shockAbsorber);
-  console.log(originalPrice);
-  console.log(model);
-  console.log(series);
-  console.log(AdditionalAccessories);
-
   // const [Amount] = rows.map((row) => row.Amount);
 
   // const spareAmount = rows.map((row) =>
@@ -92,9 +86,7 @@ const Quotation = () => {
     (total, row) =>
       total +
       row.Spare.reduce((subtotal, spareItem) => {
-        const itemTotal = spareItem.price * spareItem.quantity;
-        console.log(subtotal);
-        console.log(itemTotal);
+        const itemTotal = spareItem.price;
         return subtotal + itemTotal;
       }, 0),
     0
@@ -106,15 +98,13 @@ const Quotation = () => {
   }, 0);
 
   const Amount = totalSpareAmount + totalPrice;
-
   const freight = Math.round(Amount * 0.02);
   const amountFreight = Amount + freight;
   const gst = Math.round(amountFreight * 0.18);
   const total = Amount + gst + freight;
-  const totalUsd = total - gst - freight;
-  console.log(total);
-  console.log(totalUsd);
-  console.log(Amount);
+  // console.log(total);
+  // console.log(totalUsd);
+  // console.log(Amount);
 
   const packaging = Math.round(Amount * 0.02);
   const totalPack = Amount + packaging;
@@ -163,10 +153,9 @@ const Quotation = () => {
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">price:</h2>
                 <p>
-                  {" "}
                   {currency === "INR"
-                    ? `₹ ${originalPrice}`
-                    : `$ ${originalPrice / 80}`}
+                    ? `₹ ${originalPrice.toFixed(2)}`
+                    : `$ ${(originalPrice / 80).toFixed(2)}`}
                 </p>
               </div>
               <div className="flex gap-2 md:justify-between">
@@ -298,15 +287,14 @@ const Quotation = () => {
                       <TableCell align="right">{row.Quantity}</TableCell>
                       <TableCell align="right">
                         {currency === "INR"
-                          ? `₹ ${totalPriceForRow}`
-                          : `$ ${totalPriceForRow / 80}`}
+                          ? `₹ ${totalPriceForRow.toFixed(2)}`
+                          : `$ ${(totalPriceForRow / 80).toFixed(2)}`}
                       </TableCell>
                     </TableRow>
                     {isFirstRowSpecial && row.Spare.length > 0 && (
                       <>
                         {row.Spare.map((spareItem) => {
-                          const totalSparePrice =
-                            spareItem.price * spareItem.quantity;
+                          const totalSparePrice = spareItem.price;
                           serialNumber++;
 
                           return (
@@ -366,7 +354,9 @@ const Quotation = () => {
               <TableRow>
                 <TableCell colSpan={2}>Amount</TableCell>
                 <TableCell align="right">
-                  {currency === "INR" ? `₹ ${Amount}` : `$ ${Amount / 80}`}
+                  {currency === "INR"
+                    ? `₹ ${Amount.toFixed(2)}`
+                    : `$ ${(Amount / 80).toFixed(2)}`}
                 </TableCell>
               </TableRow>
               {currency !== "USD" && (
@@ -390,8 +380,8 @@ const Quotation = () => {
                   <TableCell colSpan={2}>Packaging 2%</TableCell>
                   <TableCell align="right">
                     {currency === "INR"
-                      ? `₹ ${packaging}`
-                      : `$ ${packaging / 80}`}
+                      ? `₹ ${packaging.toFixed(2)}`
+                      : `$ ${(packaging / 80).toFixed(2)}`}
                   </TableCell>
                 </TableRow>
               )}
@@ -414,8 +404,8 @@ const Quotation = () => {
                     className="!text-green-600 !font-semibold"
                   >
                     {currency === "INR"
-                      ? `₹ ${totalPack}`
-                      : `$ ${totalPack / 80}`}
+                      ? `₹ ${totalPack.toFixed(2)}`
+                      : `$ ${(totalPack / 80).toFixed(2)}`}
                   </TableCell>
                 )}
               </TableRow>

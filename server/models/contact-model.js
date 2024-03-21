@@ -12,8 +12,6 @@ const contactSchema = new Schema({
     {
       name: { type: String, required: true },
       price: { type: Number, required: true },
-      quantity: { type: Number, required: true },
-      // Add more fields as needed for each spare part
     },
   ],
   series: { type: String, required: true },
@@ -23,7 +21,6 @@ const contactSchema = new Schema({
   AdditionalAccessories: [
     {
       name: { type: String, required: true },
-      quantity: { type: Number, required: true },
     },
   ],
 

@@ -179,12 +179,9 @@ export const CraneSecond = () => {
   //Fetching Data
   const getData = async () => {
     try {
-      const response = await fetch(
-        "https://calculation.cranebuffer.com/api/data/data",
-        {
-          method: "GET",
-        }
-      );
+      const response = await fetch("http://localhost:5000/api/data/data", {
+        method: "GET",
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -227,7 +224,7 @@ export const CraneSecond = () => {
       // Fetch prices for each model
       const pricePromises = models.map(async (model) => {
         const response = await fetch(
-          `https://calculation.cranebuffer.com/api/prices/${model}`
+          `http://localhost:5000/prices/${model}`
         );
         if (response.ok) {
           const data = await response.json();

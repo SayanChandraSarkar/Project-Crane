@@ -11,8 +11,7 @@ const priceRoute = require("./router/priceRouter");
 //Cors Policy
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
+    origin: "https://calculation.cranebuffer.com/",
     credentials: true,
   })
 );
@@ -21,7 +20,6 @@ app.use(
 app.use(express.json());
 
 app.use("/api/data", allRoute);
-
 app.use("/api/form", contactRoute);
 app.use("/api/data", quotationRoute);
 app.use("/prices", priceRoute);

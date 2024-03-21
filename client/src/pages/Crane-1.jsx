@@ -193,10 +193,15 @@ export const CraneFirst = () => {
       // Fetch prices for each model
       const pricePromises = models.map(async (model) => {
         const response = await fetch(
-          `https://calculation.cranebuffer.com/api/prices/${model}`
+          `https://calculation.cranebuffer.com/prices/${model}`,
+          {
+            method: "GET",
+          }
         );
+        console.log(response);
         if (response.ok) {
           const data = await response.json();
+          console.log(data);
           return { [model]: data.price };
         }
       });
