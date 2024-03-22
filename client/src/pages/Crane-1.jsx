@@ -53,6 +53,7 @@ export const CraneFirst = () => {
   const [selectedCurrency, setSelectedCurrency] = useState("INR");
   // console.log(modelPrices);
   // console.log(modelPrices);
+ 
   const [calculatedResults, setCalculatedResults] = useState({
     kineticEnergy: "",
     potentialEnergy: "",
@@ -60,6 +61,26 @@ export const CraneFirst = () => {
     energyPerHour: "",
     emassMin: "",
   });
+
+  useEffect(() => {
+    if (mValue  &&  vValue && cValue && fValue && sValue) {
+             
+      
+      handleCalculate();
+      
+    }
+    else{
+     
+      setCalculatedResults({
+        kineticEnergy: "",
+        potentialEnergy: "",
+        totalEnergy: "",
+        energyPerHour: "",
+        emassMin: "",
+      });
+    }
+  },[ mValue, vValue, cValue, fValue, sValue,calculatedResults.emassMin,calculatedResults.energyPerHour,calculatedResults.kineticEnergy,calculatedResults.potentialEnergy,calculatedResults.totalEnergy]);
+ 
   const dispatch = useDispatch();
 
   const [content, setContent] = useState("Initial Content");
@@ -246,6 +267,7 @@ export const CraneFirst = () => {
                 <OutlinedInput
                   className=""
                   id="outlined-adornment-weight"
+                  value={mValue}
                   onChange={handleMChange}
                   autoComplete="off"
                   endAdornment={
@@ -266,6 +288,7 @@ export const CraneFirst = () => {
                 <OutlinedInput
                   className=""
                   id="outlined-adornment-weight"
+                  value={vValue}
                   onChange={handleVChange}
                   autoComplete="off"
                   endAdornment={
@@ -285,6 +308,7 @@ export const CraneFirst = () => {
                 <OutlinedInput
                   className=""
                   id="outlined-adornment-weight"
+                  value={cValue}
                   onChange={handleCChange}
                   autoComplete="off"
                   endAdornment={
@@ -304,6 +328,7 @@ export const CraneFirst = () => {
                 <OutlinedInput
                   className=""
                   id="outlined-adornment-weight"
+                  value={fValue}
                   onChange={handleFChange}
                   autoComplete="off"
                   endAdornment={
@@ -331,6 +356,7 @@ export const CraneFirst = () => {
                     <Autocomplete
                       onChange={handleSChange}
                       id="controllable-states-demo"
+                      value={sValue}
                       options={option1}
                       className="autoComplete"
                       renderInput={(params) => (
@@ -371,7 +397,7 @@ export const CraneFirst = () => {
                     </FormHelperText>
                   </FormControl>
 
-                  <FormControl
+                  {/* <FormControl
                     variant="outlined"
                     className="fromMobile"
                     autoComplete="off"
@@ -392,7 +418,7 @@ export const CraneFirst = () => {
                     >
                       Type
                     </FormHelperText>
-                  </FormControl>
+                  </FormControl> */}
 
                   <FormControl
                     variant="outlined"
@@ -421,9 +447,9 @@ export const CraneFirst = () => {
                     </FormHelperText>
                   </FormControl>
                 </div>
-                <div className="btn md:w-[10%] md:bg-blue-500 text-white md:rounded-lg md:p-3 md:m-auto text-center md:mb-4 md:mt-6">
+                {/* <div className="btn md:w-[10%] md:bg-blue-500 text-white md:rounded-lg md:p-3 md:m-auto text-center md:mb-4 md:mt-6">
                   <button onClick={handleCalculate}>Calculate</button>
-                </div>
+                </div> */}
                 <div className="resultOutput">
                   <FormControl variant="outlined" className="fromMobile">
                     <OutlinedInput
@@ -565,6 +591,8 @@ export const CraneFirst = () => {
 
         {/* {model && <ModelPricePage modelName={model} />} */}
       </div>
+
+      
     </>
   );
 };
