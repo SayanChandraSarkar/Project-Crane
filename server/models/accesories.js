@@ -7,6 +7,6 @@ const accesorieSchema = new mongoose.Schema({
 });
 
 // Create a model based on the schema
-const PriceModel = mongoose.model("Accessorie", accesorieSchema);
+const PriceModel = mongoose.model("Data", accesorieSchema);
 
 module.exports = PriceModel;

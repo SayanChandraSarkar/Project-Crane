@@ -13,18 +13,18 @@ export const Technical = () => {
   const emassMin = useSelector((state) => state.data.emassMin);
   return (
     <>
-      <div className="p-4">
+      <div className="p-4 md:w-[50%]">
         <div className="h-[10vh] w-[100%] flex justify-between ">
           <div>
             <img className="w-[60%]" src="/images/logo.png" />
           </div>
-          <div>
-            <h2 className="text-l font-medium">Technical Report</h2>
+          <div className="md:w-[20%]">
+            <h2 className="text-l font-medium md:ml-[]">Technical Report</h2>
           </div>
         </div>
 
-        <div className="quotation-by-section w-[90%] flex flex-col  gap-[8%] md:flex-row m-auto">
-          <div className="">
+        <div className="quotation-by-section w-[90%] flex flex-col  gap-[8%] md:flex-row m-auto md:justify-center">
+          <div className="md:justify-evenly md:w-[80%]">
             <span className="mb-8 flex justify-between ">
               <p className="mr-2 font-bold">Kinetic Energy:</p>
               <p className="">{kineticEnergy} Nm</p>

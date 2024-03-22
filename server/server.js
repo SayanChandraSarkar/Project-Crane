@@ -11,11 +11,10 @@ const priceRoute = require("./router/priceRouter");
 //Cors Policy
 app.use(
   cors({
-    origin: "https://calculation.cranebuffer.com/",
+    origin: "*",
     credentials: true,
   })
 );
-// app.use(cors());
 
 app.use(express.json());
 

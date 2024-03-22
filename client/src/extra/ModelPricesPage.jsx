@@ -22,24 +22,21 @@ const PricePage = () => {
   const [selectedSparePart, setSelectedSparePart] = useState(null);
   const [selectedAccessories, setSelectedAccessories] = useState([]);
 
-  console.log(modelName.slice(0, 2));
   const modeldata = modelName.slice(0, 2);
 
   // Fetch spare parts data
   useEffect(() => {
     const fetchPrices = async () => {
       try {
-        console.log("fetching ", modelName);
         if (!modelName) {
           return;
         }
         const response = await fetch(
-          `http://localhost:5000/prices/${modelName}`,
+          `https://calculation.cranebuffer.com/prices/${modelName}`,
           { method: "GET" }
         );
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
           // Assuming data is an array of prices
           setPrices(data.price);
           dispatch(
@@ -175,7 +172,7 @@ const PricePage = () => {
     navigate(`/price/${modelName}/info`);
   };
   return (
-    <div className="max-w-screen-lg mx-auto px-4 py-12">
+    <div className="max-w-screen-lg mx-auto px-4 py-2">
       <h1 className="text-2xl font-bold mb-4 ml-2">Choose Spare Parts</h1>
       <div className="mb-20">
         {/* <h2 className="text-xl font-semibold mb-2">Spare Parts</h2> */}

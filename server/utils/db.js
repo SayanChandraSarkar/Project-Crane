@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const URI =
-  "mongodb+srv://5techgteam:sHAQhurBYxQKID5I@cranebuffer.qpd8gt0.mongodb.net/cranebuffe";
+  "mongodb+srv://5TechG:mf25SkkgywK4YY6n@cranebuffer.o1p5ttz.mongodb.net/cranebuffer";
 
 const connectDb = async () => {
   try {

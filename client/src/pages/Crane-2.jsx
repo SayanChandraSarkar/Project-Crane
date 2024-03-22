@@ -179,14 +179,17 @@ export const CraneSecond = () => {
   //Fetching Data
   const getData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/data/data", {
-        method: "GET",
-      });
+      const response = await fetch(
+        "https://calculation.cranebuffer.com/api/data/data",
+        {
+          method: "GET",
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
 
-        console.log(data);
+        data;
 
         // Filter the data based on the conditions
         const filteredData = data.filter((item) => {
@@ -197,18 +200,18 @@ export const CraneSecond = () => {
           );
         });
 
-        console.log(filteredData);
+        filteredData;
         // Extract the "Model" property from each object in the array
         const modelNames = filteredData.map((item) => item.Model);
-        console.log(modelNames);
+        modelNames;
         const top5ModelNames = modelNames.slice(0, 5);
-        console.log(top5ModelNames);
+        top5ModelNames;
 
         setTop5ModelNames(top5ModelNames);
         fetchPricesForModels(top5ModelNames);
       }
     } catch (error) {
-      console.log(error);
+      error;
     }
   };
 
@@ -220,11 +223,11 @@ export const CraneSecond = () => {
 
   const fetchPricesForModels = async (models) => {
     try {
-      console.log(models);
+      models;
       // Fetch prices for each model
       const pricePromises = models.map(async (model) => {
         const response = await fetch(
-          `http://localhost:5000/prices/${model}`
+          `https://calculation.cranebuffer.com/prices/${model}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -261,7 +264,7 @@ export const CraneSecond = () => {
     <>
       <div className="Crane2 inputFields">
         <DynamicHeading
-          className="forMobile forMobile text-center text-2xl font-bold m-4"
+          className="forMobile forMobile text-center text-2xl font-bold"
           initialContent="Wagon against Wagon"
           content={content}
           setContent={setContent}
@@ -477,10 +480,13 @@ export const CraneSecond = () => {
                       Currency
                     </FormHelperText>
                   </FormControl>
+                  <FormControl className="md:w-[49%] md:h-[80px] flex justify-center items-center">
+                    <div className="btn md:w-[100%]  md:bg-blue-500 text-white md:rounded-lg md:p-3 md:h-[55px] md:m-auto text-center ">
+                      <button onClick={handleCalculate}>Calculate</button>
+                    </div>
+                  </FormControl>
                 </div>
-                <div className="btn md:w-[10%] md:bg-blue-500 text-white md:rounded-lg md:p-3 md:m-auto text-center md:mb-4 md:mt-6">
-                  <button onClick={handleCalculate}>Calculate</button>
-                </div>
+
                 <div className="resultOutput">
                   <FormControl variant="outlined" className="fromMobile">
                     <OutlinedInput
@@ -590,13 +596,16 @@ export const CraneSecond = () => {
                   </FormControl>
                 </div>
               </div>
-              <div className="text-center m-auto mt-8  w-[100%] text-xl">
+              <div className="text-center m-auto mt-8  w-[100%] text-xl md:flex ">
                 {showModelOutput &&
                   top5ModelNames.map((model, index) => (
-                    <div key={index} className="model-button-container">
+                    <div
+                      key={index}
+                      className="model-button-container md:w-[25%] md:m-2 md:text-sm"
+                    >
                       <div
                         onClick={() => handleModelClick(model)}
-                        className="w-[90%] flex items-center justify-center mx-auto bg-emerald-900   h-[10vh] text-white mb-4  rounded-2xl"
+                        className="flex items-center justify-center mx-auto bg-emerald-900   h-[10vh] text-white mb-4  rounded-2xl"
                       >
                         {modelPrices[model] !== undefined
                           ? selectedCurrency === "INR"

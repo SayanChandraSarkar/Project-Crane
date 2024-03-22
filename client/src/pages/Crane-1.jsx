@@ -8,8 +8,13 @@ import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-// import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
-// import { styled } from "@mui/system";
+import Tab from "@mui/material/Tab";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Table from "@mui/material/Table";
 import PropTypes from "prop-types";
 
 import "../scss/Crane-1.scss";
@@ -32,10 +37,12 @@ const option1 = [
 ];
 const option2 = ["1", "2", "3", "4"];
 
-const Type = ["ED", "EI", "SB"];
+// const Type = ["ED", "EI", "SB"];
 const Currency = ["USD", "INR"];
 
 import { useNavigate } from "react-router-dom";
+import { TableBody, TableHead } from "@mui/material";
+
 export const CraneFirst = () => {
   const navigate = useNavigate();
 
@@ -45,15 +52,17 @@ export const CraneFirst = () => {
   const [fValue, setFValue] = useState("");
   const [sValue, setSValue] = useState("");
   // const [model, setModel] = useState(null);
-  const [selectedType, setSelectedType] = useState("");
-  const [top5ModelNames, setTop5ModelNames] = useState([]);
-  const [showModelOutput, setShowModelOutput] = useState(false);
+  // const [selectedType, setSelectedType] = useState("");
+  const [top5ModelNames, setTop5ModelNames] = useState({
+    ED: [],
+    EI: [],
+    SB: [],
+  });
   const [shockAbsorber, setShockAbsorber] = useState("2");
-  const [modelPrices, setModelPrices] = useState({});
   const [selectedCurrency, setSelectedCurrency] = useState("INR");
   // console.log(modelPrices);
   // console.log(modelPrices);
- 
+
   const [calculatedResults, setCalculatedResults] = useState({
     kineticEnergy: "",
     potentialEnergy: "",
@@ -63,14 +72,9 @@ export const CraneFirst = () => {
   });
 
   useEffect(() => {
-    if (mValue  &&  vValue && cValue && fValue && sValue) {
-             
-      
+    if (mValue && vValue && cValue && fValue && sValue) {
       handleCalculate();
-      
-    }
-    else{
-     
+    } else {
       setCalculatedResults({
         kineticEnergy: "",
         potentialEnergy: "",
@@ -79,11 +83,24 @@ export const CraneFirst = () => {
         emassMin: "",
       });
     }
-  },[ mValue, vValue, cValue, fValue, sValue,calculatedResults.emassMin,calculatedResults.energyPerHour,calculatedResults.kineticEnergy,calculatedResults.potentialEnergy,calculatedResults.totalEnergy]);
- 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    mValue,
+    vValue,
+    cValue,
+    fValue,
+    sValue,
+    calculatedResults.emassMin,
+    calculatedResults.energyPerHour,
+    calculatedResults.kineticEnergy,
+    calculatedResults.potentialEnergy,
+    calculatedResults.totalEnergy,
+  ]);
+
   const dispatch = useDispatch();
 
   const [content, setContent] = useState("Initial Content");
+  const [value, setValue] = useState("ED");
 
   //Dynamic heading
   const DynamicHeading = ({
@@ -133,9 +150,9 @@ export const CraneFirst = () => {
   };
 
   //Type
-  const handleTypeChange = (event, value) => {
-    setSelectedType(value);
-  };
+  // const handleTypeChange = (event, value) => {
+  //   setSelectedType(value);
+  // };
   const handleAbsorberChange = (event, value) => {
     setShockAbsorber(value);
   };
@@ -159,42 +176,61 @@ export const CraneFirst = () => {
       Vd,
       emassMin,
     });
-
-    fetchPricesForModels(top5ModelNames);
-    setShowModelOutput(true);
   };
 
   //Fetching Data
   const getData = async () => {
     try {
-      const response = await fetch(
-        "https://calculation.cranebuffer.com/api/data/data",
-        {
-          method: "GET",
-        }
-      );
+      const response = await fetch("http://localhost:5000/api/data/data", {
+        method: "GET",
+      });
 
       if (response.ok) {
         const data = await response.json();
+        // Filter the data based on the conditions for each type
+        const filteredData = {
+          ED: data.filter(
+            (item) =>
+              item.nmperstroke > calculatedResults.totalEnergy &&
+              item.nmperhr > calculatedResults.energyPerHour &&
+              item.series === "ED"
+          ),
+          EI: data.filter(
+            (item) =>
+              item.nmperstroke > calculatedResults.totalEnergy &&
+              item.nmperhr > calculatedResults.energyPerHour &&
+              item.series === "EI"
+          ),
+          SB: data.filter(
+            (item) =>
+              item.nmperstroke > calculatedResults.totalEnergy &&
+              item.nmperhr > calculatedResults.energyPerHour &&
+              item.series === "SB"
+          ),
+        };
 
-        // Filter the data based on the conditions
-        const filteredData = data.filter((item) => {
-          return (
-            item.nmperstroke > calculatedResults.totalEnergy &&
-            item.nmperhr > calculatedResults.energyPerHour &&
-            item["MODEL TYPE"] === selectedType
-          );
-        });
-
-        // console.log(filteredData);
-        // Extract the "Model" property from each object in the array
-        const modelNames = filteredData.map((item) => item.Model);
-        console.log(modelNames);
-        const top5ModelNames = modelNames.slice(0, 5);
-        console.log(top5ModelNames);
+        const top5ModelNames = {
+          ED: filteredData.ED.slice(0, 5).map((item) => ({
+            model: item.Model,
+            stroke: item.Stroke,
+            nmperstroke: item.nmperstroke,
+            nmperhr: item.nmperhr,
+          })),
+          EI: filteredData.EI.slice(0, 5).map((item) => ({
+            model: item.Model,
+            stroke: item.Stroke,
+            nmperstroke: item.nmperstroke,
+            nmperhr: item.nmperhr,
+          })),
+          SB: filteredData.SB.slice(0, 5).map((item) => ({
+            model: item.Model,
+            stroke: item.Stroke,
+            nmperstroke: item.nmperstroke,
+            nmperhr: item.nmperhr,
+          })),
+        };
 
         setTop5ModelNames(top5ModelNames);
-        fetchPricesForModels(top5ModelNames);
       }
     } catch (error) {
       console.log(error);
@@ -202,55 +238,41 @@ export const CraneFirst = () => {
   };
 
   useEffect(() => {
-    if (showModelOutput) {
-      getData();
-      // fetchPricesForModels(top5ModelNames);
-    }
-  }, [showModelOutput]);
+    getData();
+    // fetchPricesForModels(top5ModelNames);
+  }, []);
 
-  const fetchPricesForModels = async (models) => {
-    try {
-      console.log(models);
-      // Fetch prices for each model
-      const pricePromises = models.map(async (model) => {
-        const response = await fetch(
-          `https://calculation.cranebuffer.com/prices/${model}`,
-          {
-            method: "GET",
-          }
-        );
-        console.log(response);
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data);
-          return { [model]: data.price };
-        }
-      });
+  // const fetchPricesForModels = async (models) => {
+  //   try {
+  //     console.log(models);
+  //     // Fetch prices for each model
+  //     const pricePromises = models.map(async (model) => {
+  //       const response = await fetch(
+  //         `https://calculation.cranebuffer.com/prices/${model}`,
+  //         {
+  //           method: "GET",
+  //         }
+  //       );
+  //       console.log(response);
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         console.log(data);
+  //         return { [model]: data.price };
+  //       }
+  //     });
 
-      // Wait for all price fetch requests to complete
-      const prices = await Promise.all(pricePromises);
-      const priceMap = Object.assign({}, ...prices);
-      setModelPrices(priceMap);
-    } catch (error) {
-      console.error("Error fetching prices:", error);
-    }
+  //     // Wait for all price fetch requests to complete
+  //     const prices = await Promise.all(pricePromises);
+  //     const priceMap = Object.assign({}, ...prices);
+  //     setModelPrices(priceMap);
+  //   } catch (error) {
+  //     console.error("Error fetching prices:", error);
+  //   }
+  // };
+
+  const handleTabChange = (event, newValue) => {
+    setValue(newValue);
   };
-  const handleModelClick = (model) => {
-    dispatch(
-      addData({
-        currency: selectedCurrency,
-        shockAbsorber: shockAbsorber,
-        kineticEnergy: calculatedResults.kineticEnergy,
-        potentialEnergy: calculatedResults.potentialEnergy,
-        totalEnergy: calculatedResults.totalEnergy,
-        energyPerHour: calculatedResults.energyPerHour,
-        Vd: calculatedResults.Vd,
-        emassMin: calculatedResults.emassMin,
-      })
-    );
-    navigate(`/price/${model}`);
-  };
-
   return (
     <>
       <div className="Crane1 inputFields">
@@ -564,35 +586,187 @@ export const CraneFirst = () => {
                   </FormControl>
                 </div>
               </div>
-              <div className="text-center m-auto mt-8  w-[100%] text-xl">
-                {showModelOutput &&
-                  top5ModelNames.map((model, index) => (
-                    <div key={index} className="model-button-container">
-                      <div
-                        onClick={() => handleModelClick(model)}
-                        className="w-[90%] flex items-center justify-center mx-auto bg-emerald-900 h-[10vh] text-white mb-4  rounded-2xl"
-                      >
-                        {modelPrices[model] !== undefined
-                          ? selectedCurrency === "INR"
-                            ? `Rs ${modelPrices[model].NEWPRICE}`
-                            : `$ ${modelPrices[model].NEWPRICE / 80}`
-                          : "Loading..."}
-
-                        <button className=" text-center ml-8  text-white font-bold">
-                          {model}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-              </div>
             </div>
           </Box>
         </div>
 
-        {/* {model && <ModelPricePage modelName={model} />} */}
-      </div>
+        <Box
+          sx={{
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            overflow: "hidden",
+          }}
+        >
+          <TabContext value={value}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <TabList
+                onChange={handleTabChange}
+                aria-label="lab API tabs example"
+                className="flex flex-wrap justify-center sm:justify-start"
+              >
+                <Tab label="ED" value="ED" />
+                <Tab label="EI" value="EI" />
+                <Tab label="SB" value="SB" />
+              </TabList>
+            </Box>
+            <TabPanel value="ED">
+              <Table
+                className="table-auto w-full"
+                sx={{ minWidth: 400, overflow: "hidden" }}
+              >
+                <TableHead>
+                  <TableRow
+                    sx={{
+                      "&:last-child td, &:last-child th": {
+                        border: "1px solid rgba(0, 0, 0, 0.2)",
+                        backgroundColor: "#eeee",
+                      },
+                    }}
+                  >
+                    <TableCell align="right">Model</TableCell>
+                    <TableCell align="right">Energy Capacity</TableCell>
+                    <TableCell align="right">Stroke</TableCell>
+                    <TableCell align="right">
+                      Rate of Utilization/stroke
+                    </TableCell>
+                    <TableCell align="right">Rate of Utilization/hr</TableCell>
+                  </TableRow>
+                </TableHead>
 
-      
+                <TableBody
+                  sx={{
+                    "&:last-child td, &:last-child th": {
+                      border: "1px solid rgba(0, 0, 0, 0.2)",
+                    },
+                  }}
+                >
+                  {top5ModelNames.ED.map((model, index) => (
+                    <TableRow key={index}>
+                      <TableCell align="right">{model.model}</TableCell>
+                      <TableCell align="right">
+                        {calculatedResults.totalEnergy}
+                      </TableCell>
+                      <TableCell align="right">{model.stroke}</TableCell>
+                      <TableCell align="right">
+                        {(
+                          (calculatedResults.totalEnergy / model.nmperhr) *
+                          100
+                        ).toFixed(2)}
+                        %
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TabPanel>
+            <TabPanel value="EI">
+              <Table style={{ borderCollapse: "collapse", width: "100%" }}>
+                <TableHead>
+                  <TableRow
+                    sx={{
+                      "&:last-child td, &:last-child th": {
+                        border: "1px solid rgba(0, 0, 0, 0.2)",
+                      },
+                    }}
+                  >
+                    <TableCell align="right">Model</TableCell>
+                    <TableCell align="right">Energy Capacity</TableCell>
+                    <TableCell align="right">Stroke</TableCell>
+                    <TableCell align="right">
+                      Rate of Utilization/stroke
+                    </TableCell>
+                    <TableCell align="right">Rate of Utilization/hr</TableCell>
+                  </TableRow>
+                </TableHead>
+
+                <TableBody
+                  sx={{
+                    "&:last-child td, &:last-child th": {
+                      border: "1px solid rgba(0, 0, 0, 0.2)",
+                    },
+                  }}
+                >
+                  {/* Example table rows */}
+                  <TableRow key="1">
+                    <TableCell align="right">EI 1.5 x 5</TableCell>
+                    <TableCell align="right">Accessory 1</TableCell>
+                    <TableCell align="right">2</TableCell>
+                    <TableCell align="right">10%</TableCell>
+                    <TableCell align="right">20%</TableCell>
+                  </TableRow>
+                  <TableRow key="2">
+                    <TableCell align="right">EI 3.5 x 6</TableCell>
+                    <TableCell align="right">Accessory 2</TableCell>
+                    <TableCell align="right">3</TableCell>
+                    <TableCell align="right">10%</TableCell>
+                    <TableCell align="right">20%</TableCell>
+                  </TableRow>
+
+                  <TableRow key="3">
+                    <TableCell align="right">EI 2 x 4</TableCell>
+                    <TableCell align="right">Accessory 3</TableCell>
+                    <TableCell align="right">3</TableCell>
+                    <TableCell align="right">10%</TableCell>
+                    <TableCell align="right">20%</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TabPanel>
+            <TabPanel value="SB">
+              <Table style={{ borderCollapse: "collapse", width: "100%" }}>
+                <TableHead>
+                  <TableRow
+                    sx={{
+                      "&:last-child td, &:last-child th": {
+                        border: "1px solid rgba(0, 0, 0, 0.2)",
+                      },
+                    }}
+                  >
+                    <TableCell align="right">Model</TableCell>
+                    <TableCell align="right">Energy Capacity</TableCell>
+                    <TableCell align="right">Stroke</TableCell>
+                    <TableCell align="right">
+                      Rate of Utilization/stroke
+                    </TableCell>
+                    <TableCell align="right">Rate of Utilization/hr</TableCell>
+                  </TableRow>
+                </TableHead>
+
+                <TableBody
+                  sx={{
+                    "&:last-child td, &:last-child th": {
+                      border: "1px solid rgba(0, 0, 0, 0.2)",
+                    },
+                  }}
+                >
+                  <TableRow key="1">
+                    <TableCell align="right">SB 200 x 200</TableCell>
+                    <TableCell align="right">Accessory 1</TableCell>
+                    <TableCell align="right">2</TableCell>
+                    <TableCell align="right">10%</TableCell>
+                    <TableCell align="right">20%</TableCell>
+                  </TableRow>
+                  <TableRow key="2">
+                    <TableCell align="right">SB 100 x 200</TableCell>
+                    <TableCell align="right">Accessory 2</TableCell>
+                    <TableCell align="right">3</TableCell>
+                    <TableCell align="right">10%</TableCell>
+                    <TableCell align="right">20%</TableCell>
+                  </TableRow>
+
+                  <TableRow key="3">
+                    <TableCell align="right">SB 150 x 200</TableCell>
+                    <TableCell align="right">Accessory 3</TableCell>
+                    <TableCell align="right">3</TableCell>
+                    <TableCell align="right">10%</TableCell>
+                    <TableCell align="right">20%</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TabPanel>
+          </TabContext>
+        </Box>
+      </div>
     </>
   );
 };

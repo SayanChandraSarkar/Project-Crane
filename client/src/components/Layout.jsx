@@ -126,15 +126,10 @@ export const Layout = () => {
           </Drawer> */}
           <div className="output mt-6">
             <Routes>
-              <Route
-                path="/"
-                // path="/technical"`
-                element={<RootPage />}
-              />
+              <Route path="/" element={<RootPage />} />
               <Route path="/crane-1" element={<CraneFirst />} />
               <Route path="/crane-2" element={<CraneSecond />} />
               <Route path="/crane-3" element={<CraneThird />} />
-              {/* <Route path="/modelPrice" element={<PricePage />} /> */}
               <Route path="/price/:modelName" element={<PricePage />} />
               <Route path="/price/:modelName/info" element={<UserDetails />} />
               <Route
@@ -143,7 +138,6 @@ export const Layout = () => {
               />
               <Route
                 path="/price/:modelName/info/:userId/technical"
-                // path="/technical"
                 element={<Technical />}
               />
             </Routes>

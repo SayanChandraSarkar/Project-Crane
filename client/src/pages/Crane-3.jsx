@@ -152,14 +152,15 @@ export const CraneThird = () => {
   //Fetching Data
   const getData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/data/data", {
-        method: "GET",
-      });
+      const response = await fetch(
+        "https://calculation.cranebuffer.com/api/data/data",
+        {
+          method: "GET",
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
-
-        console.log(data);
 
         // Filter the data based on the conditions
         const filteredData = data.filter((item) => {
@@ -170,12 +171,9 @@ export const CraneThird = () => {
           );
         });
 
-        console.log(filteredData);
         // Extract the "Model" property from each object in the array
         const modelNames = filteredData.map((item) => item.Model);
-        console.log(modelNames);
         const top5ModelNames = modelNames.slice(0, 5);
-        console.log(top5ModelNames);
 
         setTop5ModelNames(top5ModelNames);
         fetchPricesForModels(top5ModelNames);
@@ -187,10 +185,11 @@ export const CraneThird = () => {
 
   const fetchPricesForModels = async (models) => {
     try {
-      console.log(models);
       // Fetch prices for each model
       const pricePromises = models.map(async (model) => {
-        const response = await fetch(`http://localhost:5000/prices/${model}`);
+        const response = await fetch(
+          `https://calculation.cranebuffer.com/prices/${model}`
+        );
         if (response.ok) {
           const data = await response.json();
           return { [model]: data.price };

@@ -17,7 +17,6 @@ const UserDetails = () => {
   const addAdditionalPriceData = useSelector(
     (state) => state.data.addAdditionalPriceData
   );
-  console.log(originalPrice);
   const defaultContactFormData = {
     username: "",
     email: "",
@@ -31,9 +30,7 @@ const UserDetails = () => {
     setCurrentModelName(modelName);
   }, []);
 
-  console.log(spare);
   const handleInput = (e) => {
-    // console.log(e);
 
     let name = e.target.name;
     let value = e.target.value;
@@ -45,7 +42,6 @@ const UserDetails = () => {
 
   const handleSubmit = async (e, modelName) => {
     e.preventDefault();
-    console.log(modelName);
     try {
       // Retrieve model name from local storage
       const formData = {
@@ -62,12 +58,14 @@ const UserDetails = () => {
         // type: selectedType,
       };
 
-      const response = await fetch("http://localhost:5000/api/form/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      console.log(response);
+      const response = await fetch(
+        "https://calculation.cranebuffer.com/api/form/contact",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setContact(defaultContactFormData);
@@ -81,7 +79,6 @@ const UserDetails = () => {
     } catch (error) {
       alert("Message not sent Successfully");
 
-      console.log(error);
     }
   };
 

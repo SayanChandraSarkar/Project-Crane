@@ -16,7 +16,7 @@ export const RootPage = () => {
     <>
       <div className="flex flex-col md:flex-row justify-center items-center p-4 h-[100%] md:h-[84vh] gap-8 md:gap-14">
         <div
-          className="flex  items-center flex-col gap-2 "
+          className="flex  items-center flex-col gap-2 cursor-pointer"
           onClick={handlefirstcrane}
         >
           <img
@@ -30,7 +30,7 @@ export const RootPage = () => {
           </h2>
         </div>
         <div
-          className="flex  items-center flex-col gap-2 mt-2"
+          className="flex  items-center flex-col gap-2 mt-2 cursor-pointer"
           onClick={handlesecondcrane}
         >
           <img
@@ -42,7 +42,7 @@ export const RootPage = () => {
           <h2 className="text-sm font-medium">Wagon against wagon</h2>
         </div>
         <div
-          className="flex  items-center flex-col gap-2 mt-4"
+          className="flex  items-center flex-col gap-2 mt-4 cursor-pointer"
           onClick={handlethirdcrane}
         >
           <img

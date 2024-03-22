@@ -6,7 +6,6 @@ const allFunction = async (req, res) => {
     // Filter data from MongoDB based on the provided criteria
     const response = await Model.find();
 
-    console.log(response);
     if (!response) {
       res.status(404).json({ message: "No data found" });
       return;
@@ -23,7 +22,6 @@ const fetchPrice = async (req, res) => {
   try {
     // Filter data from MongoDB based on the provided criteria
     const price = await PriceModel.findOne({ Model: modelName });
-    console.log("price", price);
 
     if (!price) {
       return res.status(404).json({ message: "Price not found" });

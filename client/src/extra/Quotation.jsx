@@ -15,18 +15,16 @@ const Quotation = () => {
   const { userId } = useParams();
   const [userData, setUserData] = useState(null);
 
-  // console.log(kineticEnergy);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/data/quotation/${userId}`
+          `https://calculation.cranebuffer.com/api/data/quotation/${userId}`
         ); // Fetch user data using the user ID
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
         }
         const data = await response.json();
-        // console.log(data.user.username);
         setUserData(data.user); // Set the fetched user data in state
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -81,7 +79,6 @@ const Quotation = () => {
   // const spareAmount = rows.map((row) =>
   //   row.Spare.map((spare) => spare.price * spare.quantity)
   // );
-  // console.log(spareAmount);
   const totalSpareAmount = rows.reduce(
     (total, row) =>
       total +
@@ -102,13 +99,9 @@ const Quotation = () => {
   const amountFreight = Amount + freight;
   const gst = Math.round(amountFreight * 0.18);
   const total = Amount + gst + freight;
-  // console.log(total);
-  // console.log(totalUsd);
-  // console.log(Amount);
 
   const packaging = Math.round(Amount * 0.02);
   const totalPack = Amount + packaging;
-  console.log(gst);
   return (
     <>
       <div className="p-4 quotation">
@@ -154,7 +147,7 @@ const Quotation = () => {
                 <h2 className="font-medium">price:</h2>
                 <p>
                   {currency === "INR"
-                    ? `₹ ${originalPrice.toFixed(2)}`
+                    ? `₹ ${originalPrice}`
                     : `$ ${(originalPrice / 80).toFixed(2)}`}
                 </p>
               </div>
@@ -202,72 +195,6 @@ const Quotation = () => {
                 },
               }}
             >
-              {/* {rows.map((row, index) => {
-                // Calculate the total price for the current row
-                const totalPriceForRow = row.Price * row.Quantity;
-
-                return (
-                  <Fragment key={row.model}>
-                    <TableRow>
-                      <TableCell align="right">{index + 1}</TableCell>
-                      <TableCell align="right">{row.Series}</TableCell>
-                      <TableCell align="right">{row.Quantity}</TableCell>
-                      <TableCell align="right">
-                        {currency === "INR"
-                          ? `₹ ${totalPriceForRow}`
-                          : `$ ${totalPriceForRow / 80}`}
-                      </TableCell>
-                    </TableRow>
-                    {row.Spare.map((spareItem, spareIndex) => {
-                      const totalSparePrice =
-                        spareItem.price * spareItem.quantity;
-                      return (
-                        <TableRow key={spareItem._id.$oid}>
-                          <TableCell align="right">
-                            {index + 1 + spareIndex + 1}
-                          </TableCell>
-                          <TableCell align="right">{spareItem.name}</TableCell>
-                          <TableCell align="right">
-                            {spareItem.quantity}
-                          </TableCell>
-                          <TableCell align="right">
-                            {currency === "INR"
-                              ? `₹ ${totalSparePrice}`
-                              : `$ ${totalSparePrice / 80}`}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-
-                    {row.AdditionalAccessories.map(
-                      (accessory, accessoryIndex, spareIndex) => {
-                        const totalAccessoryPrice =
-                          accessory.price * accessory.quantity;
-
-                        return (
-                          <TableRow key={accessory.name}>
-                            <TableCell align="right">
-                              {index + 1 + spareIndex + 1 + accessoryIndex + 1}
-                            </TableCell>
-                            <TableCell align="right">
-                              {accessory.name}
-                            </TableCell>
-                            <TableCell align="right">
-                              {accessory.quantity}
-                            </TableCell>
-                            <TableCell align="right">
-                              {currency === "INR"
-                                ? `₹ ${totalAccessoryPrice}`
-                                : `$ ${totalAccessoryPrice / 80}`}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      }
-                    )}
-                  </Fragment>
-                );
-              })} */}
-
               {rows.map((row, index) => {
                 // Calculate the total price for the current row
                 const totalPriceForRow = row.Price * row.Quantity;
@@ -287,7 +214,7 @@ const Quotation = () => {
                       <TableCell align="right">{row.Quantity}</TableCell>
                       <TableCell align="right">
                         {currency === "INR"
-                          ? `₹ ${totalPriceForRow.toFixed(2)}`
+                          ? `₹ ${totalPriceForRow}`
                           : `$ ${(totalPriceForRow / 80).toFixed(2)}`}
                       </TableCell>
                     </TableRow>
@@ -355,7 +282,7 @@ const Quotation = () => {
                 <TableCell colSpan={2}>Amount</TableCell>
                 <TableCell align="right">
                   {currency === "INR"
-                    ? `₹ ${Amount.toFixed(2)}`
+                    ? `₹ ${Amount}`
                     : `$ ${(Amount / 80).toFixed(2)}`}
                 </TableCell>
               </TableRow>
@@ -380,7 +307,7 @@ const Quotation = () => {
                   <TableCell colSpan={2}>Packaging 2%</TableCell>
                   <TableCell align="right">
                     {currency === "INR"
-                      ? `₹ ${packaging.toFixed(2)}`
+                      ? `₹ ${packaging}`
                       : `$ ${(packaging / 80).toFixed(2)}`}
                   </TableCell>
                 </TableRow>
@@ -404,7 +331,7 @@ const Quotation = () => {
                     className="!text-green-600 !font-semibold"
                   >
                     {currency === "INR"
-                      ? `₹ ${totalPack.toFixed(2)}`
+                      ? `₹ ${totalPack}`
                       : `$ ${(totalPack / 80).toFixed(2)}`}
                   </TableCell>
                 )}
