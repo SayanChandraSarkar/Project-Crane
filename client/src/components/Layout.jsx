@@ -19,6 +19,7 @@ import Quotation from "../extra/Quotation";
 import { Technical } from "../extra/Technical";
 import "../scss/Print.scss";
 import { RootPage } from "../extra/RootPage";
+import CraneFourth from "../pages/Crane-4";
 export const Layout = () => {
   // const navigate = useNavigate();
 
@@ -130,6 +131,7 @@ export const Layout = () => {
               <Route path="/crane-1" element={<CraneFirst />} />
               <Route path="/crane-2" element={<CraneSecond />} />
               <Route path="/crane-3" element={<CraneThird />} />
+              <Route path="/crane-4" element={<CraneFourth/>}/>
               <Route path="/price/:modelName" element={<PricePage />} />
               <Route path="/price/:modelName/info" element={<UserDetails />} />
               <Route

@@ -10,11 +10,29 @@ export const RootPage = () => {
   };
   const handlethirdcrane = () => {
     navigate("/crane-3");
+
+  };
+  const handlefourthcrane = () => {
+    navigate("/crane-4");
   };
 
   return (
     <>
       <div className="flex flex-col md:flex-row justify-center items-center p-4 h-[100%] md:h-[84vh] gap-8 md:gap-14">
+      <div
+          className="flex  items-center flex-col gap-2 cursor-pointer"
+          onClick={handlefourthcrane}
+        >
+          <img
+            className="w-full h-40 "
+            src="/images/crane4.jpg"
+            alt="Wagon against 1 shock absorbers"
+          />
+
+          <h2 className="text-sm font-medium">
+            Wagon against 1 shock absorbers
+          </h2>
+        </div>
         <div
           className="flex  items-center flex-col gap-2 cursor-pointer"
           onClick={handlefirstcrane}
