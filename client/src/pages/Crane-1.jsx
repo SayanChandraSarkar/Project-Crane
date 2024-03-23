@@ -70,6 +70,7 @@ export const CraneFirst = () => {
     energyPerHour: "",
     emassMin: "",
   });
+  const [showTable, setShowTable] = useState(false);
 
   useEffect(() => {
     if (mValue && vValue && cValue && fValue && sValue) {
@@ -649,7 +650,14 @@ export const CraneFirst = () => {
                       <TableCell align="right">{model.stroke}</TableCell>
                       <TableCell align="right">
                         {(
-                          (calculatedResults.totalEnergy / model.nmperhr) *
+                          (calculatedResults.totalEnergy / model.nmperstroke) *
+                          100
+                        ).toFixed(2)}
+                        %
+                      </TableCell>
+                      <TableCell align="right">
+                        {(
+                          (calculatedResults.energyPerHour / model.nmperhr) *
                           100
                         ).toFixed(2)}
                         %
