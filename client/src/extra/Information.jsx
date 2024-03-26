@@ -31,7 +31,6 @@ const UserDetails = () => {
   }, []);
 
   const handleInput = (e) => {
-
     let name = e.target.name;
     let value = e.target.value;
     setContact({
@@ -58,14 +57,11 @@ const UserDetails = () => {
         // type: selectedType,
       };
 
-      const response = await fetch(
-        "https://calculation.cranebuffer.com/api/form/contact",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch("http://localhost:5000/api/form/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
       if (response.ok) {
         const data = await response.json();
         setContact(defaultContactFormData);
@@ -78,7 +74,6 @@ const UserDetails = () => {
       }
     } catch (error) {
       alert("Message not sent Successfully");
-
     }
   };
 

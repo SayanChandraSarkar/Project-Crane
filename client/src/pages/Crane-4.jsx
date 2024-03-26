@@ -1,6 +1,5 @@
-import React from 'react'
 import { useEffect, useState } from "react";
-import '../scss/Crane-4.scss'
+import "../scss/Crane-4.scss";
 import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -17,269 +16,260 @@ import TableRow from "@mui/material/TableRow";
 import Table from "@mui/material/Table";
 import PropTypes from "prop-types";
 
-
 const option1 = [
-    "0.015",
-    "0.020",
-    "0.025",
-    "0.030",
-    "0.035",
-    "0.050",
-    "0.070",
-    "0.075",
-    "0.100",
-    "0.125",
-    "0.127",
-    "0.150",
-    "0.165",
-    "0.200",
-  ];
-  const option2 = ["1", "2", "3", "4"];
-  
-  // const Type = ["ED", "EI", "SB"];
-  const Currency = ["USD", "INR"];
-  
-  import { useNavigate } from "react-router-dom";
-  import { TableBody, TableHead } from "@mui/material";
-  
+  "0.015",
+  "0.020",
+  "0.025",
+  "0.030",
+  "0.035",
+  "0.050",
+  "0.070",
+  "0.075",
+  "0.100",
+  "0.125",
+  "0.127",
+  "0.150",
+  "0.165",
+  "0.200",
+];
+const option2 = ["1", "2", "3", "4"];
 
+// const Type = ["ED", "EI", "SB"];
+const Currency = ["USD", "INR"];
 
+import { useNavigate } from "react-router-dom";
+import { TableBody, TableHead } from "@mui/material";
 
 const CraneFourth = () => {
-    const [mValue, setMValue] = useState("");
-    const [vValue, setVValue] = useState("");
-    const [cValue, setCValue] = useState("");
-    const [pValue, setPValue] = useState("");
-    const [stvalue, setStValue] = useState("");
-    const [sValue, setSValue] = useState("");
-    // const [model, setModel] = useState(null);
-    // const [selectedType, setSelectedType] = useState("");
-    const [top5ModelNames, setTop5ModelNames] = useState({
-      ED: [],
-      EI: [],
-      SB: [],
-    });
-    const [shockAbsorber, setShockAbsorber] = useState("2");
-    const [selectedCurrency, setSelectedCurrency] = useState("INR");
-    // console.log(modelPrices);
-    // console.log(modelPrices);
-  
-    const [calculatedResults, setCalculatedResults] = useState({
-      kineticEnergy: "",
-      potentialEnergy: "",
-      totalEnergy: "",
-      energyPerHour: "",
-      emassMin: "",
-    });
-    const [showTable, setShowTable] = useState(false);
-  
-    useEffect(() => {
-      if (mValue && vValue && cValue && pValue && sValue) {
-        handleCalculate();
-      } else {
-        setCalculatedResults({
-          kineticEnergy: "",
-          potentialEnergy: "",
-          totalEnergy: "",
-          energyPerHour: "",
-          emassMin: "",
-        });
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [
-      mValue,
-      vValue,
-      cValue,
-      pValue,
-      sValue,
-      calculatedResults.emassMin,
-      calculatedResults.energyPerHour,
-      calculatedResults.kineticEnergy,
-      calculatedResults.potentialEnergy,
-      calculatedResults.totalEnergy,
-    ]);
+  const [mValue, setMValue] = useState("");
+  const [vValue, setVValue] = useState("");
+  const [cValue, setCValue] = useState("");
+  const [pValue, setPValue] = useState("");
+  const [stvalue, setStValue] = useState("");
+  const [sValue, setSValue] = useState("");
+  // const [model, setModel] = useState(null);
+  // const [selectedType, setSelectedType] = useState("");
+  const [top5ModelNames, setTop5ModelNames] = useState({
+    ED: [],
+    EI: [],
+    SB: [],
+  });
+  const [shockAbsorber, setShockAbsorber] = useState("2");
+  const [selectedCurrency, setSelectedCurrency] = useState("INR");
+  // console.log(modelPrices);
+  // console.log(modelPrices);
+
+  const [calculatedResults, setCalculatedResults] = useState({
+    kineticEnergy: "",
+    potentialEnergy: "",
+    totalEnergy: "",
+    energyPerHour: "",
+    emassMin: "",
+  });
+  const [showTable, setShowTable] = useState(false);
+
+  useEffect(() => {
+    if (mValue && vValue && cValue && pValue && sValue) {
+      handleCalculate();
+    } else {
+      setCalculatedResults({
+        kineticEnergy: "",
+        potentialEnergy: "",
+        totalEnergy: "",
+        energyPerHour: "",
+        emassMin: "",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    mValue,
+    vValue,
+    cValue,
+    pValue,
+    sValue,
+    calculatedResults.emassMin,
+    calculatedResults.energyPerHour,
+    calculatedResults.kineticEnergy,
+    calculatedResults.potentialEnergy,
+    calculatedResults.totalEnergy,
+  ]);
 
   const [content, setContent] = useState("Initial Content");
   const [value, setValue] = useState("ED");
 
+  const DynamicHeading = ({
+    className,
+    initialContent,
+    content,
+    setContent,
+  }) => {
+    const [dynamicContent, setDynamicContent] = useState(initialContent);
 
-    const DynamicHeading = ({
-        className,
-        initialContent,
-        content,
-        setContent,
-      }) => {
-        const [dynamicContent, setDynamicContent] = useState(initialContent);
-    
-        useEffect(() => {
-          setDynamicContent(content);
-        }, [content]);
-    
-        useEffect(() => {
-          setContent(dynamicContent);
-        }, [dynamicContent, setContent]);
-        return <h2 className={className}>{dynamicContent}</h2>;
-      };
-    
-      DynamicHeading.propTypes = {
-        className: PropTypes.string,
-        initialContent: PropTypes.string.isRequired,
-        content: PropTypes.string,
-        setContent: PropTypes.func.isRequired,
-      };
+    useEffect(() => {
+      setDynamicContent(content);
+    }, [content]);
 
-      const handleMChange = (event) => {
-        setMValue(event.target.value);
-      };
-    
-      const handleVChange = (event) => {
-        setVValue(event.target.value);
-      };
-    
-      const handleCChange = (event) => {
-        setCValue(event.target.value);
-      };
-      const handlestChange = (event) => {
-        setStValue(event.target.value);
+    useEffect(() => {
+      setContent(dynamicContent);
+    }, [dynamicContent, setContent]);
+    return <h2 className={className}>{dynamicContent}</h2>;
+  };
+
+  DynamicHeading.propTypes = {
+    className: PropTypes.string,
+    initialContent: PropTypes.string.isRequired,
+    content: PropTypes.string,
+    setContent: PropTypes.func.isRequired,
+  };
+
+  const handleMChange = (event) => {
+    setMValue(event.target.value);
+  };
+
+  const handleVChange = (event) => {
+    setVValue(event.target.value);
+  };
+
+  const handleCChange = (event) => {
+    setCValue(event.target.value);
+  };
+  const handlestChange = (event) => {
+    setStValue(event.target.value);
+  };
+
+  const handlePChange = (event) => {
+    setPValue(event.target.value);
+  };
+
+  const handleSChange = (event, value) => {
+    setSValue(value);
+  };
+
+  //Type
+  // const handleTypeChange = (event, value) => {
+  //   setSelectedType(value);
+  // };
+  const handleAbsorberChange = (event, value) => {
+    setShockAbsorber(value);
+  };
+
+  const handleCalculate = () => {
+    const kineticEnergy = Math.round(mValue * vValue ** 2 * 0.5);
+    const potentialEnergy = Math.round(
+      (1000 * pValue * stvalue * sValue) / vValue
+    );
+    const totalEnergy = kineticEnergy + potentialEnergy;
+    const energyPerHour = totalEnergy * cValue;
+    const Vd = vValue;
+    const emassMin = Math.round((2 * totalEnergy) / Vd ** 2);
+
+    // Update state with calculated results
+    setCalculatedResults({
+      kineticEnergy,
+      potentialEnergy,
+      totalEnergy,
+      energyPerHour,
+      Vd,
+      emassMin,
+    });
+  };
+
+  //Fetching Data
+  const getData = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/data/data", {
+        method: "GET",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Filter the data based on the conditions for each type
+        const filteredData = {
+          ED: data.filter(
+            (item) =>
+              item.nmperstroke > calculatedResults.totalEnergy &&
+              item.nmperhr > calculatedResults.energyPerHour &&
+              item.series === "ED"
+          ),
+          EI: data.filter(
+            (item) =>
+              item.nmperstroke > calculatedResults.totalEnergy &&
+              item.nmperhr > calculatedResults.energyPerHour &&
+              item.series === "EI"
+          ),
+          SB: data.filter(
+            (item) =>
+              item.nmperstroke > calculatedResults.totalEnergy &&
+              item.nmperhr > calculatedResults.energyPerHour &&
+              item.series === "SB"
+          ),
+        };
+
+        const top5ModelNames = {
+          ED: filteredData.ED.slice(0, 5).map((item) => ({
+            model: item.Model,
+            stroke: item.Stroke,
+            nmperstroke: item.nmperstroke,
+            nmperhr: item.nmperhr,
+          })),
+          EI: filteredData.EI.slice(0, 5).map((item) => ({
+            model: item.Model,
+            stroke: item.Stroke,
+            nmperstroke: item.nmperstroke,
+            nmperhr: item.nmperhr,
+          })),
+          SB: filteredData.SB.slice(0, 5).map((item) => ({
+            model: item.Model,
+            stroke: item.Stroke,
+            nmperstroke: item.nmperstroke,
+            nmperhr: item.nmperhr,
+          })),
+        };
+
+        setTop5ModelNames(top5ModelNames);
       }
-    
-     const handlePChange=(event) => {
-        setPValue(event.target.value);
-      }
-     
-    
-      const handleSChange = (event, value) => {
-        setSValue(value);
-      };
-    
-      //Type
-      // const handleTypeChange = (event, value) => {
-      //   setSelectedType(value);
-      // };
-      const handleAbsorberChange = (event, value) => {
-        setShockAbsorber(value);
-      };
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-      const handleCalculate = () => {
-        const kineticEnergy =Math.round( mValue * vValue ** 2 * 0.5); 
-        const potentialEnergy =Math.round( (1000*pValue*stvalue*sValue)/vValue) ;
-        const totalEnergy = kineticEnergy + potentialEnergy;
-        const energyPerHour = totalEnergy * cValue;
-        const Vd = vValue;
-        const emassMin =Math.round( (2 * totalEnergy) / Vd ** 2);
-    
-        // Update state with calculated results
-        setCalculatedResults({
-          kineticEnergy,
-          potentialEnergy,
-          totalEnergy,
-          energyPerHour,
-          Vd,
-          emassMin,
-        });
-      };
-    
-      //Fetching Data
-      const getData = async () => {
-        try {
-          const response = await fetch("http://localhost:5000/api/data/data", {
-            method: "GET",
-          });
-    
-          if (response.ok) {
-            const data = await response.json();
-            // Filter the data based on the conditions for each type
-            const filteredData = {
-              ED: data.filter(
-                (item) =>
-                  item.nmperstroke > calculatedResults.totalEnergy &&
-                  item.nmperhr > calculatedResults.energyPerHour &&
-                  item.series === "ED"
-              ),
-              EI: data.filter(
-                (item) =>
-                  item.nmperstroke > calculatedResults.totalEnergy &&
-                  item.nmperhr > calculatedResults.energyPerHour &&
-                  item.series === "EI"
-              ),
-              SB: data.filter(
-                (item) =>
-                  item.nmperstroke > calculatedResults.totalEnergy &&
-                  item.nmperhr > calculatedResults.energyPerHour &&
-                  item.series === "SB"
-              ),
-            };
-    
-            const top5ModelNames = {
-              ED: filteredData.ED.slice(0, 5).map((item) => ({
-                model: item.Model,
-                stroke: item.Stroke,
-                nmperstroke: item.nmperstroke,
-                nmperhr: item.nmperhr,
-              })),
-              EI: filteredData.EI.slice(0, 5).map((item) => ({
-                model: item.Model,
-                stroke: item.Stroke,
-                nmperstroke: item.nmperstroke,
-                nmperhr: item.nmperhr,
-              })),
-              SB: filteredData.SB.slice(0, 5).map((item) => ({
-                model: item.Model,
-                stroke: item.Stroke,
-                nmperstroke: item.nmperstroke,
-                nmperhr: item.nmperhr,
-              })),
-            };
-    
-            setTop5ModelNames(top5ModelNames);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-    
-      useEffect(() => {
-        getData();
-        // fetchPricesForModels(top5ModelNames);
-      }, []);
-    
-      // const fetchPricesForModels = async (models) => {
-      //   try {
-      //     console.log(models);
-      //     // Fetch prices for each model
-      //     const pricePromises = models.map(async (model) => {
-      //       const response = await fetch(
-      //         `https://calculation.cranebuffer.com/prices/${model}`,
-      //         {
-      //           method: "GET",
-      //         }
-      //       );
-      //       console.log(response);
-      //       if (response.ok) {
-      //         const data = await response.json();
-      //         console.log(data);
-      //         return { [model]: data.price };
-      //       }
-      //     });
-    
-      //     // Wait for all price fetch requests to complete
-      //     const prices = await Promise.all(pricePromises);
-      //     const priceMap = Object.assign({}, ...prices);
-      //     setModelPrices(priceMap);
-      //   } catch (error) {
-      //     console.error("Error fetching prices:", error);
-      //   }
-      // };
-    
-      const handleTabChange = (event, newValue) => {
-        setValue(newValue);
-      };
-      
+  useEffect(() => {
+    getData();
+    // fetchPricesForModels(top5ModelNames);
+  }, []);
 
+  // const fetchPricesForModels = async (models) => {
+  //   try {
+  //     console.log(models);
+  //     // Fetch prices for each model
+  //     const pricePromises = models.map(async (model) => {
+  //       const response = await fetch(
+  //         `https://calculation.cranebuffer.com/prices/${model}`,
+  //         {
+  //           method: "GET",
+  //         }
+  //       );
+  //       console.log(response);
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         console.log(data);
+  //         return { [model]: data.price };
+  //       }
+  //     });
 
+  //     // Wait for all price fetch requests to complete
+  //     const prices = await Promise.all(pricePromises);
+  //     const priceMap = Object.assign({}, ...prices);
+  //     setModelPrices(priceMap);
+  //   } catch (error) {
+  //     console.error("Error fetching prices:", error);
+  //   }
+  // };
 
+  const handleTabChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
-    
   return (
     <>
       <div className="Crane1 inputFields">
@@ -372,7 +362,7 @@ const CraneFourth = () => {
                   P
                 </FormHelperText>
               </FormControl>
-            
+
               <FormControl variant="outlined" className="fromMobile">
                 <OutlinedInput
                   className=""
@@ -380,7 +370,6 @@ const CraneFourth = () => {
                   value={stvalue}
                   onChange={handlestChange}
                   autoComplete="off"
-                 
                   aria-describedby="outlined-weight-helper-text"
                 />
                 <FormHelperText
@@ -799,9 +788,8 @@ const CraneFourth = () => {
           </TabContext>
         </Box>
       </div>
-
     </>
-  )
-}
+  );
+};
 
-export default CraneFourth
+export default CraneFourth;

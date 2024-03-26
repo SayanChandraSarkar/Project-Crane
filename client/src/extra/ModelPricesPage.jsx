@@ -32,7 +32,7 @@ const PricePage = () => {
           return;
         }
         const response = await fetch(
-          `https://calculation.cranebuffer.com/prices/${modelName}`,
+          `http://localhost:5000/prices/${modelName}`,
           { method: "GET" }
         );
         if (response.ok) {

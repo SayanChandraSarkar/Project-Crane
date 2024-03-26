@@ -40,8 +40,9 @@ const option2 = ["1", "2", "3", "4"];
 // const Type = ["ED", "EI", "SB"];
 const Currency = ["USD", "INR"];
 
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { TableBody, TableHead } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export const CraneFirst = () => {
   const navigate = useNavigate();
@@ -71,32 +72,6 @@ export const CraneFirst = () => {
     emassMin: "",
   });
   const [showTable, setShowTable] = useState(false);
-
-  useEffect(() => {
-    if (mValue && vValue && cValue && fValue && sValue) {
-      handleCalculate();
-    } else {
-      setCalculatedResults({
-        kineticEnergy: "",
-        potentialEnergy: "",
-        totalEnergy: "",
-        energyPerHour: "",
-        emassMin: "",
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    mValue,
-    vValue,
-    cValue,
-    fValue,
-    sValue,
-    calculatedResults.emassMin,
-    calculatedResults.energyPerHour,
-    calculatedResults.kineticEnergy,
-    calculatedResults.potentialEnergy,
-    calculatedResults.totalEnergy,
-  ]);
 
   const dispatch = useDispatch();
 
@@ -188,28 +163,32 @@ export const CraneFirst = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Filter the data based on the conditions for each type
+
         const filteredData = {
-          ED: data.filter(
-            (item) =>
+          ED: data.filter((item) => {
+            return (
               item.nmperstroke > calculatedResults.totalEnergy &&
               item.nmperhr > calculatedResults.energyPerHour &&
-              item.series === "ED"
-          ),
-          EI: data.filter(
-            (item) =>
+              item["MODEL TYPE"] === "ED"
+            );
+          }),
+          EI: data.filter((item) => {
+            return (
               item.nmperstroke > calculatedResults.totalEnergy &&
               item.nmperhr > calculatedResults.energyPerHour &&
-              item.series === "EI"
-          ),
-          SB: data.filter(
-            (item) =>
+              item["MODEL TYPE"] === "EI"
+            );
+          }),
+          SB: data.filter((item) => {
+            return (
               item.nmperstroke > calculatedResults.totalEnergy &&
               item.nmperhr > calculatedResults.energyPerHour &&
-              item.series === "SB"
-          ),
+              item["MODEL TYPE"] === "SB"
+            );
+          }),
         };
 
+        console.log(filteredData);
         const top5ModelNames = {
           ED: filteredData.ED.slice(0, 5).map((item) => ({
             model: item.Model,
@@ -239,9 +218,34 @@ export const CraneFirst = () => {
   };
 
   useEffect(() => {
-    getData();
-    // fetchPricesForModels(top5ModelNames);
-  }, []);
+    if (mValue && vValue && cValue && fValue && sValue) {
+      getData();
+      handleCalculate();
+      setShowTable(true);
+    } else {
+      setShowTable(false);
+      setCalculatedResults({
+        kineticEnergy: "",
+        potentialEnergy: "",
+        totalEnergy: "",
+        energyPerHour: "",
+        emassMin: "",
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    mValue,
+    vValue,
+    cValue,
+    fValue,
+    sValue,
+    calculatedResults.emassMin,
+    calculatedResults.energyPerHour,
+    calculatedResults.kineticEnergy,
+    calculatedResults.potentialEnergy,
+    calculatedResults.totalEnergy,
+  ]);
 
   // const fetchPricesForModels = async (models) => {
   //   try {
@@ -274,6 +278,23 @@ export const CraneFirst = () => {
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const handleModelClick = (model) => {
+    dispatch(
+      addData({
+        currency: selectedCurrency,
+        shockAbsorber: shockAbsorber,
+        kineticEnergy: calculatedResults.kineticEnergy,
+        potentialEnergy: calculatedResults.potentialEnergy,
+        totalEnergy: calculatedResults.totalEnergy,
+        energyPerHour: calculatedResults.energyPerHour,
+        Vd: calculatedResults.Vd,
+        emassMin: calculatedResults.emassMin,
+      })
+    );
+    navigate(`/price/${model}`);
+  };
+
   return (
     <>
       <div className="Crane1 inputFields">
@@ -355,7 +376,7 @@ export const CraneFirst = () => {
                   onChange={handleFChange}
                   autoComplete="off"
                   endAdornment={
-                    <InputAdornment position="end">M</InputAdornment>
+                    <InputAdornment position="end">N</InputAdornment>
                   }
                   aria-describedby="outlined-weight-helper-text"
                 />
@@ -590,190 +611,225 @@ export const CraneFirst = () => {
             </div>
           </Box>
         </div>
-
-        <Box
-          sx={{
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            overflow: "hidden",
-          }}
-        >
-          <TabContext value={value}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <TabList
-                onChange={handleTabChange}
-                aria-label="lab API tabs example"
-                className="flex flex-wrap justify-center sm:justify-start"
-              >
-                <Tab label="ED" value="ED" />
-                <Tab label="EI" value="EI" />
-                <Tab label="SB" value="SB" />
-              </TabList>
-            </Box>
-            <TabPanel value="ED">
-              <Table
-                className="table-auto w-full"
-                sx={{ minWidth: 400, overflow: "hidden" }}
-              >
-                <TableHead>
-                  <TableRow
-                    sx={{
-                      "&:last-child td, &:last-child th": {
-                        border: "1px solid rgba(0, 0, 0, 0.2)",
-                        backgroundColor: "#eeee",
-                      },
-                    }}
-                  >
-                    <TableCell align="right">Model</TableCell>
-                    <TableCell align="right">Energy Capacity</TableCell>
-                    <TableCell align="right">Stroke</TableCell>
-                    <TableCell align="right">
-                      Rate of Utilization/stroke
-                    </TableCell>
-                    <TableCell align="right">Rate of Utilization/hr</TableCell>
-                  </TableRow>
-                </TableHead>
-
-                <TableBody
-                  sx={{
-                    "&:last-child td, &:last-child th": {
-                      border: "1px solid rgba(0, 0, 0, 0.2)",
-                    },
-                  }}
+        {showTable && (
+          <Box
+            sx={{
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              overflow: "hidden",
+            }}
+          >
+            <TabContext value={value}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <TabList
+                  onChange={handleTabChange}
+                  aria-label="lab API tabs example"
+                  className="flex flex-wrap justify-center sm:justify-start"
                 >
-                  {top5ModelNames.ED.map((model, index) => (
-                    <TableRow key={index}>
-                      <TableCell align="right">{model.model}</TableCell>
+                  <Tab label="ED" value="ED" />
+                  <Tab label="EI" value="EI" />
+                  <Tab label="SB" value="SB" />
+                </TabList>
+              </Box>
+              <TabPanel value="ED">
+                <Table
+                  className="table-auto w-full"
+                  sx={{ minWidth: 400, overflow: "hidden" }}
+                >
+                  <TableHead>
+                    <TableRow
+                      sx={{
+                        "&:last-child td, &:last-child th": {
+                          border: "1px solid rgba(0, 0, 0, 0.2)",
+                          backgroundColor: "#eeee",
+                        },
+                      }}
+                    >
+                      <TableCell align="right">Model</TableCell>
+                      <TableCell align="right">Energy Capacity</TableCell>
+                      <TableCell align="right">Stroke</TableCell>
                       <TableCell align="right">
-                        {calculatedResults.totalEnergy}
-                      </TableCell>
-                      <TableCell align="right">{model.stroke}</TableCell>
-                      <TableCell align="right">
-                        {(
-                          (calculatedResults.totalEnergy / model.nmperstroke) *
-                          100
-                        ).toFixed(2)}
-                        %
+                        Rate of Utilization/stroke
                       </TableCell>
                       <TableCell align="right">
-                        {(
-                          (calculatedResults.energyPerHour / model.nmperhr) *
-                          100
-                        ).toFixed(2)}
-                        %
+                        Rate of Utilization/hr
                       </TableCell>
+                      <TableCell align="right">Deceleration Rate</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TabPanel>
-            <TabPanel value="EI">
-              <Table style={{ borderCollapse: "collapse", width: "100%" }}>
-                <TableHead>
-                  <TableRow
+                  </TableHead>
+
+                  <TableBody
                     sx={{
                       "&:last-child td, &:last-child th": {
                         border: "1px solid rgba(0, 0, 0, 0.2)",
                       },
                     }}
                   >
-                    <TableCell align="right">Model</TableCell>
-                    <TableCell align="right">Energy Capacity</TableCell>
-                    <TableCell align="right">Stroke</TableCell>
-                    <TableCell align="right">
-                      Rate of Utilization/stroke
-                    </TableCell>
-                    <TableCell align="right">Rate of Utilization/hr</TableCell>
-                  </TableRow>
-                </TableHead>
+                    {top5ModelNames.ED.map((model, index) => (
+                      <TableRow key={index}>
+                        <TableCell
+                          align="right"
+                          onClick={() => handleModelClick(model.model)}
+                          className="md:cursor-pointer md:hover:scale-125 md:duration-300"
+                        >
+                          {model.model}
+                        </TableCell>
+                        <TableCell align="right">{model.nmperstroke}</TableCell>
+                        <TableCell align="right">{model.stroke}</TableCell>
+                        <TableCell align="right">
+                          {(
+                            (calculatedResults.totalEnergy /
+                              model.nmperstroke) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </TableCell>
+                        <TableCell align="right">
+                          {(
+                            (calculatedResults.energyPerHour / model.nmperhr) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </TableCell>
+                        <TableCell align="right">
+                          {(0.75 * calculatedResults.Vd ** 2) / model.stroke}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TabPanel>
+              <TabPanel value="EI">
+                <Table style={{ borderCollapse: "collapse", width: "100%" }}>
+                  <TableHead>
+                    <TableRow
+                      sx={{
+                        "&:last-child td, &:last-child th": {
+                          border: "1px solid rgba(0, 0, 0, 0.2)",
+                        },
+                      }}
+                    >
+                      <TableCell align="right">Model</TableCell>
+                      <TableCell align="right">Energy Capacity</TableCell>
+                      <TableCell align="right">Stroke</TableCell>
+                      <TableCell align="right">
+                        Rate of Utilization/stroke
+                      </TableCell>
+                      <TableCell align="right">
+                        Rate of Utilization/hr
+                      </TableCell>
+                      <TableCell align="right">Deceleration Rate</TableCell>
+                    </TableRow>
+                  </TableHead>
 
-                <TableBody
-                  sx={{
-                    "&:last-child td, &:last-child th": {
-                      border: "1px solid rgba(0, 0, 0, 0.2)",
-                    },
-                  }}
-                >
-                  {/* Example table rows */}
-                  <TableRow key="1">
-                    <TableCell align="right">EI 1.5 x 5</TableCell>
-                    <TableCell align="right">Accessory 1</TableCell>
-                    <TableCell align="right">2</TableCell>
-                    <TableCell align="right">10%</TableCell>
-                    <TableCell align="right">20%</TableCell>
-                  </TableRow>
-                  <TableRow key="2">
-                    <TableCell align="right">EI 3.5 x 6</TableCell>
-                    <TableCell align="right">Accessory 2</TableCell>
-                    <TableCell align="right">3</TableCell>
-                    <TableCell align="right">10%</TableCell>
-                    <TableCell align="right">20%</TableCell>
-                  </TableRow>
-
-                  <TableRow key="3">
-                    <TableCell align="right">EI 2 x 4</TableCell>
-                    <TableCell align="right">Accessory 3</TableCell>
-                    <TableCell align="right">3</TableCell>
-                    <TableCell align="right">10%</TableCell>
-                    <TableCell align="right">20%</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TabPanel>
-            <TabPanel value="SB">
-              <Table style={{ borderCollapse: "collapse", width: "100%" }}>
-                <TableHead>
-                  <TableRow
+                  <TableBody
                     sx={{
                       "&:last-child td, &:last-child th": {
                         border: "1px solid rgba(0, 0, 0, 0.2)",
                       },
                     }}
                   >
-                    <TableCell align="right">Model</TableCell>
-                    <TableCell align="right">Energy Capacity</TableCell>
-                    <TableCell align="right">Stroke</TableCell>
-                    <TableCell align="right">
-                      Rate of Utilization/stroke
-                    </TableCell>
-                    <TableCell align="right">Rate of Utilization/hr</TableCell>
-                  </TableRow>
-                </TableHead>
+                    {top5ModelNames.EI.map((model, index) => (
+                      <TableRow key={index}>
+                        <TableCell
+                          align="right"
+                          onClick={() => handleModelClick(model.model)}
+                          className="md:cursor-pointer md:hover:scale-125 md:duration-300"
+                        >
+                          {model.model}
+                        </TableCell>
+                        <TableCell align="right">{model.nmperstroke}</TableCell>
+                        <TableCell align="right">{model.stroke}</TableCell>
+                        <TableCell align="right">
+                          {(
+                            (calculatedResults.totalEnergy /
+                              model.nmperstroke) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </TableCell>
+                        <TableCell align="right">
+                          {(
+                            (calculatedResults.energyPerHour / model.nmperhr) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </TableCell>
+                        <TableCell align="right">
+                          {(0.75 * calculatedResults.Vd ** 2) / model.stroke}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TabPanel>
+              <TabPanel value="SB">
+                <Table style={{ borderCollapse: "collapse", width: "100%" }}>
+                  <TableHead>
+                    <TableRow
+                      sx={{
+                        "&:last-child td, &:last-child th": {
+                          border: "1px solid rgba(0, 0, 0, 0.2)",
+                        },
+                      }}
+                    >
+                      <TableCell align="right">Model</TableCell>
+                      <TableCell align="right">Energy Capacity</TableCell>
+                      <TableCell align="right">Stroke</TableCell>
+                      <TableCell align="right">
+                        Rate of Utilization/stroke
+                      </TableCell>
+                      <TableCell align="right">
+                        Rate of Utilization/hr
+                      </TableCell>
+                      <TableCell align="right">Deceleration Rate</TableCell>
+                    </TableRow>
+                  </TableHead>
 
-                <TableBody
-                  sx={{
-                    "&:last-child td, &:last-child th": {
-                      border: "1px solid rgba(0, 0, 0, 0.2)",
-                    },
-                  }}
-                >
-                  <TableRow key="1">
-                    <TableCell align="right">SB 200 x 200</TableCell>
-                    <TableCell align="right">Accessory 1</TableCell>
-                    <TableCell align="right">2</TableCell>
-                    <TableCell align="right">10%</TableCell>
-                    <TableCell align="right">20%</TableCell>
-                  </TableRow>
-                  <TableRow key="2">
-                    <TableCell align="right">SB 100 x 200</TableCell>
-                    <TableCell align="right">Accessory 2</TableCell>
-                    <TableCell align="right">3</TableCell>
-                    <TableCell align="right">10%</TableCell>
-                    <TableCell align="right">20%</TableCell>
-                  </TableRow>
-
-                  <TableRow key="3">
-                    <TableCell align="right">SB 150 x 200</TableCell>
-                    <TableCell align="right">Accessory 3</TableCell>
-                    <TableCell align="right">3</TableCell>
-                    <TableCell align="right">10%</TableCell>
-                    <TableCell align="right">20%</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TabPanel>
-          </TabContext>
-        </Box>
+                  <TableBody
+                    sx={{
+                      "&:last-child td, &:last-child th": {
+                        border: "1px solid rgba(0, 0, 0, 0.2)",
+                      },
+                    }}
+                  >
+                    {top5ModelNames.SB.map((model, index) => (
+                      <TableRow key={index}>
+                        <TableCell
+                          align="right"
+                          onClick={() => handleModelClick(model.model)}
+                          className="md:cursor-pointer md:hover:scale-125 md:duration-300"
+                        >
+                          {model.model}
+                        </TableCell>
+                        <TableCell align="right">{model.nmperstroke}</TableCell>
+                        <TableCell align="right">{model.stroke}</TableCell>
+                        <TableCell align="right">
+                          {(
+                            (calculatedResults.totalEnergy /
+                              model.nmperstroke) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </TableCell>
+                        <TableCell align="right">
+                          {(
+                            (calculatedResults.energyPerHour / model.nmperhr) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </TableCell>
+                        <TableCell align="right">
+                          {(0.75 * calculatedResults.Vd ** 2) / model.stroke}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TabPanel>
+            </TabContext>
+          </Box>
+        )}
       </div>
     </>
   );

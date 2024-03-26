@@ -3,23 +3,22 @@ import { useNavigate } from "react-router-dom";
 export const RootPage = () => {
   const navigate = useNavigate();
   const handlefirstcrane = () => {
-    navigate("/crane-1");
+    navigate("/Wagon against 2 shock absorbers");
   };
   const handlesecondcrane = () => {
-    navigate("/crane-2");
+    navigate("/Wagon against Wagon");
   };
   const handlethirdcrane = () => {
-    navigate("/crane-3");
-
+    navigate("/Wagon against Wagon 2 shock absorber");
   };
   const handlefourthcrane = () => {
-    navigate("/crane-4");
+    navigate("/Wagon against 1 shock absorbers");
   };
 
   return (
     <>
       <div className="flex flex-col md:flex-row justify-center items-center p-4 h-[100%] md:h-[84vh] gap-8 md:gap-14">
-      <div
+        <div
           className="flex  items-center flex-col gap-2 cursor-pointer"
           onClick={handlefourthcrane}
         >

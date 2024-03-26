@@ -128,10 +128,19 @@ export const Layout = () => {
           <div className="output mt-6">
             <Routes>
               <Route path="/" element={<RootPage />} />
-              <Route path="/crane-1" element={<CraneFirst />} />
-              <Route path="/crane-2" element={<CraneSecond />} />
-              <Route path="/crane-3" element={<CraneThird />} />
-              <Route path="/crane-4" element={<CraneFourth/>}/>
+              <Route
+                path="/Wagon against 2 shock absorbers"
+                element={<CraneFirst />}
+              />
+              <Route path="/Wagon against Wagon" element={<CraneSecond />} />
+              <Route
+                path="/Wagon against Wagon 2 shock absorber"
+                element={<CraneThird />}
+              />
+              <Route
+                path="/Wagon against 1 shock absorbers"
+                element={<CraneFourth />}
+              />
               <Route path="/price/:modelName" element={<PricePage />} />
               <Route path="/price/:modelName/info" element={<UserDetails />} />
               <Route
