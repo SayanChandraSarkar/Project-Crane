@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
@@ -282,11 +281,9 @@ export const CraneSecond = () => {
   // ]);
 
   useEffect(() => {
-   
-      getData();
-      handleCalculate();
-      setShowTable(true);
-
+    getData();
+    handleCalculate();
+    setShowTable(true);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -326,12 +323,20 @@ export const CraneSecond = () => {
   return (
     <>
       <div className="Crane2 inputFields">
-        <DynamicHeading
-          className="forMobile text-center text-2xl font-bold"
-          initialContent="Wagon against Wagon"
-          content={content}
-          setContent={setContent}
-        />
+        <div className="images flex justify-center ">
+          <img src="images/logo.png" className="md:w-48 mt-4" />
+        </div>
+        <div className="md:flex md:justify-between">
+          <div className="text-lg  md:flex md:justify-center md:items-center  text-center font-bold">
+            Selection of shock absorbers
+          </div>
+          <DynamicHeading
+            className="forMobile text-center text-2xl font-bold"
+            initialContent="Wagon against Wagon"
+            content={content}
+            setContent={setContent}
+          />
+        </div>
         <div className="mobileIndex">
           <Card
             className="mb-7 md:p-6  p-4 md:border border-gray-300"
@@ -348,11 +353,12 @@ export const CraneSecond = () => {
                   label="Mass"
                   autoComplete="off"
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">Kg</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">Kg</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-             
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
@@ -362,11 +368,12 @@ export const CraneSecond = () => {
                   onChange={handleV1Change}
                   autoComplete="off"
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">m/s</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">m/s</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-               
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
@@ -376,11 +383,12 @@ export const CraneSecond = () => {
                   autoComplete="off"
                   label="Cycles per hour"
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">/hr</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">/hr</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-           
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
@@ -390,11 +398,12 @@ export const CraneSecond = () => {
                   onChange={handleFChange}
                   autoComplete="off"
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">N</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">N</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-            
               </FormControl>
             </div>
             <div className="secondLine">
@@ -423,17 +432,18 @@ export const CraneSecond = () => {
                 </FormControl>
                 <FormControl variant="outlined" className="fromMobile">
                   <TextField
-                  label="Velocity 2"
+                    label="Velocity 2"
                     size="small"
                     id="outlined-adornment-weight"
                     onChange={handleV2Change}
                     autoComplete="off"
                     InputProps={{
-                      endAdornment: <InputAdornment position="end">m/s</InputAdornment>,
+                      endAdornment: (
+                        <InputAdornment position="end">m/s</InputAdornment>
+                      ),
                     }}
                     aria-describedby="outlined-weight-helper-text"
                   />
-                  
                 </FormControl>
                 <FormControl variant="outlined" className="fromMobile">
                   <TextField
@@ -443,11 +453,12 @@ export const CraneSecond = () => {
                     onChange={handleM2Change}
                     autoComplete="off"
                     InputProps={{
-                      endAdornment: <InputAdornment position="end">Kg</InputAdornment>,
+                      endAdornment: (
+                        <InputAdornment position="end">Kg</InputAdornment>
+                      ),
                     }}
                     aria-describedby="outlined-weight-helper-text"
                   />
-                 
                 </FormControl>
                 <FormControl
                   variant="outlined"
@@ -514,61 +525,64 @@ export const CraneSecond = () => {
                 <TextField
                   size="small"
                   label="Kinetic Energy"
-                  disabled
                   id="outlined-adornment-weight"
                   value={calculatedResults.kineticEnergy}
                   readOnly={true}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">Nm</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">Nm</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-               
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
-                 label="Potential Energy"
-                 disabled
+                  label="Potential Energy"
+                  disabled
                   size="small"
                   id="outlined-adornment-weight"
                   value={calculatedResults.potentialEnergy}
                   readOnly={true}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">Nm</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">Nm</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-          
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
-                disabled
+                  disabled
                   size="small"
                   id="outlined-adornment-weight"
                   value={calculatedResults.totalEnergy}
                   label="Total Energy"
                   readOnly={true}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">Nm</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">Nm</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-               
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
-                disabled
+                  disabled
                   size="small"
                   id="outlined-adornment-weight"
                   value={calculatedResults.energyPerHour}
                   readOnly={true}
                   label="Energy per hour"
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">Nm/hr</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">Nm/hr</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-              
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
@@ -579,11 +593,12 @@ export const CraneSecond = () => {
                   value={calculatedResults.Vd}
                   readOnly={true}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">m/s</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">m/s</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-             
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
@@ -594,11 +609,12 @@ export const CraneSecond = () => {
                   value={calculatedResults.emassMin}
                   readOnly={true}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">Kg</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">Kg</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-              
               </FormControl>
             </div>
           </Card>

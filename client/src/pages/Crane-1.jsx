@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { addData } from "../features/dataSlice";
 import Box from "@mui/material/Box";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
@@ -67,12 +66,13 @@ export const CraneFirst = () => {
     totalEnergy: "",
     energyPerHour: "",
     emassMin: "",
+    Vd: "",
   });
   const [showTable, setShowTable] = useState(false);
   const dispatch = useDispatch();
 
   const [content, setContent] = useState("Initial Content");
-  const [value, setValue] = useState("ED");
+  const [activeTab, setActiveTab] = useState("ED");
 
   //Dynamic heading
   const DynamicHeading = ({
@@ -132,7 +132,7 @@ export const CraneFirst = () => {
     const potentialEnergy = fValue * sValue;
     const totalEnergy = kineticEnergy + potentialEnergy;
     const energyPerHour = totalEnergy * cValue;
-    const Vd = vValue * 0.5; 
+    const Vd = vValue * 0.5;
     const emassMin = (2 * totalEnergy) / Vd ** 2;
 
     // Update state with calculated results
@@ -272,12 +272,21 @@ export const CraneFirst = () => {
   // ]);
 
   useEffect(() => {
-
+    if ((mValue && vValue && cValue && fValue && sValue) || mValue || vValue) {
       getData();
       handleCalculate();
       setShowTable(true);
-   
-    
+    } else {
+      setShowTable(false);
+      setCalculatedResults({
+        kineticEnergy: "",
+        potentialEnergy: "",
+        totalEnergy: "",
+        energyPerHour: "",
+        emassMin: "",
+        Vd: "",
+      });
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -291,10 +300,11 @@ export const CraneFirst = () => {
     calculatedResults.kineticEnergy,
     calculatedResults.potentialEnergy,
     calculatedResults.totalEnergy,
+    calculatedResults.Vd,
   ]);
 
   const handleTabChange = (event, newValue) => {
-    setValue(newValue);
+    setActiveTab(newValue);
   };
 
   const handleModelClick = (model) => {
@@ -316,12 +326,20 @@ export const CraneFirst = () => {
   return (
     <>
       <div className="Crane1 inputFields">
-        <DynamicHeading
-          className=" forMobile text-center text-2xl font-bold"
-          initialContent="Wagon against 2 shock absorbers"
-          content={content}
-          setContent={setContent}
-        />
+        <div className="images flex justify-center ">
+          <img src="images/logo.png" className="md:w-48 mt-4" />
+        </div>
+        <div className="md:flex md:justify-between">
+          <div className="text-lg  md:flex md:justify-center md:items-center  text-center font-bold">
+            Selection of shock absorbers
+          </div>
+          <DynamicHeading
+            className=" forMobile text-center text-2xl font-bold"
+            initialContent="Wagon against 2 shock absorbers"
+            content={content}
+            setContent={setContent}
+          />
+        </div>
         <div className="mobileIndex">
           {/* <Box sx={{ display: "flex", flexWrap: "wrap" }}> */}
           <Card
@@ -338,19 +356,17 @@ export const CraneFirst = () => {
                   className=""
                   id="outlined-adornment-password"
                   label="Mass"
-                
                   value={mValue}
                   onChange={handleMChange}
                   autoComplete="off"
-                  
-                  
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">Kg</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">Kg</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
-                  
                 />
-                
+
                 {/* <FormHelperText
                   className=""
                   id="outlined-weight-helper-text"
@@ -369,11 +385,12 @@ export const CraneFirst = () => {
                   onChange={handleVChange}
                   autoComplete="off"
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">m/s</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">m/s</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-               
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
@@ -385,11 +402,12 @@ export const CraneFirst = () => {
                   onChange={handleCChange}
                   autoComplete="off"
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">/hr</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">/hr</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-               
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
@@ -401,11 +419,12 @@ export const CraneFirst = () => {
                   onChange={handleFChange}
                   autoComplete="off"
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">kg</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">kg</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-             
               </FormControl>
             </div>
             <div className="secondLine">
@@ -435,12 +454,6 @@ export const CraneFirst = () => {
                       />
                     )}
                   />
-                  <FormHelperText
-                    id="outlined-weight-helper-text"
-                    sx={{ fontSize: "0.9rem" }}
-                  >
-                    Stroke
-                  </FormHelperText>
                 </FormControl>
                 <FormControl
                   variant="outlined"
@@ -464,12 +477,6 @@ export const CraneFirst = () => {
                       />
                     )}
                   />
-                  <FormHelperText
-                    id="outlined-weight-helper-text"
-                    sx={{ fontSize: "0.9rem" }}
-                  >
-                    No. of absorbers in parallel
-                  </FormHelperText>
                 </FormControl>
 
                 <FormControl
@@ -494,13 +501,6 @@ export const CraneFirst = () => {
                       />
                     )}
                   />
-                  <FormHelperText
-                    className=""
-                    id="outlined-weight-helper-text"
-                    sx={{ fontSize: "0.9rem" }}
-                  >
-                    Currency
-                  </FormHelperText>
                 </FormControl>
               </div>
             </div>
@@ -514,18 +514,19 @@ export const CraneFirst = () => {
             <div className="resultOutput">
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
-                 label="Kinetic Energy"
+                  label="Kinetic Energy"
                   disabled
                   size="small"
                   id="outlined-adornment-weight"
                   value={calculatedResults.kineticEnergy}
                   readOnly={true}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">Nm</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">Nm</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-             
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
@@ -536,26 +537,28 @@ export const CraneFirst = () => {
                   value={calculatedResults.potentialEnergy}
                   readOnly={true}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">Nm</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">Nm</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-           
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
-                label="Total Energy"
+                  label="Total Energy"
                   disabled
                   size="small"
                   id="outlined-adornment-weight"
                   value={calculatedResults.totalEnergy}
                   readOnly={true}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">Nm</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">Nm</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-            
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
@@ -566,26 +569,28 @@ export const CraneFirst = () => {
                   value={calculatedResults.energyPerHour}
                   readOnly={true}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">Nm/hr</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">Nm/hr</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-            
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
                   disabled
+                  label="Impact "
                   size="small"
                   id="outlined-adornment-weight"
                   value={calculatedResults.Vd}
-                  label='Impact velocity at shock absorber'
                   readOnly={true}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">m/s</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">m/s</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-             
               </FormControl>
               <FormControl variant="outlined" className="fromMobile ">
                 <TextField
@@ -596,11 +601,12 @@ export const CraneFirst = () => {
                   value={calculatedResults.emassMin}
                   readOnly={true}
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">Kg</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">Kg</InputAdornment>
+                    ),
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-             
               </FormControl>
             </div>
           </Card>
@@ -614,20 +620,39 @@ export const CraneFirst = () => {
               overflow: "hidden",
             }}
           >
-            <TabContext value={value}>
+            <TabContext value={activeTab}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <TabList
                   onChange={handleTabChange}
+                  value={activeTab}
                   aria-label="lab API tabs example"
-                  className="flex flex-wrap justify-center sm:justify-start"
+                  className="flex flex-wrap justify-center sm:justify-start "
                 >
-                  <Tab label="ED" value="ED" className="w-4/12" />
-                  <Tab label="EI" value="EI" className="w-4/12" />
-                  <Tab label="SB" value="SB" className="w-4/12" />
+                  <Tab
+                    label="ED"
+                    value="ED"
+                    className={`w-4/12 ${
+                      activeTab === "ED" ? "bg-yellow-500" : "bg-gray-200"
+                    }`}
+                  />
+                  <Tab
+                    label="EI"
+                    value="EI"
+                    className={`w-4/12 ${
+                      activeTab === "EI" ? "bg-yellow-500" : "bg-gray-200"
+                    }`}
+                  />
+                  <Tab
+                    label="SB"
+                    value="SB"
+                    className={`w-4/12 ${
+                      activeTab === "SB" ? "bg-yellow-500" : "bg-gray-200"
+                    }`}
+                  />
                 </TabList>
               </Box>
               <TabPanel value="ED" className="">
-                <Box sx={{ overflowX: "auto" }}>
+                <Box sx={{ overflowX: "auto", backgroundColor: "#f3e87f" }}>
                   <Table
                     className="table-auto w-full"
                     sx={{ minWidth: 500, overflow: "hidden" }}
@@ -637,7 +662,7 @@ export const CraneFirst = () => {
                         sx={{
                           "&:last-child td, &:last-child th": {
                             border: "1px solid rgba(0, 0, 0, 0.2)",
-                            backgroundColor: "#eeee",
+                            backgroundColor: "#FFED4A",
                           },
                         }}
                       >
