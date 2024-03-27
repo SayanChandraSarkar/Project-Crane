@@ -50,6 +50,13 @@
           }
         }
       }
+      .resultOutput {
+        .fromMobile {
+          width: 100% !important;
+          margin-bottom: 10px;
+          padding: 15px 15px 0px 15px;
+        }
+      }
     }
 
     //Form
@@ -118,15 +125,14 @@
             padding: 15px 15px 0px 15px;
           }
         }
+      }
+      .resultOutput {
+        display: flex;
+        flex-wrap: wrap;
 
-        .resultOutput {
-          display: flex;
-          flex-wrap: wrap;
-
-          .fromMobile {
-            width: 33.33%;
-            padding: 15px 15px 0px 15px;
-          }
+        .fromMobile {
+          width: 33.33%;
+          padding: 15px 15px 0px 15px;
         }
       }
     }

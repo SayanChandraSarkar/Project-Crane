@@ -16,6 +16,7 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Table from "@mui/material/Table";
 import PropTypes from "prop-types";
+import Card from "@mui/material/Card";
 
 import "../scss/Crane-1.scss";
 
@@ -37,12 +38,10 @@ const option1 = [
 ];
 const option2 = ["1", "2", "3", "4"];
 
-// const Type = ["ED", "EI", "SB"];
 const Currency = ["USD", "INR"];
 
-// import { useNavigate } from "react-router-dom";
-import { TableBody, TableHead } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { TableBody, TableHead } from "@mui/material";
 
 export const CraneFirst = () => {
   const navigate = useNavigate();
@@ -61,8 +60,6 @@ export const CraneFirst = () => {
   });
   const [shockAbsorber, setShockAbsorber] = useState("2");
   const [selectedCurrency, setSelectedCurrency] = useState("INR");
-  // console.log(modelPrices);
-  // console.log(modelPrices);
 
   const [calculatedResults, setCalculatedResults] = useState({
     kineticEnergy: "",
@@ -72,7 +69,6 @@ export const CraneFirst = () => {
     emassMin: "",
   });
   const [showTable, setShowTable] = useState(false);
-
   const dispatch = useDispatch();
 
   const [content, setContent] = useState("Initial Content");
@@ -125,10 +121,6 @@ export const CraneFirst = () => {
     setSValue(value);
   };
 
-  //Type
-  // const handleTypeChange = (event, value) => {
-  //   setSelectedType(value);
-  // };
   const handleAbsorberChange = (event, value) => {
     setShockAbsorber(value);
   };
@@ -140,7 +132,7 @@ export const CraneFirst = () => {
     const potentialEnergy = fValue * sValue;
     const totalEnergy = kineticEnergy + potentialEnergy;
     const energyPerHour = totalEnergy * cValue;
-    const Vd = vValue * 0.5;
+    const Vd = vValue * 0.5; 
     const emassMin = (2 * totalEnergy) / Vd ** 2;
 
     // Update state with calculated results
@@ -157,59 +149,91 @@ export const CraneFirst = () => {
   //Fetching Data
   const getData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/data/data", {
-        method: "GET",
-      });
+      const response = await fetch(
+        "https://calculation.cranebuffer.com/api/data/data",
+        {
+          method: "GET",
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
 
+        const calculateDifference = (item) =>
+          Math.abs(item.nmperstroke - calculatedResults.totalEnergy);
+
         const filteredData = {
-          ED: data.filter((item) => {
-            return (
-              item.nmperstroke > calculatedResults.totalEnergy &&
-              item.nmperhr > calculatedResults.energyPerHour &&
-              item["MODEL TYPE"] === "ED"
-            );
-          }),
-          EI: data.filter((item) => {
-            return (
-              item.nmperstroke > calculatedResults.totalEnergy &&
-              item.nmperhr > calculatedResults.energyPerHour &&
-              item["MODEL TYPE"] === "EI"
-            );
-          }),
-          SB: data.filter((item) => {
-            return (
-              item.nmperstroke > calculatedResults.totalEnergy &&
-              item.nmperhr > calculatedResults.energyPerHour &&
-              item["MODEL TYPE"] === "SB"
-            );
-          }),
+          ED: data
+            .filter(
+              (item) =>
+                item.nmperstroke > calculatedResults.totalEnergy &&
+                item.nmperhr > calculatedResults.energyPerHour &&
+                item["MODEL TYPE"] === "ED"
+            )
+            .map((item) => ({
+              ...item,
+              difference: calculateDifference(item),
+            })),
+          EI: data
+            .filter(
+              (item) =>
+                item.nmperstroke > calculatedResults.totalEnergy &&
+                item.nmperhr > calculatedResults.energyPerHour &&
+                item["MODEL TYPE"] === "EI"
+            )
+            .map((item) => ({
+              ...item,
+              difference: calculateDifference(item),
+            })),
+          SB: data
+            .filter(
+              (item) =>
+                item.nmperstroke > calculatedResults.totalEnergy &&
+                item.nmperhr > calculatedResults.energyPerHour &&
+                item["MODEL TYPE"] === "SB"
+            )
+            .map((item) => ({
+              ...item,
+              difference: calculateDifference(item),
+            })),
         };
 
-        console.log(filteredData);
+        const sortedData = {
+          ED: filteredData.ED.sort((a, b) => a.difference - b.difference).slice(
+            0,
+            5
+          ),
+          EI: filteredData.EI.sort((a, b) => a.difference - b.difference).slice(
+            0,
+            5
+          ),
+          SB: filteredData.SB.sort((a, b) => a.difference - b.difference).slice(
+            0,
+            5
+          ),
+        };
+
+        // Extract required fields for the top 5 models
         const top5ModelNames = {
-          ED: filteredData.ED.slice(0, 5).map((item) => ({
+          ED: sortedData.ED.map((item) => ({
             model: item.Model,
             stroke: item.Stroke,
             nmperstroke: item.nmperstroke,
             nmperhr: item.nmperhr,
           })),
-          EI: filteredData.EI.slice(0, 5).map((item) => ({
+          EI: sortedData.EI.map((item) => ({
             model: item.Model,
             stroke: item.Stroke,
             nmperstroke: item.nmperstroke,
             nmperhr: item.nmperhr,
           })),
-          SB: filteredData.SB.slice(0, 5).map((item) => ({
+          SB: sortedData.SB.map((item) => ({
             model: item.Model,
             stroke: item.Stroke,
             nmperstroke: item.nmperstroke,
             nmperhr: item.nmperhr,
           })),
         };
-
         setTop5ModelNames(top5ModelNames);
       }
     } catch (error) {
@@ -247,34 +271,6 @@ export const CraneFirst = () => {
     calculatedResults.totalEnergy,
   ]);
 
-  // const fetchPricesForModels = async (models) => {
-  //   try {
-  //     console.log(models);
-  //     // Fetch prices for each model
-  //     const pricePromises = models.map(async (model) => {
-  //       const response = await fetch(
-  //         `https://calculation.cranebuffer.com/prices/${model}`,
-  //         {
-  //           method: "GET",
-  //         }
-  //       );
-  //       console.log(response);
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         console.log(data);
-  //         return { [model]: data.price };
-  //       }
-  //     });
-
-  //     // Wait for all price fetch requests to complete
-  //     const prices = await Promise.all(pricePromises);
-  //     const priceMap = Object.assign({}, ...prices);
-  //     setModelPrices(priceMap);
-  //   } catch (error) {
-  //     console.error("Error fetching prices:", error);
-  //   }
-  // };
-
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -299,37 +295,45 @@ export const CraneFirst = () => {
     <>
       <div className="Crane1 inputFields">
         <DynamicHeading
-          className="forMobile text-center text-2xl font-bold m-4 "
+          className=" forMobile text-center text-2xl font-bold"
           initialContent="Wagon against 2 shock absorbers"
           content={content}
           setContent={setContent}
         />
         <div className="mobileIndex">
-          <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+          {/* <Box sx={{ display: "flex", flexWrap: "wrap" }}> */}
+          <Card
+            sx={{
+              boxShadow: "none",
+            }}
+            className="mb-7 md:p-6 p-4 md:border border-gray-300
+            "
+          >
             <div className="firstLine ">
-              <FormControl variant="outlined" className="fromMobile ">
+              <FormControl className="fromMobile">
                 <OutlinedInput
+                  size="small"
                   className=""
                   id="outlined-adornment-weight"
                   value={mValue}
                   onChange={handleMChange}
                   autoComplete="off"
                   endAdornment={
-                    <InputAdornment position="end">kg</InputAdornment>
+                    <InputAdornment position="end">Kg</InputAdornment>
                   }
                   aria-describedby="outlined-weight-helper-text"
                 />
                 <FormHelperText
                   className=""
                   id="outlined-weight-helper-text"
-                  sx={{ fontSize: "1.1rem" }}
+                  sx={{ fontSize: "0.9rem" }}
                 >
-                  m
+                  Mass
                 </FormHelperText>
               </FormControl>
-
               <FormControl variant="outlined" className="fromMobile">
                 <OutlinedInput
+                  size="small"
                   className=""
                   id="outlined-adornment-weight"
                   value={vValue}
@@ -342,14 +346,14 @@ export const CraneFirst = () => {
                 />
                 <FormHelperText
                   id="outlined-weight-helper-text"
-                  sx={{ fontSize: "1.1rem" }}
+                  sx={{ fontSize: "0.9rem" }}
                 >
-                  v
+                  Velocity
                 </FormHelperText>
               </FormControl>
-
               <FormControl variant="outlined" className="fromMobile">
                 <OutlinedInput
+                  size="small"
                   className=""
                   id="outlined-adornment-weight"
                   value={cValue}
@@ -362,14 +366,14 @@ export const CraneFirst = () => {
                 />
                 <FormHelperText
                   id="outlined-weight-helper-text"
-                  sx={{ fontSize: "1.1rem" }}
+                  sx={{ fontSize: "0.9rem" }}
                 >
-                  c
+                  Cycles per hour
                 </FormHelperText>
               </FormControl>
-
               <FormControl variant="outlined" className="fromMobile">
                 <OutlinedInput
+                  size="small"
                   className=""
                   id="outlined-adornment-weight"
                   value={fValue}
@@ -382,234 +386,233 @@ export const CraneFirst = () => {
                 />
                 <FormHelperText
                   id="outlined-weight-helper-text"
-                  sx={{ fontSize: "1.1rem" }}
+                  sx={{ fontSize: "0.9rem" }}
                 >
-                  F
+                  Force
                 </FormHelperText>
               </FormControl>
             </div>
-
             <div className="secondLine">
-              <div>
-                <div className="lineBox">
-                  <FormControl
-                    variant="outlined"
-                    className="fromMobile"
-                    autoComplete="off"
+              <div className="lineBox">
+                <FormControl
+                  variant="outlined"
+                  className="fromMobile"
+                  autoComplete="off"
+                >
+                  <Autocomplete
+                    onChange={handleSChange}
+                    id="controllable-states-demo"
+                    value={sValue}
+                    options={option1}
+                    className="autoComplete"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        size="small"
+                        label="Select Value"
+                        InputLabelProps={{
+                          style: {
+                            fontSize: "0.9rem",
+                            marginTop: "2px",
+                          }, //
+                        }}
+                      />
+                    )}
+                  />
+                  <FormHelperText
+                    id="outlined-weight-helper-text"
+                    sx={{ fontSize: "0.9rem" }}
                   >
-                    <Autocomplete
-                      onChange={handleSChange}
-                      id="controllable-states-demo"
-                      value={sValue}
-                      options={option1}
-                      className="autoComplete"
-                      renderInput={(params) => (
-                        <TextField {...params} label="Select Value" />
-                      )}
-                    />
-                    <FormHelperText
-                      id="outlined-weight-helper-text"
-                      sx={{ fontSize: "1rem" }}
-                    >
-                      S
-                    </FormHelperText>
-                  </FormControl>
-
-                  <FormControl
-                    variant="outlined"
-                    className="fromMobile"
-                    autoComplete="off"
+                    Stroke
+                  </FormHelperText>
+                </FormControl>
+                <FormControl
+                  variant="outlined"
+                  className="fromMobile"
+                  autoComplete="off"
+                >
+                  <Autocomplete
+                    id="controllable-states-demo"
+                    className="autocomplete"
+                    value={shockAbsorber}
+                    onChange={handleAbsorberChange}
+                    options={option2}
+                    getOptionLabel={(option) => option.toString()}
+                    isOptionEqualToValue={(option, value) => option === value}
+                    name="shockAbsorber"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        size="small"
+                        label="Shock Absorbers"
+                      />
+                    )}
+                  />
+                  <FormHelperText
+                    id="outlined-weight-helper-text"
+                    sx={{ fontSize: "0.9rem" }}
                   >
-                    <Autocomplete
-                      id="controllable-states-demo"
-                      className="autocomplete"
-                      value={shockAbsorber}
-                      onChange={handleAbsorberChange}
-                      options={option2}
-                      getOptionLabel={(option) => option.toString()}
-                      isOptionEqualToValue={(option, value) => option === value}
-                      name="shockAbsorber"
-                      renderInput={(params) => (
-                        <TextField {...params} label="Shock Absorbers" />
-                      )}
-                    />
-                    <FormHelperText
-                      id="outlined-weight-helper-text"
-                      sx={{ fontSize: "1rem" }}
-                    >
-                      N
-                    </FormHelperText>
-                  </FormControl>
+                    Numb. of absorbers in parallel
+                  </FormHelperText>
+                </FormControl>
 
-                  {/* <FormControl
-                    variant="outlined"
-                    className="fromMobile"
-                    autoComplete="off"
+                <FormControl
+                  variant="outlined"
+                  className="fromMobile"
+                  autoComplete="off"
+                >
+                  <Autocomplete
+                    id="controllable-states-demo "
+                    className="autocomplete"
+                    value={selectedCurrency} // Set default currency
+                    onChange={(event, newValue) =>
+                      setSelectedCurrency(newValue)
+                    }
+                    options={Currency}
+                    name="selectedCurrency"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        size="small"
+                        label="Choose your currency"
+                      />
+                    )}
+                  />
+                  <FormHelperText
+                    className=""
+                    id="outlined-weight-helper-text"
+                    sx={{ fontSize: "0.9rem" }}
                   >
-                    <Autocomplete
-                      id="controllable-states-demo"
-                      className="autocomplete "
-                      onChange={handleTypeChange}
-                      options={Type}
-                      name="Type"
-                      renderInput={(params) => (
-                        <TextField {...params} label="Choose your type" />
-                      )}
-                    />
-                    <FormHelperText
-                      id="outlined-weight-helper-text"
-                      sx={{ fontSize: "1rem" }}
-                    >
-                      Type
-                    </FormHelperText>
-                  </FormControl> */}
-
-                  <FormControl
-                    variant="outlined"
-                    className="fromMobile "
-                    autoComplete="off"
-                  >
-                    <Autocomplete
-                      id="controllable-states-demo "
-                      className="autocomplete"
-                      value={selectedCurrency} // Set default currency
-                      onChange={(event, newValue) =>
-                        setSelectedCurrency(newValue)
-                      }
-                      options={Currency}
-                      name="selectedCurrency"
-                      renderInput={(params) => (
-                        <TextField {...params} label="Choose your currency" />
-                      )}
-                    />
-                    <FormHelperText
-                      className=""
-                      id="outlined-weight-helper-text"
-                      sx={{ fontSize: "1rem" }}
-                    >
-                      Currency
-                    </FormHelperText>
-                  </FormControl>
-                </div>
-                {/* <div className="btn md:w-[10%] md:bg-blue-500 text-white md:rounded-lg md:p-3 md:m-auto text-center md:mb-4 md:mt-6">
-                  <button onClick={handleCalculate}>Calculate</button>
-                </div> */}
-                <div className="resultOutput">
-                  <FormControl variant="outlined" className="fromMobile">
-                    <OutlinedInput
-                      className="md:mx-4"
-                      id="outlined-adornment-weight"
-                      value={calculatedResults.kineticEnergy}
-                      readOnly={true}
-                      endAdornment={
-                        <InputAdornment position="end">Nm</InputAdornment>
-                      }
-                      aria-describedby="outlined-weight-helper-text"
-                    />
-                    <FormHelperText
-                      id="outlined-weight-helper-text"
-                      sx={{ fontSize: "1rem" }}
-                    >
-                      Kinetic Energy
-                    </FormHelperText>
-                  </FormControl>
-
-                  <FormControl variant="outlined" className="fromMobile">
-                    <OutlinedInput
-                      className="md:mx-4"
-                      id="outlined-adornment-weight"
-                      value={calculatedResults.potentialEnergy}
-                      readOnly={true}
-                      endAdornment={
-                        <InputAdornment position="end">Nm</InputAdornment>
-                      }
-                      aria-describedby="outlined-weight-helper-text"
-                    />
-                    <FormHelperText
-                      id="outlined-weight-helper-text"
-                      sx={{ fontSize: "1rem" }}
-                    >
-                      Potential Energy
-                    </FormHelperText>
-                  </FormControl>
-
-                  <FormControl variant="outlined" className="fromMobile">
-                    <OutlinedInput
-                      className="md:mx-4"
-                      id="outlined-adornment-weight"
-                      value={calculatedResults.totalEnergy}
-                      readOnly={true}
-                      endAdornment={
-                        <InputAdornment position="end">Nm</InputAdornment>
-                      }
-                      aria-describedby="outlined-weight-helper-text"
-                    />
-                    <FormHelperText
-                      id="outlined-weight-helper-text"
-                      sx={{ fontSize: "1rem" }}
-                    >
-                      Total Energy
-                    </FormHelperText>
-                  </FormControl>
-                  <FormControl variant="outlined" className="fromMobile">
-                    <OutlinedInput
-                      className="md:mx-4"
-                      id="outlined-adornment-weight"
-                      value={calculatedResults.energyPerHour}
-                      readOnly={true}
-                      endAdornment={
-                        <InputAdornment position="end">Nm/hr</InputAdornment>
-                      }
-                      aria-describedby="outlined-weight-helper-text"
-                    />
-                    <FormHelperText
-                      id="outlined-weight-helper-text"
-                      sx={{ fontSize: "1rem" }}
-                    >
-                      Energy per hour
-                    </FormHelperText>
-                  </FormControl>
-
-                  <FormControl variant="outlined" className="fromMobile">
-                    <OutlinedInput
-                      className="md:mx-4"
-                      id="outlined-adornment-weight"
-                      value={calculatedResults.Vd}
-                      readOnly={true}
-                      endAdornment={
-                        <InputAdornment position="end">m/s</InputAdornment>
-                      }
-                      aria-describedby="outlined-weight-helper-text"
-                    />
-                    <FormHelperText
-                      id="outlined-weight-helper-text"
-                      sx={{ fontSize: "1rem" }}
-                    >
-                      Vd
-                    </FormHelperText>
-                  </FormControl>
-
-                  <FormControl variant="outlined" className="fromMobile">
-                    <OutlinedInput
-                      id="outlined-adornment-weight"
-                      value={calculatedResults.emassMin}
-                      readOnly={true}
-                      endAdornment={
-                        <InputAdornment position="end">kg</InputAdornment>
-                      }
-                      aria-describedby="outlined-weight-helper-text"
-                    />
-                    <FormHelperText
-                      id="outlined-weight-helper-text"
-                      sx={{ fontSize: "1rem" }}
-                    >
-                      Emass min
-                    </FormHelperText>
-                  </FormControl>
-                </div>
+                    Currency
+                  </FormHelperText>
+                </FormControl>
               </div>
             </div>
-          </Box>
+          </Card>
+
+          <Card
+            className="mb-10 md:p-6 p-4  border-0 md:border md:border-gray-300"
+            variant="outlined"
+            sx={{ backgroundColor: " #ffff" }}
+          >
+            <div className="resultOutput">
+              <FormControl variant="outlined" className="fromMobile">
+                <OutlinedInput
+                  disabled
+                  size="small"
+                  id="outlined-adornment-weight"
+                  value={calculatedResults.kineticEnergy}
+                  readOnly={true}
+                  endAdornment={
+                    <InputAdornment position="end">Nm</InputAdornment>
+                  }
+                  aria-describedby="outlined-weight-helper-text"
+                />
+                <FormHelperText
+                  id="outlined-weight-helper-text"
+                  sx={{ fontSize: "0.9rem" }}
+                >
+                  Kinetic Energy
+                </FormHelperText>
+              </FormControl>
+              <FormControl variant="outlined" className="fromMobile">
+                <OutlinedInput
+                  disabled
+                  size="small"
+                  id="outlined-adornment-weight"
+                  value={calculatedResults.potentialEnergy}
+                  readOnly={true}
+                  endAdornment={
+                    <InputAdornment position="end">Nm</InputAdornment>
+                  }
+                  aria-describedby="outlined-weight-helper-text"
+                />
+                <FormHelperText
+                  id="outlined-weight-helper-text"
+                  sx={{ fontSize: "0.9rem" }}
+                >
+                  Potential Energy
+                </FormHelperText>
+              </FormControl>
+              <FormControl variant="outlined" className="fromMobile">
+                <OutlinedInput
+                  disabled
+                  size="small"
+                  id="outlined-adornment-weight"
+                  value={calculatedResults.totalEnergy}
+                  readOnly={true}
+                  endAdornment={
+                    <InputAdornment position="end">Nm</InputAdornment>
+                  }
+                  aria-describedby="outlined-weight-helper-text"
+                />
+                <FormHelperText
+                  id="outlined-weight-helper-text"
+                  sx={{ fontSize: "0.9rem" }}
+                >
+                  Total Energy
+                </FormHelperText>
+              </FormControl>
+              <FormControl variant="outlined" className="fromMobile">
+                <OutlinedInput
+                  disabled
+                  size="small"
+                  id="outlined-adornment-weight"
+                  value={calculatedResults.energyPerHour}
+                  readOnly={true}
+                  endAdornment={
+                    <InputAdornment position="end">Nm/hr</InputAdornment>
+                  }
+                  aria-describedby="outlined-weight-helper-text"
+                />
+                <FormHelperText
+                  id="outlined-weight-helper-text"
+                  sx={{ fontSize: "0.9rem" }}
+                >
+                  Energy per hour
+                </FormHelperText>
+              </FormControl>
+              <FormControl variant="outlined" className="fromMobile">
+                <OutlinedInput
+                  disabled
+                  size="small"
+                  id="outlined-adornment-weight"
+                  value={calculatedResults.Vd}
+                  readOnly={true}
+                  endAdornment={
+                    <InputAdornment position="end">m/s</InputAdornment>
+                  }
+                  aria-describedby="outlined-weight-helper-text"
+                />
+                <FormHelperText
+                  id="outlined-weight-helper-text"
+                  sx={{ fontSize: "0.9rem" }}
+                >
+                  Impact velocity at shock absorber
+                </FormHelperText>
+              </FormControl>
+              <FormControl variant="outlined" className="fromMobile ">
+                <OutlinedInput
+                  disabled
+                  size="small"
+                  id="outlined-adornment-weight"
+                  value={calculatedResults.emassMin}
+                  readOnly={true}
+                  endAdornment={
+                    <InputAdornment position="end">kg</InputAdornment>
+                  }
+                  aria-describedby="outlined-weight-helper-text"
+                />
+                <FormHelperText
+                  id="outlined-weight-helper-text"
+                  sx={{ fontSize: "0.9rem" }}
+                >
+                  Emass min
+                </FormHelperText>
+              </FormControl>
+            </div>
+          </Card>
+          {/* </Box> */}
         </div>
         {showTable && (
           <Box
@@ -626,206 +629,255 @@ export const CraneFirst = () => {
                   aria-label="lab API tabs example"
                   className="flex flex-wrap justify-center sm:justify-start"
                 >
-                  <Tab label="ED" value="ED" />
-                  <Tab label="EI" value="EI" />
-                  <Tab label="SB" value="SB" />
+                  <Tab label="ED" value="ED" className="w-4/12" />
+                  <Tab label="EI" value="EI" className="w-4/12" />
+                  <Tab label="SB" value="SB" className="w-4/12" />
                 </TabList>
               </Box>
-              <TabPanel value="ED">
-                <Table
-                  className="table-auto w-full"
-                  sx={{ minWidth: 400, overflow: "hidden" }}
-                >
-                  <TableHead>
-                    <TableRow
+              <TabPanel value="ED" className="">
+                <Box sx={{ overflowX: "auto" }}>
+                  <Table
+                    className="table-auto w-full"
+                    sx={{ minWidth: 500, overflow: "hidden" }}
+                  >
+                    <TableHead>
+                      <TableRow
+                        sx={{
+                          "&:last-child td, &:last-child th": {
+                            border: "1px solid rgba(0, 0, 0, 0.2)",
+                            backgroundColor: "#eeee",
+                          },
+                        }}
+                      >
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Model
+                        </TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Energy Capacity
+                        </TableCell>
+                        <TableCell align="right">Stroke</TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Rate of Utilization/stroke
+                        </TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Rate of Utilization/hr
+                        </TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Deceleration Rate
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody
                       sx={{
                         "&:last-child td, &:last-child th": {
                           border: "1px solid rgba(0, 0, 0, 0.2)",
-                          backgroundColor: "#eeee",
                         },
                       }}
                     >
-                      <TableCell align="right">Model</TableCell>
-                      <TableCell align="right">Energy Capacity</TableCell>
-                      <TableCell align="right">Stroke</TableCell>
-                      <TableCell align="right">
-                        Rate of Utilization/stroke
-                      </TableCell>
-                      <TableCell align="right">
-                        Rate of Utilization/hr
-                      </TableCell>
-                      <TableCell align="right">Deceleration Rate</TableCell>
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody
-                    sx={{
-                      "&:last-child td, &:last-child th": {
-                        border: "1px solid rgba(0, 0, 0, 0.2)",
-                      },
-                    }}
-                  >
-                    {top5ModelNames.ED.map((model, index) => (
-                      <TableRow key={index}>
-                        <TableCell
-                          align="right"
-                          onClick={() => handleModelClick(model.model)}
-                          className="md:cursor-pointer md:hover:scale-125 md:duration-300"
-                        >
-                          {model.model}
-                        </TableCell>
-                        <TableCell align="right">{model.nmperstroke}</TableCell>
-                        <TableCell align="right">{model.stroke}</TableCell>
-                        <TableCell align="right">
-                          {(
-                            (calculatedResults.totalEnergy /
-                              model.nmperstroke) *
-                            100
-                          ).toFixed(2)}
-                          %
-                        </TableCell>
-                        <TableCell align="right">
-                          {(
-                            (calculatedResults.energyPerHour / model.nmperhr) *
-                            100
-                          ).toFixed(2)}
-                          %
-                        </TableCell>
-                        <TableCell align="right">
-                          {(0.75 * calculatedResults.Vd ** 2) / model.stroke}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                      {top5ModelNames.ED.map((model, index) => (
+                        <TableRow key={index}>
+                          <TableCell
+                            align="right"
+                            onClick={() => handleModelClick(model.model)}
+                            className="md:cursor-pointer md:hover:scale-125 md:duration-300"
+                            sx={{ whiteSpace: "nowrap" }}
+                          >
+                            {model.model}
+                          </TableCell>
+                          <TableCell align="right">
+                            {model.nmperstroke}
+                          </TableCell>
+                          <TableCell align="right">{model.stroke}</TableCell>
+                          <TableCell align="right">
+                            {(
+                              (calculatedResults.totalEnergy /
+                                model.nmperstroke) *
+                              100
+                            ).toFixed(2)}
+                            %
+                          </TableCell>
+                          <TableCell align="right">
+                            {(
+                              (calculatedResults.energyPerHour /
+                                model.nmperhr) *
+                              100
+                            ).toFixed(2)}
+                            %
+                          </TableCell>
+                          <TableCell align="right">
+                            {(0.75 * calculatedResults.Vd ** 2) / model.stroke}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Box>
               </TabPanel>
               <TabPanel value="EI">
-                <Table style={{ borderCollapse: "collapse", width: "100%" }}>
-                  <TableHead>
-                    <TableRow
+                <Box sx={{ overflowX: "auto" }}>
+                  <Table
+                    className="table-auto w-full"
+                    sx={{ minWidth: 500, overflow: "hidden" }}
+                  >
+                    <TableHead>
+                      <TableRow
+                        sx={{
+                          "&:last-child td, &:last-child th": {
+                            border: "1px solid rgba(0, 0, 0, 0.2)",
+                          },
+                        }}
+                      >
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Model
+                        </TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Energy Capacity
+                        </TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Stroke
+                        </TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Rate of Utilization/stroke
+                        </TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Rate of Utilization/hr
+                        </TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Deceleration Rate
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody
                       sx={{
                         "&:last-child td, &:last-child th": {
                           border: "1px solid rgba(0, 0, 0, 0.2)",
                         },
                       }}
                     >
-                      <TableCell align="right">Model</TableCell>
-                      <TableCell align="right">Energy Capacity</TableCell>
-                      <TableCell align="right">Stroke</TableCell>
-                      <TableCell align="right">
-                        Rate of Utilization/stroke
-                      </TableCell>
-                      <TableCell align="right">
-                        Rate of Utilization/hr
-                      </TableCell>
-                      <TableCell align="right">Deceleration Rate</TableCell>
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody
-                    sx={{
-                      "&:last-child td, &:last-child th": {
-                        border: "1px solid rgba(0, 0, 0, 0.2)",
-                      },
-                    }}
-                  >
-                    {top5ModelNames.EI.map((model, index) => (
-                      <TableRow key={index}>
-                        <TableCell
-                          align="right"
-                          onClick={() => handleModelClick(model.model)}
-                          className="md:cursor-pointer md:hover:scale-125 md:duration-300"
-                        >
-                          {model.model}
-                        </TableCell>
-                        <TableCell align="right">{model.nmperstroke}</TableCell>
-                        <TableCell align="right">{model.stroke}</TableCell>
-                        <TableCell align="right">
-                          {(
-                            (calculatedResults.totalEnergy /
-                              model.nmperstroke) *
-                            100
-                          ).toFixed(2)}
-                          %
-                        </TableCell>
-                        <TableCell align="right">
-                          {(
-                            (calculatedResults.energyPerHour / model.nmperhr) *
-                            100
-                          ).toFixed(2)}
-                          %
-                        </TableCell>
-                        <TableCell align="right">
-                          {(0.75 * calculatedResults.Vd ** 2) / model.stroke}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                      {/* Example table rows */}
+                      {top5ModelNames.EI.map((model, index) => (
+                        <TableRow key={index}>
+                          <TableCell
+                            align="right"
+                            onClick={() => handleModelClick(model.model)}
+                            className="md:cursor-pointer md:hover:scale-125 md:duration-300"
+                            sx={{ whiteSpace: "nowrap" }}
+                          >
+                            {model.model}
+                          </TableCell>
+                          <TableCell align="right">
+                            {model.nmperstroke}
+                          </TableCell>
+                          <TableCell align="right">{model.stroke}</TableCell>
+                          <TableCell align="right">
+                            {(
+                              (calculatedResults.totalEnergy /
+                                model.nmperstroke) *
+                              100
+                            ).toFixed(2)}
+                            %
+                          </TableCell>
+                          <TableCell align="right">
+                            {(
+                              (calculatedResults.energyPerHour /
+                                model.nmperhr) *
+                              100
+                            ).toFixed(2)}
+                            %
+                          </TableCell>
+                          <TableCell align="right">
+                            {(0.75 * calculatedResults.Vd ** 2) / model.stroke}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Box>
               </TabPanel>
               <TabPanel value="SB">
-                <Table style={{ borderCollapse: "collapse", width: "100%" }}>
-                  <TableHead>
-                    <TableRow
+                <Box sx={{ overflowX: "auto" }}>
+                  <Table
+                    className="table-auto w-full"
+                    sx={{ minWidth: 500, overflow: "hidden" }}
+                  >
+                    <TableHead>
+                      <TableRow
+                        sx={{
+                          "&:last-child td, &:last-child th": {
+                            border: "1px solid rgba(0, 0, 0, 0.2)",
+                          },
+                        }}
+                      >
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Model
+                        </TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Energy Capacity
+                        </TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Stroke
+                        </TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Rate of Utilization/stroke
+                        </TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Rate of Utilization/hr
+                        </TableCell>
+                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                          Deceleration Rate
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody
                       sx={{
                         "&:last-child td, &:last-child th": {
                           border: "1px solid rgba(0, 0, 0, 0.2)",
                         },
                       }}
                     >
-                      <TableCell align="right">Model</TableCell>
-                      <TableCell align="right">Energy Capacity</TableCell>
-                      <TableCell align="right">Stroke</TableCell>
-                      <TableCell align="right">
-                        Rate of Utilization/stroke
-                      </TableCell>
-                      <TableCell align="right">
-                        Rate of Utilization/hr
-                      </TableCell>
-                      <TableCell align="right">Deceleration Rate</TableCell>
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody
-                    sx={{
-                      "&:last-child td, &:last-child th": {
-                        border: "1px solid rgba(0, 0, 0, 0.2)",
-                      },
-                    }}
-                  >
-                    {top5ModelNames.SB.map((model, index) => (
-                      <TableRow key={index}>
-                        <TableCell
-                          align="right"
-                          onClick={() => handleModelClick(model.model)}
-                          className="md:cursor-pointer md:hover:scale-125 md:duration-300"
-                        >
-                          {model.model}
-                        </TableCell>
-                        <TableCell align="right">{model.nmperstroke}</TableCell>
-                        <TableCell align="right">{model.stroke}</TableCell>
-                        <TableCell align="right">
-                          {(
-                            (calculatedResults.totalEnergy /
-                              model.nmperstroke) *
-                            100
-                          ).toFixed(2)}
-                          %
-                        </TableCell>
-                        <TableCell align="right">
-                          {(
-                            (calculatedResults.energyPerHour / model.nmperhr) *
-                            100
-                          ).toFixed(2)}
-                          %
-                        </TableCell>
-                        <TableCell align="right">
-                          {(0.75 * calculatedResults.Vd ** 2) / model.stroke}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                      {top5ModelNames.SB.map((model, index) => (
+                        <TableRow key={index}>
+                          <TableCell
+                            align="right"
+                            onClick={() => handleModelClick(model.model)}
+                            className="md:cursor-pointer md:hover:scale-125 md:duration-300"
+                            sx={{ whiteSpace: "nowrap" }}
+                          >
+                            {model.model}
+                          </TableCell>
+                          <TableCell align="right">
+                            {model.nmperstroke}
+                          </TableCell>
+                          <TableCell align="right">
+                            {Number(model.stroke)}
+                          </TableCell>
+                          <TableCell align="right">
+                            {(
+                              (calculatedResults.totalEnergy /
+                                model.nmperstroke) *
+                              100
+                            ).toFixed(2)}
+                            %
+                          </TableCell>
+                          <TableCell align="right">
+                            {(
+                              (calculatedResults.energyPerHour /
+                                model.nmperhr) *
+                              100
+                            ).toFixed(2)}
+                            %
+                          </TableCell>
+                          <TableCell align="right">
+                            {(0.75 * calculatedResults.Vd ** 2) / model.stroke}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Box>
               </TabPanel>
             </TabContext>
           </Box>

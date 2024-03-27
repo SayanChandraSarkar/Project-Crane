@@ -50,6 +50,14 @@
           }
         }
       }
+
+      .resultOutput {
+        .fromMobile {
+          width: 100% !important;
+          margin-bottom: 10px;
+          padding: 15px 15px 0px 15px;
+        }
+      }
     }
 
     //Form
@@ -93,6 +101,8 @@
 
 @media only screen and (min-width: 1204px) {
   .Crane3 {
+    width: 80%;
+    padding-bottom: 35px;
     .forMobile {
       font-size: 1.1rem;
       text-align: center;
@@ -116,15 +126,14 @@
             padding: 15px 15px 0px 15px;
           }
         }
+      }
+      .resultOutput {
+        display: flex;
+        flex-wrap: wrap;
 
-        .resultOutput {
-          display: flex;
-          flex-wrap: wrap;
-
-          .fromMobile {
-            width: 33.33%;
-            padding: 15px 15px 0px 15px;
-          }
+        .fromMobile {
+          width: 33.33%;
+          padding: 15px 15px 0px 15px;
         }
       }
     }
