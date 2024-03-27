@@ -241,21 +241,43 @@ export const CraneFirst = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (mValue && vValue && cValue && fValue && sValue) {
+  //     getData();
+  //     handleCalculate();
+  //     setShowTable(true);
+  //   } else {
+  //     setShowTable(false);
+  //     setCalculatedResults({
+  //       kineticEnergy: "",
+  //       potentialEnergy: "",
+  //       totalEnergy: "",
+  //       energyPerHour: "",
+  //       emassMin: "",
+  //     });
+  //   }
+
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [
+  //   mValue,
+  //   vValue,
+  //   cValue,
+  //   fValue,
+  //   sValue,
+  //   calculatedResults.emassMin,
+  //   calculatedResults.energyPerHour,
+  //   calculatedResults.kineticEnergy,
+  //   calculatedResults.potentialEnergy,
+  //   calculatedResults.totalEnergy,
+  // ]);
+
   useEffect(() => {
-    if (mValue && vValue && cValue && fValue && sValue) {
+
       getData();
       handleCalculate();
       setShowTable(true);
-    } else {
-      setShowTable(false);
-      setCalculatedResults({
-        kineticEnergy: "",
-        potentialEnergy: "",
-        totalEnergy: "",
-        energyPerHour: "",
-        emassMin: "",
-      });
-    }
+   
+    
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -311,85 +333,79 @@ export const CraneFirst = () => {
           >
             <div className="firstLine ">
               <FormControl className="fromMobile">
-                <OutlinedInput
+                <TextField
                   size="small"
                   className=""
-                  id="outlined-adornment-weight"
+                  id="outlined-adornment-password"
+                  label="Mass"
+                
                   value={mValue}
                   onChange={handleMChange}
                   autoComplete="off"
-                  endAdornment={
-                    <InputAdornment position="end">Kg</InputAdornment>
-                  }
+                  
+                  
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">Kg</InputAdornment>,
+                  }}
                   aria-describedby="outlined-weight-helper-text"
+                  
                 />
-                <FormHelperText
+                
+                {/* <FormHelperText
                   className=""
                   id="outlined-weight-helper-text"
                   sx={{ fontSize: "0.9rem" }}
                 >
                   Mass
-                </FormHelperText>
+                </FormHelperText> */}
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
-                <OutlinedInput
+                <TextField
                   size="small"
                   className=""
+                  label="Velocity"
                   id="outlined-adornment-weight"
                   value={vValue}
                   onChange={handleVChange}
                   autoComplete="off"
-                  endAdornment={
-                    <InputAdornment position="end">m/s</InputAdornment>
-                  }
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">m/s</InputAdornment>,
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-                <FormHelperText
-                  id="outlined-weight-helper-text"
-                  sx={{ fontSize: "0.9rem" }}
-                >
-                  Velocity
-                </FormHelperText>
+               
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
-                <OutlinedInput
+                <TextField
                   size="small"
                   className=""
                   id="outlined-adornment-weight"
                   value={cValue}
+                  label="Cycles per hour"
                   onChange={handleCChange}
                   autoComplete="off"
-                  endAdornment={
-                    <InputAdornment position="end">/hr</InputAdornment>
-                  }
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">/hr</InputAdornment>,
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-                <FormHelperText
-                  id="outlined-weight-helper-text"
-                  sx={{ fontSize: "0.9rem" }}
-                >
-                  Cycles per hour
-                </FormHelperText>
+               
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
-                <OutlinedInput
+                <TextField
                   size="small"
                   className=""
                   id="outlined-adornment-weight"
                   value={fValue}
+                  label="Force"
                   onChange={handleFChange}
                   autoComplete="off"
-                  endAdornment={
-                    <InputAdornment position="end">N</InputAdornment>
-                  }
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">kg</InputAdornment>,
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-                <FormHelperText
-                  id="outlined-weight-helper-text"
-                  sx={{ fontSize: "0.9rem" }}
-                >
-                  Force
-                </FormHelperText>
+             
               </FormControl>
             </div>
             <div className="secondLine">
@@ -452,7 +468,7 @@ export const CraneFirst = () => {
                     id="outlined-weight-helper-text"
                     sx={{ fontSize: "0.9rem" }}
                   >
-                    Numb. of absorbers in parallel
+                    No. of absorbers in parallel
                   </FormHelperText>
                 </FormControl>
 
@@ -497,118 +513,94 @@ export const CraneFirst = () => {
           >
             <div className="resultOutput">
               <FormControl variant="outlined" className="fromMobile">
-                <OutlinedInput
+                <TextField
+                 label="Kinetic Energy"
                   disabled
                   size="small"
                   id="outlined-adornment-weight"
                   value={calculatedResults.kineticEnergy}
                   readOnly={true}
-                  endAdornment={
-                    <InputAdornment position="end">Nm</InputAdornment>
-                  }
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">Nm</InputAdornment>,
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-                <FormHelperText
-                  id="outlined-weight-helper-text"
-                  sx={{ fontSize: "0.9rem" }}
-                >
-                  Kinetic Energy
-                </FormHelperText>
+             
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
-                <OutlinedInput
+                <TextField
                   disabled
+                  label="Potential Energy"
                   size="small"
                   id="outlined-adornment-weight"
                   value={calculatedResults.potentialEnergy}
                   readOnly={true}
-                  endAdornment={
-                    <InputAdornment position="end">Nm</InputAdornment>
-                  }
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">Nm</InputAdornment>,
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-                <FormHelperText
-                  id="outlined-weight-helper-text"
-                  sx={{ fontSize: "0.9rem" }}
-                >
-                  Potential Energy
-                </FormHelperText>
+           
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
-                <OutlinedInput
+                <TextField
+                label="Total Energy"
                   disabled
                   size="small"
                   id="outlined-adornment-weight"
                   value={calculatedResults.totalEnergy}
                   readOnly={true}
-                  endAdornment={
-                    <InputAdornment position="end">Nm</InputAdornment>
-                  }
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">Nm</InputAdornment>,
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-                <FormHelperText
-                  id="outlined-weight-helper-text"
-                  sx={{ fontSize: "0.9rem" }}
-                >
-                  Total Energy
-                </FormHelperText>
+            
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
-                <OutlinedInput
+                <TextField
                   disabled
+                  label="Energy per hour"
                   size="small"
                   id="outlined-adornment-weight"
                   value={calculatedResults.energyPerHour}
                   readOnly={true}
-                  endAdornment={
-                    <InputAdornment position="end">Nm/hr</InputAdornment>
-                  }
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">Nm/hr</InputAdornment>,
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-                <FormHelperText
-                  id="outlined-weight-helper-text"
-                  sx={{ fontSize: "0.9rem" }}
-                >
-                  Energy per hour
-                </FormHelperText>
+            
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
-                <OutlinedInput
+                <TextField
                   disabled
                   size="small"
                   id="outlined-adornment-weight"
                   value={calculatedResults.Vd}
+                  label='Impact velocity at shock absorber'
                   readOnly={true}
-                  endAdornment={
-                    <InputAdornment position="end">m/s</InputAdornment>
-                  }
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">m/s</InputAdornment>,
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-                <FormHelperText
-                  id="outlined-weight-helper-text"
-                  sx={{ fontSize: "0.9rem" }}
-                >
-                  Impact velocity at shock absorber
-                </FormHelperText>
+             
               </FormControl>
               <FormControl variant="outlined" className="fromMobile ">
-                <OutlinedInput
+                <TextField
                   disabled
+                  label="Emass Min"
                   size="small"
                   id="outlined-adornment-weight"
                   value={calculatedResults.emassMin}
                   readOnly={true}
-                  endAdornment={
-                    <InputAdornment position="end">kg</InputAdornment>
-                  }
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">Kg</InputAdornment>,
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
-                <FormHelperText
-                  id="outlined-weight-helper-text"
-                  sx={{ fontSize: "0.9rem" }}
-                >
-                  Emass min
-                </FormHelperText>
+             
               </FormControl>
             </div>
           </Card>
