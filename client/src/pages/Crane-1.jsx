@@ -737,7 +737,7 @@ export const CraneFirst = () => {
                     className="w-4/12 !max-w-[380px]"
                     sx={{
                       "&.Mui-selected": {
-                        backgroundColor: "#ffff6a",
+                        backgroundColor: "#E5E8E8",
                         color: "black", // Change the color to your desired color
                       },
                     }}
@@ -748,7 +748,7 @@ export const CraneFirst = () => {
                     className="w-4/12 !max-w-[380px]"
                     sx={{
                       "&.Mui-selected": {
-                        backgroundColor: "#ffff6a",
+                        backgroundColor: "#E5E8E8",
                         color: "black", // Change the color to your desired color
                       },
                     }}
@@ -759,7 +759,7 @@ export const CraneFirst = () => {
                     className="w-4/12 !max-w-[380px]"
                     sx={{
                       "&.Mui-selected": {
-                        backgroundColor: "#ffff6a",
+                        backgroundColor: "#E5E8E8",
                         color: "black", // Change the color to your desired color
                       },
                     }}
@@ -767,7 +767,7 @@ export const CraneFirst = () => {
                 </TabList>
               </Box>
               <TabPanel value="ED" className="">
-                <Box sx={{ overflowX: "auto", backgroundColor: "#f3e87f" }}>
+                <Box sx={{ overflowX: "auto", backgroundColor: "#E5E8E8" }}>
                   <Table
                     className="table-auto w-full"
                     sx={{ minWidth: 500, overflow: "hidden" }}
@@ -777,7 +777,7 @@ export const CraneFirst = () => {
                         sx={{
                           "&:last-child td, &:last-child th": {
                             border: "1px solid rgba(0, 0, 0, 0.2)",
-                            backgroundColor: "#FFED4A",
+                            backgroundColor: "#E5E8E8",
                           },
                         }}
                       >
@@ -813,7 +813,7 @@ export const CraneFirst = () => {
                           <TableCell
                             align="right"
                             onClick={() => handleModelClick(model.model)}
-                            className="md:cursor-pointer  md:duration-300 md:hover:scale-110 hover:bg-green-900"
+                            className="md:cursor-pointer  md:duration-300 md:hover:scale-110 hover:text-blue-900"
                             sx={{ whiteSpace: "nowrap" }}
                           >
                             {model.model}
@@ -860,7 +860,7 @@ export const CraneFirst = () => {
                 </Box>
               </TabPanel>
               <TabPanel value="EI">
-                <Box sx={{ overflowX: "auto", backgroundColor: "#f3e87f" }}>
+                <Box sx={{ overflowX: "auto", backgroundColor: "#E5E8E8" }}>
                   <Table
                     className="table-auto w-full"
                     sx={{ minWidth: 500, overflow: "hidden" }}
@@ -870,7 +870,7 @@ export const CraneFirst = () => {
                         sx={{
                           "&:last-child td, &:last-child th": {
                             border: "1px solid rgba(0, 0, 0, 0.2)",
-                            backgroundColor: "#FFED4A",
+                            backgroundColor: "#E5E8E8",
                           },
                         }}
                       >
@@ -954,7 +954,7 @@ export const CraneFirst = () => {
                 </Box>
               </TabPanel>
               <TabPanel value="SB">
-                <Box sx={{ overflowX: "auto", backgroundColor: "#f3e87f" }}>
+                <Box sx={{ overflowX: "auto", backgroundColor: "#E5E8E8" }}>
                   <Table
                     className="table-auto w-full"
                     sx={{ minWidth: 500, overflow: "hidden" }}
@@ -964,7 +964,7 @@ export const CraneFirst = () => {
                         sx={{
                           "&:last-child td, &:last-child th": {
                             border: "1px solid rgba(0, 0, 0, 0.2)",
-                            backgroundColor: "#FFED4A",
+                            backgroundColor: "#E5E8E8",
                           },
                         }}
                       >

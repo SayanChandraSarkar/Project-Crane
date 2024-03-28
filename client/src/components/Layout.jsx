@@ -1,5 +1,5 @@
 // import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 // import Box from "@mui/material/Box";
 
 // import List from "@mui/material/List";
@@ -20,143 +20,53 @@ import { Technical } from "../extra/Technical";
 import "../scss/Print.scss";
 import { RootPage } from "../extra/RootPage";
 import CraneFourth from "../pages/Crane-4";
-import Login from "../pages/login/Login";
-import Dashboard from "../pages/Dashboard";
+import { Admin } from "../admin/components/Admin";
+
 export const Layout = () => {
-  // const navigate = useNavigate();
-
-  // const [openDrawer, setOpenDrawer] = useState(false);
-  // const [selectedItem, setSelectedItem] = useState(
-  //   "Wagon against 2 shock absorbers"
-  // );
-  // const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setWindowWidth(window.innerWidth);
-  //     if (window.innerWidth <= 1240) {
-  //       setOpenDrawer(false);
-  //     }
-  //   };
-
-  //   window.addEventListener("resize", handleResize);
-
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, []);
-
-  // const toggleDrawer = (open) => () => {
-  //   setOpenDrawer(open);
-  // };
-
-  // const handleItemClick = (url) => {
-  //   setSelectedItem(url);
-  //   setOpenDrawer(false);
-  //   navigate(url);
-  //   // navigate('/hello');
-  // };
-
-  // const menuItems = ["Crane First", "Crane Second", "Crane Third"];
-
-  // //Drawer List
-  // const DrawerList = (
-  //   <Box sx={{ width: 260 }} role="presentation" onClick={toggleDrawer(false)}>
-  //     <div className="logo">
-  //       <img src="/images/logo.png" alt="Logo" />
-  //     </div>
-  //     <List>
-  //       {[
-  //         { path: "/", label: "Wagon against 2 shock absorbers" },
-  //         { path: "/crane-2", label: "Wagon against Wagon" },
-  //         { path: "/crane-3", label: "Wagon against Wagon 2 shock absorber" },
-  //       ].map((t) => (
-  //         <ListItem
-  //           key={t.path}
-  //           disablePadding
-  //           className="listItem"
-  //           onClick={() => handleItemClick(t.path)}
-  //         >
-  //           <ListItemButton>
-  //             <ListItemText primary={t.label} />
-  //           </ListItemButton>
-  //         </ListItem>
-  //       ))}
-  //     </List>
-  //   </Box>
-  // );
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   return (
     <>
       <div className="App">
-        {/* <div className="navbar">
-          <div className="logo">
-            <img src="/images/logo.png" alt="Logo" />
-          </div>
-          <ul>
-            {menuItems.map((text) => (
-              <li
-                key={text}
-                onClick={() => handleItemClick(text)}
-                className={selectedItem === text ? "active" : ""}
-              >
-                {text}
-              </li>
-            ))}
-          </ul>
-        </div> */}
         <div className="w-full">
-          {/* {windowWidth <= 1240 && (
-            <Button
-              sx={{
-                fontSize: "2.2rem",
-                color: "#333",
-                padding: "16px 16px 10px 16px",
-              }}
-              onClick={toggleDrawer(true)}
-              className="menu-bar"
-            >
-              <Icon icon="heroicons-solid:menu-alt-2" />
-            </Button>
+          {!isAdminRoute ? (
+            <div className="output mt-6">
+              <Routes>
+                <Route path="/" element={<RootPage />} />
+                <Route
+                  path="/Wagon against 2 shock absorbers"
+                  element={<CraneFirst />}
+                />
+                <Route path="/Wagon against Wagon" element={<CraneSecond />} />
+                <Route
+                  path="/Wagon against Wagon 2 shock absorber"
+                  element={<CraneThird />}
+                />
+                <Route
+                  path="/Wagon against 1 shock absorbers"
+                  element={<CraneFourth />}
+                />
+                <Route path="/price/:modelName" element={<PricePage />} />
+                <Route
+                  path="/price/:modelName/info"
+                  element={<UserDetails />}
+                />
+                <Route
+                  path="/price/:modelName/info/:userId/technical/quotation"
+                  element={<Quotation />}
+                />
+                <Route
+                  path="/price/:modelName/info/:userId/technical"
+                  element={<Technical />}
+                />
+              </Routes>
+            </div>
+          ) : (
+            <div className="auth">
+              <Admin />
+            </div>
           )}
-          <Drawer
-            open={openDrawer && windowWidth < 1240}
-            onClose={toggleDrawer(false)}
-            className={`drawer ${
-              window.matchMedia("print").matches ? "hidden-for-print" : ""
-            }`}
-          >
-            {DrawerList}
-          </Drawer> */}
-          <div className="output mt-6">
-            <Routes>
-              <Route path="/" element={<RootPage />} />
-              <Route path="login" element={<Login/>}/>
-              <Route path="/login/admin" element={<Dashboard/>}/>
-              <Route
-                path="/Wagon against 2 shock absorbers"
-                element={<CraneFirst />}
-              />
-              <Route path="/Wagon against Wagon" element={<CraneSecond />} />
-              <Route
-                path="/Wagon against Wagon 2 shock absorber"
-                element={<CraneThird />}
-              />
-              <Route
-                path="/Wagon against 1 shock absorbers"
-                element={<CraneFourth />}
-              />
-              <Route path="/price/:modelName" element={<PricePage />} />
-              <Route path="/price/:modelName/info" element={<UserDetails />} />
-              <Route
-                path="/price/:modelName/info/:userId/technical/quotation"
-                element={<Quotation />}
-              />
-              <Route
-                path="/price/:modelName/info/:userId/technical"
-                element={<Technical />}
-              />
-            </Routes>
-          </div>
         </div>
       </div>
       <style>{`

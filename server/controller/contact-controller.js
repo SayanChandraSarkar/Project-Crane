@@ -29,4 +29,14 @@ const quotationData = async (req, res) => {
     return res.status(500).json({ msg: "Server Error" });
   }
 };
-module.exports = { contactData, quotationData };
+
+const getContactData = async (req, res) => {
+  try {
+    const contacts = await Crane.find();
+    return res.status(200).send({ contacts });
+  } catch (error) {
+    return res.status(500).json({ msg: "Failed to fetch contacts" });
+  }
+};
+
+module.exports = { contactData, quotationData, getContactData };

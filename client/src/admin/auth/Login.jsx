@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Flex, Form, Input, Typography, notification } from "antd";
 import "./login.css";
 // import { apiLogin } from "../../services/authService";
 import { useNavigate } from "react-router-dom";
 
-
 const Login = () => {
-  const navigate = useNavigate();
-  const [api, contextHolder] = notification.useNotification();
-  const [loading, setLoading] = useState(false);
+  // const navigate = useNavigate();
+  // const [api, contextHolder] = notification.useNotification();
+  // const [loading, setLoading] = useState(false);
 
   const onFinish = async (values) => {
     // try {
@@ -46,7 +45,7 @@ const Login = () => {
       <div className="loginForm">
         <Flex align="center" justify="center">
           <Typography.Title>
-            <img src='/images/logo.png' width={100} />
+            <img src="/images/logo.png" width={100} />
           </Typography.Title>
         </Flex>
         <Form
