@@ -18,6 +18,10 @@ const initialState = {
   cycle: null,
   force: null,
   stroke: null,
+  velocity2: null,
+  mass2: null,
+  power: null,
+  stallFactor: null,
 };
 const dataSlice = createSlice({
   name: "data",
@@ -43,6 +47,10 @@ const dataSlice = createSlice({
       state.cycle = action.payload.cycle;
       state.force = action.payload.force;
       state.stroke = action.payload.stroke;
+      state.velocity2 = action.payload.velocity2;
+      state.mass2 = action.payload.mass2;
+      state.power = action.payload.power;
+      state.stallFactor = action.payload.stallFactor;
     },
   },
 });

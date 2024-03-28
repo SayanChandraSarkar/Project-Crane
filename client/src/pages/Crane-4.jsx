@@ -40,10 +40,19 @@ const option2 = ["1", "2", "3", "4"];
 const Currency = ["USD", "INR"];
 
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 
 const CraneFourth = () => {
   const navigate = useNavigate();
+   //Redux
+   const mass = useSelector((state) => state.data.mass);
+   const velocity = useSelector((state) => state.data.velocity);
+   const cycle = useSelector((state) => state.data.cycle);
+   const force = useSelector((state) => state.data.force);
+   const stroke = useSelector((state) => state.data.stroke);
+   const power = useSelector((state) => state.data.power);
+    const stallFactor = useSelector((state) => state.data.stallFactor);
+   
   const [mValue, setMValue] = useState("");
   const [vValue, setVValue] = useState("");
   const [cValue, setCValue] = useState("");
@@ -300,6 +309,12 @@ const CraneFourth = () => {
   const handleModelClick = (model) => {
     dispatch(
       addData({
+        mass: mValue,
+        velocity: vValue,
+        cycle: cValue,
+        stroke: sValue,
+        power: pValue,
+        stallFactor: stvalue,
         currency: selectedCurrency,
         shockAbsorber: shockAbsorber,
         kineticEnergy: calculatedResults.kineticEnergy,
@@ -312,6 +327,30 @@ const CraneFourth = () => {
     );
     navigate(`/price/${model}`);
   };
+
+  useEffect(() => {
+    if (mass !== null) {
+      setMValue(`${mass}`);
+    }
+    if (velocity !== null) {
+      setVValue(`${velocity}`);
+    }
+    if (cycle !== null) {
+      setCValue(`${cycle}`);
+    }
+  
+    if (stroke !== null) {
+      setSValue(`${stroke}`);
+    }
+    if (power !== null) {
+      setPValue(`${power}`);
+    }
+    if (stallFactor !== null) {
+      setStValue(`${stallFactor}`);
+    }
+
+
+  }, [mass, velocity, cycle, force, stroke, power, stallFactor]);
 
   return (
     <>

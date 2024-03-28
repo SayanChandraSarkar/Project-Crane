@@ -15,7 +15,7 @@ import Table from "@mui/material/Table";
 import { Card, TableBody, TableHead } from "@mui/material";
 import PropTypes from "prop-types";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addData } from "../features/dataSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -73,6 +73,15 @@ export const CraneSecond = () => {
   const [showTable, setShowTable] = useState(false);
   const [value, setValue] = useState("ED");
   const [hoveredRowIndex, setHoveredRowIndex] = useState(null);
+
+  //Redux
+  const mass = useSelector((state) => state.data.mass);
+  const velocity = useSelector((state) => state.data.velocity);
+  const cycle = useSelector((state) => state.data.cycle);
+  const force = useSelector((state) => state.data.force);
+  const stroke = useSelector((state) => state.data.stroke);
+  const velocity2 = useSelector((state) => state.data.velocity2);
+  const mass2 = useSelector((state) => state.data.mass2);
 
   //Dynamic heading
   const DynamicHeading = ({
@@ -314,10 +323,41 @@ export const CraneSecond = () => {
         energyPerHour: calculatedResults.energyPerHour,
         Vd: calculatedResults.Vd,
         emassMin: calculatedResults.emassMin,
+        mass: mValue,
+        velocity: v1Value,
+        cycle: cValue,
+        force: fValue,
+        stroke: sValue,
+        velocity2: v2Value,
+        mass2: m2Value,
       })
     );
     navigate(`/price/${model}`);
   };
+
+  useEffect(() => {
+    if (mass !== null) {
+      setMValue(`${mass}`);
+    }
+    if (velocity !== null) {
+      setV1Value(`${velocity}`);
+    }
+    if (velocity2 !== null) {
+      setV2Value(`${velocity2}`);
+    }
+    if (mass2 !== null) {
+      setM2Value(`${mass2}`);
+    }
+    if (cycle !== null) {
+      setCValue(`${cycle}`);
+    }
+    if (force !== null) {
+      setFValue(`${force}`);
+    }
+    if (stroke !== null) {
+      setSValue(`${stroke}`);
+    }
+  }, [mass, velocity, cycle, force, stroke, velocity2, mass2]);
 
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
@@ -353,6 +393,7 @@ export const CraneSecond = () => {
                   id="outlined-adornment-weight"
                   onChange={handleMChange}
                   label="Mass"
+                  value={mValue}
                   autoComplete="off"
                   InputProps={{
                     endAdornment: (
@@ -366,6 +407,7 @@ export const CraneSecond = () => {
                 <TextField
                   size="small"
                   id="outlined-adornment-weight"
+                  value={v1Value}
                   label="Velocity 1"
                   onChange={handleV1Change}
                   autoComplete="off"
@@ -383,6 +425,7 @@ export const CraneSecond = () => {
                   id="outlined-adornment-weight"
                   onChange={handleCChange}
                   autoComplete="off"
+                  value={cValue}
                   label="Cycles per hour"
                   InputProps={{
                     endAdornment: (
@@ -396,6 +439,7 @@ export const CraneSecond = () => {
                 <TextField
                   size="small"
                   label="Force"
+                  value={fValue}
                   id="outlined-adornment-weight"
                   onChange={handleFChange}
                   autoComplete="off"
@@ -419,6 +463,7 @@ export const CraneSecond = () => {
                     size="small"
                     onChange={handleSChange}
                     id="controllable-states-demo"
+                    value={sValue}
                     options={option}
                     className="autoComplete"
                     renderInput={(params) => (
@@ -436,6 +481,7 @@ export const CraneSecond = () => {
                   <TextField
                     label="Velocity 2"
                     size="small"
+                    value={v2Value}
                     id="outlined-adornment-weight"
                     onChange={handleV2Change}
                     autoComplete="off"
@@ -451,6 +497,7 @@ export const CraneSecond = () => {
                   <TextField
                     size="small"
                     label="Mass 2"
+                    value={m2Value}
                     id="outlined-adornment-weight"
                     onChange={handleM2Change}
                     autoComplete="off"
@@ -951,7 +998,7 @@ export const CraneSecond = () => {
                             className={
                               hoveredRowIndex === index ? "" : "opacity-80"
                             }
-                            onMouseEnter={() => setHoveredRowIndex                          (index)}
+                            onMouseEnter={() => setHoveredRowIndex(index)}
                             onMouseLeave={() => setHoveredRowIndex(null)}
                           >
                             <TableCell

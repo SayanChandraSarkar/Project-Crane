@@ -8,7 +8,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-// import { useSelector } from "react-redux";
 
 const Quotation = () => {
   // const modelprice = useSelector((state) => state.data.price);
@@ -79,6 +78,9 @@ const Quotation = () => {
   // const spareAmount = rows.map((row) =>
   //   row.Spare.map((spare) => spare.price * spare.quantity)
   // );
+
+  
+
   const totalSpareAmount = rows.reduce(
     (total, row) =>
       total +
@@ -357,8 +359,34 @@ const Quotation = () => {
         <div className="btn mt-8">
           <button
             onClick={() => {
+              // dispatch(
+              //   addData({
+              //     totalPrice: totalPrice,
+              //     spare: selectedPartsData,
+              //     shockAbsorber: shockAbsorber,
+              //     data: prices,
+              //     currency: currency,
+              //     addAdditionalPriceData: additionalPriceData,
+              //     kineticEnergy: kineticEnergy,
+              //     potentialEnergy: potentialEnergy,
+              //     totalEnergy: totalEnergy,
+              //     energyPerHour: energyPerHour,
+              //     Vd: Vd,
+              //     emassMin: emassMin,
+              //     mass: mass,
+              //     velocity: velocity,
+              //     cycle: cycle,
+              //     force: force,
+              //     stroke: stroke,
+              //     velocity2: velocity2,
+              //     mass2: mass2,
+              //     power: power,
+              //     stallFactor: stallFactor,
+              //   })
+              // );
               window.print();
             }}
+            
             className="submitBtn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-[auto]"
           >
             Get Quotation

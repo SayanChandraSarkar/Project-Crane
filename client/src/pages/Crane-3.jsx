@@ -15,6 +15,8 @@ import TableRow from "@mui/material/TableRow";
 import Table from "@mui/material/Table";
 import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
+import { useSelector } from "react-redux";
+
 
 import "../scss/Crane-3.scss";
 
@@ -45,6 +47,17 @@ import { addData } from "../features/dataSlice";
 import { TableBody, TableHead } from "@mui/material";
 
 export const CraneThird = () => {
+  //Redux
+  const mass = useSelector((state) => state.data.mass);
+  const velocity = useSelector((state) => state.data.velocity);
+  const cycle = useSelector((state) => state.data.cycle);
+  const force = useSelector((state) => state.data.force);
+  const stroke = useSelector((state) => state.data.stroke);
+  const mass2 = useSelector((state) => state.data.mass2);
+  const velocity2 = useSelector((state) => state.data.velocity2);
+ 
+  
+
   const [mValue, setMValue] = useState("");
   const [v1Value, setV1Value] = useState("");
   const [cValue, setCValue] = useState("");
@@ -305,6 +318,14 @@ export const CraneThird = () => {
   const handleModelClick = (model) => {
     dispatch(
       addData({
+        mass: mValue,
+        velocity: v1Value,
+        cycle: cValue,
+        force: fValue,
+        stroke: sValue,
+        velocity2: v2Value,
+        mass2: m2Value,
+
         currency: selectedCurrency,
         shockAbsorber: shockAbsorber,
         kineticEnergy: calculatedResults.kineticEnergy,
@@ -321,6 +342,31 @@ export const CraneThird = () => {
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    if (mass !== null) {
+      setMValue(`${mass}`);
+    }
+    if (velocity !== null) {
+      setV1Value(`${velocity}`);
+    }
+    if (cycle !== null) {
+      setCValue(`${cycle}`);
+    }
+    if (force !== null) {
+      setFValue(`${force}`);
+    }
+    if (stroke !== null) {
+      setSValue(`${stroke}`);
+    }
+    if (mass2 !== null) {
+      setM2Value(`${mass2}`);
+    }
+    if (velocity2 !== null) {
+      setV2Value(`${velocity2}`);
+    }
+
+  }, [mass, velocity, cycle, force, stroke, mass2, velocity2]);
   return (
     <>
       <div className="Crane3 inputFields">
@@ -343,6 +389,7 @@ export const CraneThird = () => {
                   size="small"
                   id="outlined-adornment-weight"
                   label="Mass"
+                  value={mValue}
                   onChange={handleMChange}
                   autoComplete="off"
                   InputProps={{
@@ -356,6 +403,7 @@ export const CraneThird = () => {
                 <TextField
                   size="small"
                   id="outlined-adornment-weight"
+                  value={v1Value}
                   label="Velocity 1"
                   onChange={handleV1Change}
                   autoComplete="off"
@@ -370,6 +418,7 @@ export const CraneThird = () => {
                 <TextField
                   size="small"
                   id="outlined-adornment-weight"
+                  value={cValue}
                   label="Cycles per hour"
                   onChange={handleCChange}
                   autoComplete="off"
@@ -384,6 +433,7 @@ export const CraneThird = () => {
                 <TextField
                   size="small"
                   label="Force"
+                  value={fValue}
                   id="outlined-adornment-weight"
                   onChange={handleFChange}
                   autoComplete="off"
@@ -406,6 +456,7 @@ export const CraneThird = () => {
                     size="small"
                     onChange={handleSChange}
                     id="controllable-states-demo"
+                    value={sValue}
                     options={option}
                     className="autoComplete"
                     renderInput={(params) => (
@@ -432,6 +483,7 @@ export const CraneThird = () => {
                   <TextField
                     size="small"
                     label="Velocity 2"
+                    value={v2Value}
                     id="outlined-adornment-weight"
                     onChange={handleV2Change}
                     autoComplete="off"
@@ -448,6 +500,7 @@ export const CraneThird = () => {
                     size="small"
                     id="outlined-adornment-weight"
                     onChange={handleM2Change}
+                    value={m2Value}
                     autoComplete="off"
                     InputProps={{
                       endAdornment: <InputAdornment position="end">m/s</InputAdornment>,

@@ -19,6 +19,11 @@ const PricePage = () => {
   const cycle = useSelector((state) => state.data.cycle);
   const force = useSelector((state) => state.data.force);
   const stroke = useSelector((state) => state.data.stroke);
+  const mass2 = useSelector((state) => state.data.mass2);
+  const velocity2 = useSelector((state) => state.data.velocity2);
+  const power = useSelector((state) => state.data.power);
+  const stallFactor = useSelector((state) => state.data.stallFactor);
+
 
   const [totalPrice, setTotalPrice] = useState(0);
   const { modelName } = useParams();
@@ -44,24 +49,7 @@ const PricePage = () => {
           const data = await response.json();
           // Assuming data is an array of prices
           setPrices(data.price);
-          dispatch(
-            addData({
-              data: data.price,
-              currency: currency,
-              shockAbsorber: shockAbsorber,
-              kineticEnergy: kineticEnergy,
-              potentialEnergy: potentialEnergy,
-              totalEnergy: totalEnergy,
-              energyPerHour: energyPerHour,
-              Vd: Vd,
-              emassMin: emassMin,
-              mass: mass,
-              velocity: velocity,
-              cycle: cycle,
-              force: force,
-              stroke: stroke,
-            })
-          );
+      
         }
       } catch (error) {
         console.error("Error fetching prices:", error);
@@ -176,6 +164,15 @@ const PricePage = () => {
         energyPerHour: energyPerHour,
         Vd: Vd,
         emassMin: emassMin,
+        mass: mass,
+        velocity: velocity,
+        cycle: cycle,
+        force: force,
+        stroke: stroke,
+        velocity2: velocity2,
+        mass2: mass2,
+        power: power,
+        stallFactor: stallFactor,
       })
     );
     // Navigate to the next page
