@@ -20,6 +20,8 @@ import { Technical } from "../extra/Technical";
 import "../scss/Print.scss";
 import { RootPage } from "../extra/RootPage";
 import CraneFourth from "../pages/Crane-4";
+import Login from "../pages/login/Login";
+import Dashboard from "../pages/Dashboard";
 export const Layout = () => {
   // const navigate = useNavigate();
 
@@ -128,6 +130,8 @@ export const Layout = () => {
           <div className="output mt-6">
             <Routes>
               <Route path="/" element={<RootPage />} />
+              <Route path="login" element={<Login/>}/>
+              <Route path="/login/admin" element={<Dashboard/>}/>
               <Route
                 path="/Wagon against 2 shock absorbers"
                 element={<CraneFirst />}

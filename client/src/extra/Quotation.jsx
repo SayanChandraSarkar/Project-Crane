@@ -104,7 +104,7 @@ const Quotation = () => {
   const totalPack = Amount + packaging;
   return (
     <>
-      <div className="p-4 quotation">
+      <div className="p-4 quotation md:w-[70%]">
         <div className="">
           <div className="h-[10vh] w-[100%] flex justify-between ">
             <div>
@@ -114,10 +114,10 @@ const Quotation = () => {
               <h2 className="text-xl font-medium">Quotation</h2>
             </div>
           </div>
-          <div className="quotation-by-section w-[100%] flex flex-col  gap-[8%] md:flex-row">
-            <div className="md:w-[33%] ">
+          <div className="quotation-by-section w-[100%] flex flex-col justify-between md:flex-row">
+            {/* <div className="md:w-[33%] ">
               <h2 className="font-medium text-xl">Quotation by</h2>
-              <p className="my-2">adoniTech</p>
+              <p className="my-2">AdoniTech</p>
               <p className="mb-2 address">
                 SLU - W - 39, Addl; MIDC, Kodoli, Satara - 415004. MH. 
               </p>
@@ -125,15 +125,15 @@ const Quotation = () => {
                 <p className="mr-2">GSTN:</p>
                 <p className="">27AHAPA3555B1Z1</p>
               </span>
-            </div>
-            <div className="md:w-[33%] w-[65%]">
+            </div> */}
+            <div className="">
               <h2 className="font-medium text-xl">Quotation to</h2>
               <p className="my-2">Company: {userData.company}</p>
               <p className="my-2">Name: {userData.username}</p>
               <p className="my-2">Email: {userData.email}</p>
               <p className="mb-8">Contact:{userData.phone}</p>
             </div>
-            <div className="md:w-[33%] w-[70%] flex flex-col gap-2">
+            <div className=" flex flex-col gap-2">
               <div className="flex gap-2 md:justify-between">
                 <h2 className="font-medium">Invoive Date:</h2>
                 <p>{formattedDate}</p>
@@ -173,7 +173,7 @@ const Quotation = () => {
           </tr>
         </table> */}
         <TableContainer className="mt-[10%] " component={Paper}>
-          <Table sx={{ minWidth: 400 }} aria-label="simple table">
+          <Table sx={{ minWidth: 400}} aria-label="simple table">
             <TableHead>
               <TableRow
                 sx={{
@@ -210,7 +210,7 @@ const Quotation = () => {
                   <Fragment key={row.model}>
                     <TableRow>
                       <TableCell align="right">{serialNumber}</TableCell>
-                      <TableCell align="right">{row.Series}</TableCell>
+                      <TableCell align="right">{row.model}</TableCell>
                       <TableCell align="right">{row.Quantity}</TableCell>
                       <TableCell align="right">
                         {currency === "INR"
@@ -340,6 +340,20 @@ const Quotation = () => {
           </Table>
         </TableContainer>
 
+        <div className="flex justify-end mt-10  ">
+          <div className="md:w-[30%] adoni">
+              <h2 className="font-medium text-xl">Quotation by</h2>
+              <p className="my-2">AdoniTech</p>
+              <p className="mb-2 address">
+                SLU - W - 39, Addl; MIDC, Kodoli, Satara - 415004. MH. 
+              </p>
+              <span className="mb-8 flex">
+                <p className="mr-2">GSTN:</p>
+                <p className="">27AHAPA3555B1Z1</p>
+              </span>
+              </div>
+            </div>
+
         <div className="btn mt-8">
           <button
             onClick={() => {
@@ -360,6 +374,10 @@ const Quotation = () => {
            
             
 
+          }
+          .adoni{
+          margin-right: -18%;
+          
           }
           .address{
             width:65%;
