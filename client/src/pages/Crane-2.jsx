@@ -72,6 +72,8 @@ export const CraneSecond = () => {
   const [content, setContent] = useState("Initial Content");
   const [showTable, setShowTable] = useState(false);
   const [value, setValue] = useState("ED");
+  const [hoveredRowIndex, setHoveredRowIndex] = useState(null);
+
   //Dynamic heading
   const DynamicHeading = ({
     className,
@@ -633,14 +635,45 @@ export const CraneSecond = () => {
                     onChange={handleTabChange}
                     aria-label="lab API tabs example"
                     className="flex flex-wrap justify-center sm:justify-start"
+                    TabIndicatorProps={{ style: { display: "none" } }}
                   >
-                    <Tab label="ED" value="ED" className="w-4/12" />
-                    <Tab label="EI" value="EI" className="w-4/12" />
-                    <Tab label="SB" value="SB" className="w-4/12" />
+                    <Tab
+                      label="ED"
+                      value="ED"
+                      className="w-4/12 !max-w-[380px]"
+                      sx={{
+                        "&.Mui-selected": {
+                          backgroundColor: "#ffff6a",
+                          color: "black", // Change the color to your desired color
+                        },
+                      }}
+                    />
+                    <Tab
+                      label="EI"
+                      value="EI"
+                      className="w-4/12 !max-w-[380px]"
+                      sx={{
+                        "&.Mui-selected": {
+                          backgroundColor: "#ffff6a",
+                          color: "black", // Change the color to your desired color
+                        },
+                      }}
+                    />
+                    <Tab
+                      label="SB"
+                      value="SB"
+                      className="w-4/12 !max-w-[380px]"
+                      sx={{
+                        "&.Mui-selected": {
+                          backgroundColor: "#ffff6a",
+                          color: "black", // Change the color to your desired color
+                        },
+                      }}
+                    />
                   </TabList>
                 </Box>
                 <TabPanel value="ED" className="">
-                  <Box sx={{ overflowX: "auto" }}>
+                  <Box sx={{ overflowX: "auto", backgroundColor: "#f3e87f" }}>
                     <Table
                       className="table-auto w-full"
                       sx={{ minWidth: 500, overflow: "hidden" }}
@@ -650,7 +683,7 @@ export const CraneSecond = () => {
                           sx={{
                             "&:last-child td, &:last-child th": {
                               border: "1px solid rgba(0, 0, 0, 0.2)",
-                              backgroundColor: "#eeee",
+                              backgroundColor: "#FFED4A",
                             },
                           }}
                         >
@@ -696,11 +729,18 @@ export const CraneSecond = () => {
                         }}
                       >
                         {top5ModelNames.ED.map((model, index) => (
-                          <TableRow key={index}>
+                          <TableRow
+                            key={index}
+                            className={
+                              hoveredRowIndex === index ? "" : "opacity-80"
+                            }
+                            onMouseEnter={() => setHoveredRowIndex(index)}
+                            onMouseLeave={() => setHoveredRowIndex(null)}
+                          >
                             <TableCell
                               align="right"
                               onClick={() => handleModelClick(model.model)}
-                              className="md:cursor-pointer md:hover:scale-125 md:duration-300"
+                              className="md:cursor-pointer md:hover:scale-110 md:duration-300 hover:text-blue-900"
                               sx={{ whiteSpace: "nowrap" }}
                             >
                               {model.model}
@@ -736,7 +776,7 @@ export const CraneSecond = () => {
                   </Box>
                 </TabPanel>
                 <TabPanel value="EI">
-                  <Box sx={{ overflowX: "auto" }}>
+                  <Box sx={{ overflowX: "auto", backgroundColor: "#f3e87f" }}>
                     <Table
                       className="table-auto w-full"
                       sx={{ minWidth: 500, overflow: "hidden" }}
@@ -746,6 +786,7 @@ export const CraneSecond = () => {
                           sx={{
                             "&:last-child td, &:last-child th": {
                               border: "1px solid rgba(0, 0, 0, 0.2)",
+                              backgroundColor: "#FFED4A",
                             },
                           }}
                         >
@@ -797,11 +838,18 @@ export const CraneSecond = () => {
                       >
                         {/* Example table rows */}
                         {top5ModelNames.EI.map((model, index) => (
-                          <TableRow key={index}>
+                          <TableRow
+                            key={index}
+                            className={
+                              hoveredRowIndex === index ? "" : "opacity-80"
+                            }
+                            onMouseEnter={() => setHoveredRowIndex(index)}
+                            onMouseLeave={() => setHoveredRowIndex(null)}
+                          >
                             <TableCell
                               align="right"
                               onClick={() => handleModelClick(model.model)}
-                              className="md:cursor-pointer md:hover:scale-125 md:duration-300"
+                              className="md:cursor-pointer md:hover:scale-110 md:duration-300 hover:text-blue-900"
                               sx={{ whiteSpace: "nowrap" }}
                             >
                               {model.model}
@@ -837,7 +885,7 @@ export const CraneSecond = () => {
                   </Box>
                 </TabPanel>
                 <TabPanel value="SB">
-                  <Box sx={{ overflowX: "auto" }}>
+                  <Box sx={{ overflowX: "auto", backgroundColor: "#f3e87f" }}>
                     <Table
                       className="table-auto w-full"
                       sx={{ minWidth: 500, overflow: "hidden" }}
@@ -847,6 +895,7 @@ export const CraneSecond = () => {
                           sx={{
                             "&:last-child td, &:last-child th": {
                               border: "1px solid rgba(0, 0, 0, 0.2)",
+                              backgroundColor: "#FFED4A",
                             },
                           }}
                         >
@@ -897,11 +946,18 @@ export const CraneSecond = () => {
                         }}
                       >
                         {top5ModelNames.SB.map((model, index) => (
-                          <TableRow key={index}>
+                          <TableRow
+                            key={index}
+                            className={
+                              hoveredRowIndex === index ? "" : "opacity-80"
+                            }
+                            onMouseEnter={() => setHoveredRowIndex                          (index)}
+                            onMouseLeave={() => setHoveredRowIndex(null)}
+                          >
                             <TableCell
                               align="right"
                               onClick={() => handleModelClick(model.model)}
-                              className="md:cursor-pointer md:hover:scale-125 md:duration-300"
+                              className="md:cursor-pointer md:hover:scale-110 md:duration-300 hover:text-blue-900"
                               sx={{ whiteSpace: "nowrap" }}
                             >
                               {model.model}

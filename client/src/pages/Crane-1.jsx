@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addData } from "../features/dataSlice";
 import Box from "@mui/material/Box";
 import InputAdornment from "@mui/material/InputAdornment";
-import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -59,6 +58,7 @@ export const CraneFirst = () => {
   });
   const [shockAbsorber, setShockAbsorber] = useState("2");
   const [selectedCurrency, setSelectedCurrency] = useState("INR");
+  const [hoveredRowIndex, setHoveredRowIndex] = useState(null);
 
   const [calculatedResults, setCalculatedResults] = useState({
     kineticEnergy: "",
@@ -72,7 +72,14 @@ export const CraneFirst = () => {
   const dispatch = useDispatch();
 
   const [content, setContent] = useState("Initial Content");
-  const [activeTab, setActiveTab] = useState("ED");
+  const [value, setValue] = useState("ED");
+
+  //Redux
+  const mass = useSelector((state) => state.data.mass);
+  const velocity = useSelector((state) => state.data.velocity);
+  const cycle = useSelector((state) => state.data.cycle);
+  const force = useSelector((state) => state.data.force);
+  const stroke = useSelector((state) => state.data.stroke);
 
   //Dynamic heading
   const DynamicHeading = ({
@@ -158,6 +165,7 @@ export const CraneFirst = () => {
 
       if (response.ok) {
         const data = await response.json();
+        console.log(data);
 
         const calculateDifference = (item) =>
           Math.abs(item.nmperstroke - calculatedResults.totalEnergy);
@@ -304,7 +312,7 @@ export const CraneFirst = () => {
   ]);
 
   const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
+    setValue(newValue);
   };
 
   const handleModelClick = (model) => {
@@ -318,10 +326,33 @@ export const CraneFirst = () => {
         energyPerHour: calculatedResults.energyPerHour,
         Vd: calculatedResults.Vd,
         emassMin: calculatedResults.emassMin,
+        mass: mValue,
+        velocity: vValue,
+        cycle: cValue,
+        force: fValue,
+        stroke: sValue,
       })
     );
     navigate(`/price/${model}`);
   };
+
+  useEffect(() => {
+    if (mass !== null) {
+      setMValue(`${mass}`);
+    }
+    if (velocity !== null) {
+      setVValue(`${velocity}`);
+    }
+    if (cycle !== null) {
+      setCValue(`${cycle}`);
+    }
+    if (force !== null) {
+      setFValue(`${force}`);
+    }
+    if (stroke !== null) {
+      setSValue(`${stroke}`);
+    }
+  }, [mass, velocity, cycle, force, stroke]);
 
   return (
     <>
@@ -356,6 +387,16 @@ export const CraneFirst = () => {
                   className=""
                   id="outlined-adornment-password"
                   label="Mass"
+                  // value={
+                  //   mValue
+                  //     ? `${mValue}${mass !== null ? ` (${mass})` : ""}`
+                  //     : ""
+                  // }
+                  // value={
+                  //   mValue !== null
+                  //     ? `${mValue}${mass !== null ? ` (${mass})` : ""}`
+                  //     : ""
+                  // }
                   value={mValue}
                   onChange={handleMChange}
                   autoComplete="off"
@@ -363,6 +404,12 @@ export const CraneFirst = () => {
                     endAdornment: (
                       <InputAdornment position="end">Kg</InputAdornment>
                     ),
+                  }}
+                  InputLabelProps={{
+                    style: {
+                      fontSize: "0.9rem",
+                      marginTop: "2px",
+                    }, //
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
@@ -389,6 +436,12 @@ export const CraneFirst = () => {
                       <InputAdornment position="end">m/s</InputAdornment>
                     ),
                   }}
+                  InputLabelProps={{
+                    style: {
+                      fontSize: "0.9rem",
+                      marginTop: "2px",
+                    }, //
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
               </FormControl>
@@ -397,14 +450,20 @@ export const CraneFirst = () => {
                   size="small"
                   className=""
                   id="outlined-adornment-weight"
-                  value={cValue}
                   label="Cycles per hour"
+                  value={cValue}
                   onChange={handleCChange}
                   autoComplete="off"
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">/hr</InputAdornment>
                     ),
+                  }}
+                  InputLabelProps={{
+                    style: {
+                      fontSize: "0.9rem",
+                      marginTop: "2px",
+                    }, //
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
@@ -422,6 +481,12 @@ export const CraneFirst = () => {
                     endAdornment: (
                       <InputAdornment position="end">kg</InputAdornment>
                     ),
+                  }}
+                  InputLabelProps={{
+                    style: {
+                      fontSize: "0.9rem",
+                      marginTop: "2px",
+                    }, //
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
@@ -525,6 +590,12 @@ export const CraneFirst = () => {
                       <InputAdornment position="end">Nm</InputAdornment>
                     ),
                   }}
+                  InputLabelProps={{
+                    style: {
+                      fontSize: "0.9rem",
+                      marginTop: "2px",
+                    }, //
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
               </FormControl>
@@ -540,6 +611,12 @@ export const CraneFirst = () => {
                     endAdornment: (
                       <InputAdornment position="end">Nm</InputAdornment>
                     ),
+                  }}
+                  InputLabelProps={{
+                    style: {
+                      fontSize: "0.9rem",
+                      marginTop: "2px",
+                    }, //
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
@@ -557,6 +634,12 @@ export const CraneFirst = () => {
                       <InputAdornment position="end">Nm</InputAdornment>
                     ),
                   }}
+                  InputLabelProps={{
+                    style: {
+                      fontSize: "0.9rem",
+                      marginTop: "2px",
+                    }, //
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
               </FormControl>
@@ -573,13 +656,19 @@ export const CraneFirst = () => {
                       <InputAdornment position="end">Nm/hr</InputAdornment>
                     ),
                   }}
+                  InputLabelProps={{
+                    style: {
+                      fontSize: "0.9rem",
+                      marginTop: "2px",
+                    }, //
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
               </FormControl>
               <FormControl variant="outlined" className="fromMobile">
                 <TextField
                   disabled
-                  label="Impact "
+                  label="Impact velocity at shock absorber "
                   size="small"
                   id="outlined-adornment-weight"
                   value={calculatedResults.Vd}
@@ -588,6 +677,12 @@ export const CraneFirst = () => {
                     endAdornment: (
                       <InputAdornment position="end">m/s</InputAdornment>
                     ),
+                  }}
+                  InputLabelProps={{
+                    style: {
+                      fontSize: "0.9rem",
+                      marginTop: "2px",
+                    }, //
                   }}
                   aria-describedby="outlined-weight-helper-text"
                 />
@@ -605,6 +700,12 @@ export const CraneFirst = () => {
                       <InputAdornment position="end">Kg</InputAdornment>
                     ),
                   }}
+                  InputLabelProps={{
+                    style: {
+                      fontSize: "0.9rem",
+                      marginTop: "2px",
+                    }, //
+                  }}
                   aria-describedby="outlined-weight-helper-text"
                 />
               </FormControl>
@@ -620,34 +721,48 @@ export const CraneFirst = () => {
               overflow: "hidden",
             }}
           >
-            <TabContext value={activeTab}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <TabContext value={value}>
+              <Box
+                sx={{ borderBottom: 1, borderColor: "divider", width: "100%" }}
+              >
                 <TabList
                   onChange={handleTabChange}
-                  value={activeTab}
                   aria-label="lab API tabs example"
-                  className="flex flex-wrap justify-center sm:justify-start "
+                  className="flex flex-wrap justify-between w-full"
+                  TabIndicatorProps={{ style: { display: "none" } }}
                 >
                   <Tab
                     label="ED"
                     value="ED"
-                    className={`w-4/12 ${
-                      activeTab === "ED" ? "bg-yellow-500" : "bg-gray-200"
-                    }`}
+                    className="w-4/12 !max-w-[380px]"
+                    sx={{
+                      "&.Mui-selected": {
+                        backgroundColor: "#ffff6a",
+                        color: "black", // Change the color to your desired color
+                      },
+                    }}
                   />
                   <Tab
                     label="EI"
                     value="EI"
-                    className={`w-4/12 ${
-                      activeTab === "EI" ? "bg-yellow-500" : "bg-gray-200"
-                    }`}
+                    className="w-4/12 !max-w-[380px]"
+                    sx={{
+                      "&.Mui-selected": {
+                        backgroundColor: "#ffff6a",
+                        color: "black", // Change the color to your desired color
+                      },
+                    }}
                   />
                   <Tab
                     label="SB"
                     value="SB"
-                    className={`w-4/12 ${
-                      activeTab === "SB" ? "bg-yellow-500" : "bg-gray-200"
-                    }`}
+                    className="w-4/12 !max-w-[380px]"
+                    sx={{
+                      "&.Mui-selected": {
+                        backgroundColor: "#ffff6a",
+                        color: "black", // Change the color to your desired color
+                      },
+                    }}
                   />
                 </TabList>
               </Box>
@@ -666,22 +781,16 @@ export const CraneFirst = () => {
                           },
                         }}
                       >
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                          Model
-                        </TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                          Energy Capacity
-                        </TableCell>
+                        <TableCell align="right">Model</TableCell>
+                        <TableCell align="right">Energy Capacity</TableCell>
                         <TableCell align="right">Stroke</TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                        <TableCell align="right">
                           Rate of Utilization/stroke
                         </TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                        <TableCell align="right">
                           Rate of Utilization/hr
                         </TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                          Deceleration Rate
-                        </TableCell>
+                        <TableCell align="right">Deceleration Rate</TableCell>
                       </TableRow>
                     </TableHead>
 
@@ -693,11 +802,18 @@ export const CraneFirst = () => {
                       }}
                     >
                       {top5ModelNames.ED.map((model, index) => (
-                        <TableRow key={index}>
+                        <TableRow
+                          key={index}
+                          className={
+                            hoveredRowIndex === index ? "" : "opacity-80"
+                          }
+                          onMouseEnter={() => setHoveredRowIndex(index)}
+                          onMouseLeave={() => setHoveredRowIndex(null)}
+                        >
                           <TableCell
                             align="right"
                             onClick={() => handleModelClick(model.model)}
-                            className="md:cursor-pointer md:hover:scale-125 md:duration-300"
+                            className="md:cursor-pointer  md:duration-300 md:hover:scale-110 hover:bg-green-900"
                             sx={{ whiteSpace: "nowrap" }}
                           >
                             {model.model}
@@ -722,8 +838,20 @@ export const CraneFirst = () => {
                             ).toFixed(2)}
                             %
                           </TableCell>
-                          <TableCell align="right">
-                            {(0.75 * calculatedResults.Vd ** 2) / model.stroke}
+                          <TableCell
+                            align="right"
+                            className={
+                              (0.75 * calculatedResults.Vd ** 2) /
+                                model.stroke >
+                              5
+                                ? "!text-red-400"
+                                : "!text-green-500"
+                            }
+                          >
+                            {(
+                              (0.75 * calculatedResults.Vd ** 2) /
+                              model.stroke
+                            ).toFixed(3)}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -732,7 +860,7 @@ export const CraneFirst = () => {
                 </Box>
               </TabPanel>
               <TabPanel value="EI">
-                <Box sx={{ overflowX: "auto" }}>
+                <Box sx={{ overflowX: "auto", backgroundColor: "#f3e87f" }}>
                   <Table
                     className="table-auto w-full"
                     sx={{ minWidth: 500, overflow: "hidden" }}
@@ -742,27 +870,20 @@ export const CraneFirst = () => {
                         sx={{
                           "&:last-child td, &:last-child th": {
                             border: "1px solid rgba(0, 0, 0, 0.2)",
+                            backgroundColor: "#FFED4A",
                           },
                         }}
                       >
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                          Model
-                        </TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                          Energy Capacity
-                        </TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                          Stroke
-                        </TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                        <TableCell align="right">Model</TableCell>
+                        <TableCell align="right">Energy Capacity</TableCell>
+                        <TableCell align="right">Stroke</TableCell>
+                        <TableCell align="right">
                           Rate of Utilization/stroke
                         </TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                        <TableCell align="right">
                           Rate of Utilization/hr
                         </TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                          Deceleration Rate
-                        </TableCell>
+                        <TableCell align="right">Deceleration Rate</TableCell>
                       </TableRow>
                     </TableHead>
 
@@ -775,11 +896,18 @@ export const CraneFirst = () => {
                     >
                       {/* Example table rows */}
                       {top5ModelNames.EI.map((model, index) => (
-                        <TableRow key={index}>
+                        <TableRow
+                          key={index}
+                          className={
+                            hoveredRowIndex === index ? "" : "opacity-80"
+                          }
+                          onMouseEnter={() => setHoveredRowIndex(index)}
+                          onMouseLeave={() => setHoveredRowIndex(null)}
+                        >
                           <TableCell
                             align="right"
                             onClick={() => handleModelClick(model.model)}
-                            className="md:cursor-pointer md:hover:scale-125 md:duration-300"
+                            className="md:cursor-pointer md:hover:scale-110 md:duration-300  hover:text-blue-900"
                             sx={{ whiteSpace: "nowrap" }}
                           >
                             {model.model}
@@ -804,8 +932,20 @@ export const CraneFirst = () => {
                             ).toFixed(2)}
                             %
                           </TableCell>
-                          <TableCell align="right">
-                            {(0.75 * calculatedResults.Vd ** 2) / model.stroke}
+                          <TableCell
+                            align="right"
+                            className={
+                              (0.75 * calculatedResults.Vd ** 2) /
+                                model.stroke >
+                              5
+                                ? "!text-red-400"
+                                : "!text-green-500"
+                            }
+                          >
+                            {(
+                              (0.75 * calculatedResults.Vd ** 2) /
+                              model.stroke
+                            ).toFixed(3)}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -814,7 +954,7 @@ export const CraneFirst = () => {
                 </Box>
               </TabPanel>
               <TabPanel value="SB">
-                <Box sx={{ overflowX: "auto" }}>
+                <Box sx={{ overflowX: "auto", backgroundColor: "#f3e87f" }}>
                   <Table
                     className="table-auto w-full"
                     sx={{ minWidth: 500, overflow: "hidden" }}
@@ -824,27 +964,20 @@ export const CraneFirst = () => {
                         sx={{
                           "&:last-child td, &:last-child th": {
                             border: "1px solid rgba(0, 0, 0, 0.2)",
+                            backgroundColor: "#FFED4A",
                           },
                         }}
                       >
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                          Model
-                        </TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                          Energy Capacity
-                        </TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                          Stroke
-                        </TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                        <TableCell align="right">Model</TableCell>
+                        <TableCell align="right">Energy Capacity</TableCell>
+                        <TableCell align="right">Stroke</TableCell>
+                        <TableCell align="right">
                           Rate of Utilization/stroke
                         </TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
+                        <TableCell align="right">
                           Rate of Utilization/hr
                         </TableCell>
-                        <TableCell align="right" sx={{ whiteSpace: "nowrap" }}>
-                          Deceleration Rate
-                        </TableCell>
+                        <TableCell align="right">Deceleration Rate</TableCell>
                       </TableRow>
                     </TableHead>
 
@@ -856,11 +989,18 @@ export const CraneFirst = () => {
                       }}
                     >
                       {top5ModelNames.SB.map((model, index) => (
-                        <TableRow key={index}>
+                        <TableRow
+                          key={index}
+                          className={
+                            hoveredRowIndex === index ? "" : "opacity-80"
+                          }
+                          onMouseEnter={() => setHoveredRowIndex(index)}
+                          onMouseLeave={() => setHoveredRowIndex(null)}
+                        >
                           <TableCell
                             align="right"
                             onClick={() => handleModelClick(model.model)}
-                            className="md:cursor-pointer md:hover:scale-125 md:duration-300"
+                            className="md:cursor-pointer md:hover:scale-110 md:duration-300 hover:text-blue-900"
                             sx={{ whiteSpace: "nowrap" }}
                           >
                             {model.model}
@@ -887,8 +1027,20 @@ export const CraneFirst = () => {
                             ).toFixed(2)}
                             %
                           </TableCell>
-                          <TableCell align="right">
-                            {(0.75 * calculatedResults.Vd ** 2) / model.stroke}
+                          <TableCell
+                            align="right"
+                            className={
+                              (0.75 * calculatedResults.Vd ** 2) /
+                                model.stroke >
+                              5
+                                ? "!text-red-400"
+                                : "!text-green-500"
+                            }
+                          >
+                            {(
+                              (0.75 * calculatedResults.Vd ** 2) /
+                              model.stroke
+                            ).toFixed(3)}
                           </TableCell>
                         </TableRow>
                       ))}

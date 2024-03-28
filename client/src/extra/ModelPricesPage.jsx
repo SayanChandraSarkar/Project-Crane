@@ -14,6 +14,11 @@ const PricePage = () => {
   const energyPerHour = useSelector((state) => state.data.energyPerHour);
   const Vd = useSelector((state) => state.data.Vd);
   const emassMin = useSelector((state) => state.data.emassMin);
+  const mass = useSelector((state) => state.data.mass);
+  const velocity = useSelector((state) => state.data.velocity);
+  const cycle = useSelector((state) => state.data.cycle);
+  const force = useSelector((state) => state.data.force);
+  const stroke = useSelector((state) => state.data.stroke);
 
   const [totalPrice, setTotalPrice] = useState(0);
   const { modelName } = useParams();
@@ -50,6 +55,11 @@ const PricePage = () => {
               energyPerHour: energyPerHour,
               Vd: Vd,
               emassMin: emassMin,
+              mass: mass,
+              velocity: velocity,
+              cycle: cycle,
+              force: force,
+              stroke: stroke,
             })
           );
         }

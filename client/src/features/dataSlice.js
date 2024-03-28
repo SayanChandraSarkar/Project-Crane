@@ -13,6 +13,11 @@ const initialState = {
   spare: [],
   totalPrice: null,
   addAdditionalPriceData: [],
+  mass: null,
+  velocity: null,
+  cycle: null,
+  force: null,
+  stroke: null,
 };
 const dataSlice = createSlice({
   name: "data",
@@ -33,6 +38,11 @@ const dataSlice = createSlice({
       state.spare = action.payload.spare;
       state.totalPrice = action.payload.totalPrice;
       state.addAdditionalPriceData = action.payload.addAdditionalPriceData;
+      state.mass = action.payload.mass;
+      state.velocity = action.payload.velocity;
+      state.cycle = action.payload.cycle;
+      state.force = action.payload.force;
+      state.stroke = action.payload.stroke;
     },
   },
 });
